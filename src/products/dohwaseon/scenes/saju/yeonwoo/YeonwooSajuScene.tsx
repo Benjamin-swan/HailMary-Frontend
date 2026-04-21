@@ -56,7 +56,17 @@ export default function YeonwooSajuScene() {
   });
   const [loadingStartedAt, setLoadingStartedAt] = useState<number | null>(null);
   const [showSlowMsg, setShowSlowMsg] = useState(false);
+  const [userName, setUserName] = useState<string>("");
   const saju = useSajuCalculate();
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("yeonwooSaju");
+      if (!raw) return;
+      const info = JSON.parse(raw) as { name?: string };
+      if (info?.name) setUserName(info.name);
+    } catch {}
+  }, []);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cut = YEONWOO_CUTS[cutIndex];
@@ -354,8 +364,8 @@ export default function YeonwooSajuScene() {
       {!fading && !crossFading && cut.type === "analysis-result" && (
         <SajuChartCards
           intro={cut.intro}
-          pillars={saju.data?.pillars ?? MOCK_SAJU.pillars}
-          highlight={saju.data?.highlight ?? MOCK_SAJU.highlight}
+          data={saju.data ?? MOCK_SAJU}
+          name={userName}
           onNext={() => goToCut(cutIndex + 1)}
         />
       )}

@@ -2,7 +2,7 @@
 
 > 프런트(dohwa_frontend) ↔ 백엔드(dohwa-backend, fortuneteller를 도메인으로 흡수) 연동 결정 사항 정리.
 > 최초 작성: 2026-04-21
-> 최종 수정: 2026-04-21 (§6 설문 저장 추가, 기존 §6~§11 → §7~§12)
+> 최종 수정: 2026-04-21 (§2 응답 확장·§10 보안 원칙 개정 / PR2)
 > 이 문서가 **단일 소스(single source of truth)** — 대화 중 새 결정이 나오면 이 파일을 갱신한다.
 
 ---
@@ -75,37 +75,122 @@ POST /api/saju/free
 - `name`은 **보내지 않음** (프런트 localStorage에만 보관, PII 리스크 제거)
 - `birthCity`는 **수집하지 않음** → 백엔드 서울 기본값 사용 (고지 문구도 없음, 섹션 4 참고)
 
-### 응답 바디 (성공)
-```json
+### 응답 바디 (성공) — PR2 확장본
+
+```jsonc
 {
   "pillars": [
-    { "label": "년주", "heaven": "甲", "earth": "子", "element": "목 / 수", "hue": "#9CC8B0" },
-    { "label": "월주", "heaven": "丙", "earth": "寅", "element": "화 / 목", "hue": "#E6A88E" },
-    { "label": "일주", "heaven": "戊", "earth": "申", "element": "토 / 금", "hue": "#E6C58E" },
-    { "label": "시주", "heaven": "辛", "earth": "亥", "element": "금 / 수", "hue": "#6B8BB5", "unknown": false }
+    {
+      "label": "년주",
+      "heaven": "丙",
+      "earth": "子",
+      "heavenHangul": "병",
+      "earthHangul": "자",
+      "element": "화 / 수",
+      "hue": "#E6A88E",
+      "yinYang": { "heaven": "양", "earth": "양" },
+      "tenGod": {
+        "heaven": "비견",
+        "earth": "정관",
+        "heavenHanja": "比肩",
+        "earthHanja": "正官"
+      },
+      "twelvePhase": { "name": "태", "hanja": "胎" },
+      "sinSals": [
+        { "slug": "do_hwa_sal", "label": "도화살", "hanja": "桃花殺" }
+      ],
+      "unknown": false
+    }
+    // month/day/hour 동일 구조 (총 4개)
   ],
-  "highlight": "도화살(桃花殺) — 일지(日支)에 위치",
-  "sajuRequestId": "svr_xxxx"
+
+  "highlight": "화개살(華蓋殺) — 年支에 위치",
+
+  "wuxing": {
+    "counts":    { "목": 1, "화": 3, "토": 1, "금": 0, "수": 3 },
+    "ratios":    { "목": 12.5, "화": 37.5, "토": 12.5, "금": 0.0, "수": 37.5 },
+    "judgments": { "목": "적정", "화": "과다", "토": "적정", "금": "결핍", "수": "발달" }
+  },
+
+  "yongSin": {
+    "primary":   { "element": "수", "hanja": "水", "role": "용신" },
+    "secondary": null,
+    "opposing":  { "element": "화", "hanja": "火", "role": "기신" }
+  },
+
+  "dayMaster": {
+    "stem": "병",
+    "stemHanja": "丙",
+    "strengthLevel": "신강",
+    "strengthScale": 7,
+    "strengthPosition": 5
+  },
+
+  "daeUn": {
+    "startAge": 2,
+    "direction": "forward",
+    "periods": [
+      {
+        "age": 2,
+        "startYear": 1998,
+        "stem": "갑",
+        "branch": "오",
+        "stemHanja": "甲",
+        "branchHanja": "午",
+        "element": "목 / 화",
+        "hue": "#9CC8B0"
+      }
+      // ... 총 7개
+    ]
+  },
+
+  "sajuRequestId": "svr_01KPQ..."
 }
 ```
 
 **규칙:**
-- `pillars`: **항상 길이 4** 고정. 시주를 신뢰 계산 불가 시 `unknown: true` + `heaven: "?"`, `earth: "?"`, `element: "—"`
-- `highlight`: 단일 신살. 포맷 `"{신살명}({한자}) — {위치(한자)}에 위치"`. 우선순위: 도화살 > 홍염살 > 기타 연애 관련
-- `sajuRequestId`: 유료 단계에서 재계산 회피용 식별자. DB에 저장
-- `insight` 필드 **없음**. 구체 해석은 유료에서만 제공 (결제 유도 메시지 보호)
+- `pillars`: **항상 길이 4** 고정. 각 pillar 는 천간/지지 한자·한글, 음양, 오행(혼합 문자열), hue, 십성(`tenGod`), 십이운성(`twelvePhase`), 기둥별 신살 배열(`sinSals`), unknown 플래그를 포함.
+- 시주 unknown 시 `heaven: "?"`, `earth: "?"`, `element: "—"`, `hue: "—"`, `sinSals: []`, `tenGod`/`twelvePhase` 는 placeholder 값 (프런트에서 unknown 분기 렌더).
+- `highlight`: 단일 문자열 — 신살 우선 포맷 `"{신살명}({한자}) — {위치}에 위치"` 또는 백엔드 선택 카피.
+- `wuxing`: 오행 5종 카운트·비율·판정. 판정은 `결핍 / 적정 / 발달 / 과다` 4단계.
+- `yongSin`: **`null` 가능** (내부 미산출 시 전체 null). 채워질 땐 `primary`(용신) / `secondary`(희신, null 가능) / `opposing`(기신).
+- `dayMaster`: 일간 간지 + 7단계 신강신약. `strengthPosition` 1=극약 ~ 7=극왕.
+- `daeUn.periods`: **정확히 7개**, 순행/역행, 나이 10년 간격.
+- `sajuRequestId`: 유료 리포트(`POST /api/reading/premium`) 재사용 식별자.
 
-### 오행 색상 팔레트 (확정)
+### 값 도메인 레퍼런스
 
-| 오행 | Hex | 설명 |
-|---|---|---|
-| 목(木) | `#9CC8B0` | sage green |
-| 화(火) | `#E6A88E` | terracotta |
-| 토(土) | `#E6C58E` | gold |
-| 금(金) | `#C5CAD4` | cool silver |
-| 수(水) | `#6B8BB5` | deep blue |
+**오행 5종 (한글 고정)**: `목` `화` `토` `금` `수`
 
-혼합 오행(예: `"목 / 수"`)일 때 `hue`는 **천간 오행 색** 기준. 백엔드가 단일 소스 — 프런트는 응답값 그대로 렌더.
+**오행 hex 팔레트 (확정 — 변경 없음)**
+
+| 오행 | Hex |
+|---|---|
+| 목(木) | `#9CC8B0` |
+| 화(火) | `#E6A88E` |
+| 토(土) | `#E6C58E` |
+| 금(金) | `#C5CAD4` |
+| 수(水) | `#6B8BB5` |
+
+혼합 오행 `hue` 는 **천간 오행 색** 기준. 프런트는 응답값 그대로 렌더.
+
+**십이운성 12단계**: 태(胎) · 양(養) · 장생(長生) · 목욕(沐浴) · 관대(冠帶) · 건록(建祿) · 제왕(帝旺) · 쇠(衰) · 병(病) · 사(死) · 묘(墓) · 절(絕)
+
+**십성 10종**: 비견(比肩) · 겁재(劫財) · 식신(食神) · 상관(傷官) · 편재(偏財) · 정재(正財) · 편관(偏官) · 정관(正官) · 편인(偏印) · 정인(正印)
+
+> **일주 천간 특례**: 일간 기준 자기 자신의 십성은 정의상 항상 `"비견"`. `pillars[2].tenGod.heaven === "비견"`이 항상 참. UI 에서 일주 칸의 십성(상) 자리는 "日干" 라벨로 대체 렌더 권장.
+
+**신살 슬러그 (현재 방출 7 + 타입 정의 8 = 총 15)**
+
+실방출 (매핑 필수): `cheon_eul_gwi_in`(천을귀인) · `do_hwa_sal`(도화살) · `yeok_ma_sal`(역마살) · `hwa_gae_sal`(화개살) · `gong_mang`(공망) · `won_jin_sal`(원진살) · `gwi_mun_gwan_sal`(귀문관살)
+
+미방출 (확장 대비): `cheon_deok_gwi_in` · `wol_deok_gwi_in` · `mun_chang_gwi_in` · `hak_dang_gwi_in` · `geum_yeo_rok` · `yang_in_sal` · `baek_ho_sal` · `gwa_suk_sal`
+
+응답 `pillars[*].sinSals[]` 는 각 기둥 지지에 실제 걸린 것만 0~여러 개. 접미어 `_gwi_in` 로 귀인 분류.
+
+**오행 판정 라벨 (개수 기반)**: 0개 → `결핍` / 1개 → `적정` / 2개 → `발달` / 3개 이상 → `과다`
+
+**신강신약 7단계** (`strengthPosition` 1~7): 1=극약 · 2=태약 · 3=신약 · 4=중화 · 5=신강 · 6=태강 · 7=극왕
 
 ### 에러 응답
 
@@ -335,18 +420,31 @@ PAYAPP_LINKVAL=      # 연동 VALUE
 
 ---
 
-## 10. 보안 / 알고리즘 보호 원칙
+## 10. 보안 / 알고리즘 보호 원칙 (2026-04 개정 / PR2)
 
-- 사주 계산 알고리즘은 **영업 비밀**. 프런트 내장 절대 금지.
-- 응답에는 **표시용 가공 데이터만** 포함. 다음 필드는 **절대 노출 금지**:
-  - `wuxingCount` (오행 분포 원본)
-  - `jiJangGan` (지장간 세력)
-  - `tenGods` (십성 상세)
-  - `sinSals` 배열 전체 (highlight용 1개만 가공 노출)
-  - `daeUn` (대운)
-  - 일간 강약도 수치
+> 이전 버전은 `wuxingCount` / `tenGods` / `yongSin` 등을 "절대 노출 금지"로 규정했지만, 이는 명리학 표준 계산 결과물이라 공개된 사주 레포들에도 전부 드러나는 값이다. 이번 개정으로 **표시용 결과는 공개, 해석·프롬프트·가중치만 보호** 로 재정의.
+
+### 공개 OK — 명리학 표준 계산 결과물
+- 4기둥 (천간·지지·음양·오행)
+- 십성(`tenGod`), 십이운성(`twelvePhase`), 신살(`sinSals`, 위치 포함)
+- 오행 분포·비율·강약 (`wuxing`)
+- 용신·희신·기신 (`yongSin`)
+- 신강신약 단계 (`dayMaster.strengthLevel` / `strengthPosition`)
+- 대운 7구간 (`daeUn`)
+
+### 보호 대상 — 진짜 영업 비밀
+- 용신 선택 알고리즘 근거 텍스트 (`yongSin.reasoning` 내부 필드)
+- 일간 강약 수치·판정 근거 텍스트 (`score`, `analysis` 내부 필드)
+- 격국 상세 판정 (`gyeokGuk`)
+- 지장간 세력 수치 (`jiJangGan`)
+- 지지 관계 판정 (`branchRelations`)
+- 월령 판정 근거 (`wolRyeong.reason`)
+- **PR3 유료 리포트의 Claude 프롬프트 원문·캐릭터 톤·해석 유파 가중치**
+
+### 변함없는 원칙
+- Claude API 키는 백엔드 전용. 프런트 노출 금지.
 - 500 응답에 스택 트레이스 / 내부 변수 노출 금지.
-- Claude API 키는 반드시 백엔드 전용. 프런트 노출 금지.
+- 설문 step3 자유 텍스트는 로그 출력 금지.
 
 ---
 

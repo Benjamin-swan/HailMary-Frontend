@@ -58,7 +58,17 @@ export default function DoyoonSajuScene() {
   });
   const [loadingStartedAt, setLoadingStartedAt] = useState<number | null>(null);
   const [showSlowMsg, setShowSlowMsg] = useState(false);
+  const [userName, setUserName] = useState<string>("");
   const saju = useSajuCalculate();
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("doyoonSaju");
+      if (!raw) return;
+      const info = JSON.parse(raw) as { name?: string };
+      if (info?.name) setUserName(info.name);
+    } catch {}
+  }, []);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cut = DOYOON_CUTS[cutIndex];
@@ -381,12 +391,12 @@ export default function DoyoonSajuScene() {
         />
       )}
 
-      {/* 분석 결과 + 4기둥 카드 (cut 10) */}
+      {/* 분석 결과 + 확장 리포트 (cut 10) */}
       {!fading && !crossFading && cut.type === "analysis-result" && (
         <SajuChartCards
           intro={cut.intro}
-          pillars={saju.data?.pillars ?? MOCK_SAJU.pillars}
-          highlight={saju.data?.highlight ?? MOCK_SAJU.highlight}
+          data={saju.data ?? MOCK_SAJU}
+          name={userName}
           onNext={() => goToCut(cutIndex + 1)}
         />
       )}
