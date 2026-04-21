@@ -1,3 +1,5 @@
+// id 는 백엔드 /api/saju/survey 에 그대로 전송되는 슬러그다(v1).
+// 슬러그 목록은 docs/backend-integration.md §6 참조 — UI 라벨 변경 시에도 id 는 유지.
 export type SurveyMultiOption = {
   id: string;
   label: string;
@@ -32,10 +34,10 @@ export const SURVEY_STEP_1: SurveyMultiStep = {
   subtitle: "복수선택 가능",
   pageLabel: "1 / 3",
   options: [
-    { id: "waiting", label: "새로운 인연을 기다려요", icon: "+" },
+    { id: "waiting_new", label: "새로운 인연을 기다려요", icon: "+" },
     { id: "crushing", label: "썸 타는 중이에요", icon: "♥" },
-    { id: "dating", label: "연애 중이에요", icon: "♥" },
-    { id: "missing-ex", label: "헤어진 연인이 그리워요", icon: "↻" },
+    { id: "in_relationship", label: "연애 중이에요", icon: "♥" },
+    { id: "missing_ex", label: "헤어진 연인이 그리워요", icon: "↻" },
   ],
 };
 

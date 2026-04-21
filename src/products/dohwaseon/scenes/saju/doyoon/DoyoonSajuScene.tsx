@@ -11,6 +11,8 @@ import SajuChartCards from "./components/SajuChartCards";
 import SurveyMultiSelect from "./components/SurveyMultiSelect";
 import SurveyFreeText from "./components/SurveyFreeText";
 import { SURVEY_STEPS, type SurveyAnswers } from "./data/surveyOptions";
+import { MOCK_SAJU } from "./data/mockSaju";
+import { postSajuSurvey, useSajuCalculate } from "@/features/saju";
 
 const CHAR_DELAY = 32;
 const IS_DEV = process.env.NODE_ENV !== "production";
@@ -54,6 +56,9 @@ export default function DoyoonSajuScene() {
     step2: [],
     step3: "",
   });
+  const [loadingStartedAt, setLoadingStartedAt] = useState<number | null>(null);
+  const [showSlowMsg, setShowSlowMsg] = useState(false);
+  const saju = useSajuCalculate();
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cut = DOYOON_CUTS[cutIndex];
@@ -126,12 +131,33 @@ export default function DoyoonSajuScene() {
     return () => clearTimeout(t);
   }, [cutIndex, cut.type, goToCut]);
 
-  // analysis-loading 자동 진행 (2초)
+  // analysis-loading: API 응답 + 최소 1.2초 노출 양쪽 충족 시 다음 컷으로
   useEffect(() => {
     if (cut.type !== "analysis-loading") return;
-    const t = setTimeout(() => goToCut(cutIndex + 1), 2000);
+    if (saju.status !== "success" || loadingStartedAt === null) return;
+    const elapsed = Date.now() - loadingStartedAt;
+    const wait = Math.max(0, 1200 - elapsed);
+    const t = setTimeout(() => goToCut(cutIndex + 1), wait);
     return () => clearTimeout(t);
-  }, [cutIndex, cut.type, goToCut]);
+  }, [cut.type, saju.status, loadingStartedAt, cutIndex, goToCut]);
+
+  // 3초 초과 시 문구 전환
+  useEffect(() => {
+    if (cut.type !== "analysis-loading" || saju.status !== "loading") {
+      setShowSlowMsg(false);
+      return;
+    }
+    const t = setTimeout(() => setShowSlowMsg(true), 3000);
+    return () => clearTimeout(t);
+  }, [cut.type, saju.status]);
+
+  // sajuRequestId 보관
+  useEffect(() => {
+    if (saju.status !== "success" || !saju.data) return;
+    try {
+      localStorage.setItem("doyoonSajuRequestId", saju.data.sajuRequestId);
+    } catch {}
+  }, [saju.status, saju.data]);
 
   // final-leanin 진입 시 줌 + bg 전환 (state는 goToCut/jumpTo에서 초기화됨)
   useEffect(() => {
@@ -287,24 +313,52 @@ export default function DoyoonSajuScene() {
         </div>
       )}
 
-      {/* 분석 중 표시 */}
+      {/* 분석 중 표시 (로딩 / 느린 응답 / 에러) */}
       {!fading && cut.type === "analysis-loading" && (
         <div className="relative z-10 my-auto px-6 text-center">
-          <p
-            className="text-[11px] tracking-[0.4em]"
-            style={{ color: "rgba(230,197,142,0.85)" }}
-          >
-            데이터 분석 중
-          </p>
-          <div className="mx-auto mt-3 flex justify-center gap-1.5">
-            {[0, 150, 300].map((d) => (
-              <span
-                key={d}
-                className="h-1 w-1 animate-pulse rounded-full"
-                style={{ background: "#E6C58E", animationDelay: `${d}ms` }}
-              />
-            ))}
-          </div>
+          {saju.status === "error" && saju.error ? (
+            <>
+              <p
+                className="text-[12px] leading-relaxed"
+                style={{ color: "#F5EDE0" }}
+              >
+                {saju.error.message}
+              </p>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLoadingStartedAt(Date.now());
+                  saju.retry();
+                }}
+                className="mt-5 rounded-full px-5 py-2 text-[11px] tracking-[0.3em]"
+                style={{
+                  background: "rgba(230,197,142,0.18)",
+                  color: "#FFE2B3",
+                  borderTop: "1px solid rgba(245,237,224,0.12)",
+                }}
+              >
+                다시 시도
+              </button>
+            </>
+          ) : (
+            <>
+              <p
+                className="text-[11px] tracking-[0.4em]"
+                style={{ color: "rgba(230,197,142,0.85)" }}
+              >
+                {showSlowMsg ? "별의 배치를 읽는 중…" : "데이터 분석 중"}
+              </p>
+              <div className="mx-auto mt-3 flex justify-center gap-1.5">
+                {[0, 150, 300].map((d) => (
+                  <span
+                    key={d}
+                    className="h-1 w-1 animate-pulse rounded-full"
+                    style={{ background: "#E6C58E", animationDelay: `${d}ms` }}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
 
@@ -315,6 +369,13 @@ export default function DoyoonSajuScene() {
             try {
               localStorage.setItem("doyoonSaju", JSON.stringify(info));
             } catch {}
+            setLoadingStartedAt(Date.now());
+            saju.submit({
+              birth: info.birth.replace(/\./g, "-"),
+              time: info.time,
+              calendar: info.calendar,
+              gender: info.gender,
+            });
             goToCut(cutIndex + 1);
           }}
         />
@@ -324,6 +385,8 @@ export default function DoyoonSajuScene() {
       {!fading && !crossFading && cut.type === "analysis-result" && (
         <SajuChartCards
           intro={cut.intro}
+          pillars={saju.data?.pillars ?? MOCK_SAJU.pillars}
+          highlight={saju.data?.highlight ?? MOCK_SAJU.highlight}
           onNext={() => goToCut(cutIndex + 1)}
         />
       )}
@@ -360,6 +423,20 @@ export default function DoyoonSajuScene() {
                 JSON.stringify(finalAnswers),
               );
             } catch {}
+            const sajuRequestId =
+              saju.data?.sajuRequestId ??
+              (typeof window !== "undefined"
+                ? localStorage.getItem("doyoonSajuRequestId")
+                : null);
+            if (sajuRequestId) {
+              void postSajuSurvey({
+                sajuRequestId,
+                surveyVersion: "v1",
+                step1: finalAnswers.step1,
+                step2: finalAnswers.step2,
+                step3: finalAnswers.step3.length > 0 ? finalAnswers.step3 : null,
+              });
+            }
             goToCut(cutIndex + 1);
           }}
         />

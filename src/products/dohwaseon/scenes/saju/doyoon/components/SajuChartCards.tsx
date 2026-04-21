@@ -1,17 +1,19 @@
 "use client";
 
-import { MOCK_SAJU, type MockSaju } from "../data/mockSaju";
+import type { Pillar } from "@/features/saju";
 
 type Props = {
   intro: string;
+  pillars: Pillar[];
+  highlight: string;
   onNext: () => void;
-  mockSaju?: MockSaju;
 };
 
 export default function SajuChartCards({
   intro,
+  pillars,
+  highlight,
   onNext,
-  mockSaju = MOCK_SAJU,
 }: Props) {
   return (
     <div
@@ -47,47 +49,62 @@ export default function SajuChartCards({
 
         {/* 4 Pillars */}
         <div className="mt-7 grid grid-cols-2 gap-3">
-          {mockSaju.pillars.map((p) => (
-            <div
-              key={p.label}
-              className="relative overflow-hidden rounded-2xl px-4 py-5"
-              style={{
-                background: "rgba(40,38,34,0.6)",
-                backdropFilter: "blur(16px)",
-                borderTop: "1px solid rgba(245,237,224,0.1)",
-              }}
-            >
-              <p
-                className="text-[10px] tracking-[0.3em]"
-                style={{ color: p.hue, opacity: 0.85 }}
+          {pillars.map((p) => {
+            const isUnknown = p.unknown === true;
+            const heaven = isUnknown ? "?" : p.heaven;
+            const earth = isUnknown ? "?" : p.earth;
+            const element = isUnknown ? "—" : p.element;
+            return (
+              <div
+                key={p.label}
+                className="relative overflow-hidden rounded-2xl px-4 py-5"
+                style={{
+                  background: "rgba(40,38,34,0.6)",
+                  backdropFilter: "blur(16px)",
+                  borderTop: "1px solid rgba(245,237,224,0.1)",
+                  opacity: isUnknown ? 0.72 : 1,
+                }}
               >
-                {p.label}
-              </p>
-              <div className="mt-3 flex items-baseline gap-2">
-                <span
-                  className="text-4xl font-black leading-none"
-                  style={{
-                    color: p.hue,
-                    textShadow: `0 0 18px ${p.hue}55`,
-                  }}
+                <p
+                  className="text-[10px] tracking-[0.3em]"
+                  style={{ color: p.hue, opacity: 0.85 }}
                 >
-                  {p.heaven}
-                </span>
-                <span
-                  className="text-2xl font-bold leading-none"
-                  style={{ color: "#D0C5B6" }}
+                  {p.label}
+                </p>
+                <div className="mt-3 flex items-baseline gap-2">
+                  <span
+                    className="text-4xl font-black leading-none"
+                    style={{
+                      color: p.hue,
+                      textShadow: isUnknown ? "none" : `0 0 18px ${p.hue}55`,
+                    }}
+                  >
+                    {heaven}
+                  </span>
+                  <span
+                    className="text-2xl font-bold leading-none"
+                    style={{ color: "#D0C5B6" }}
+                  >
+                    {earth}
+                  </span>
+                </div>
+                <p
+                  className="mt-3 text-[10px] tracking-[0.2em]"
+                  style={{ color: "#998f82" }}
                 >
-                  {p.earth}
-                </span>
+                  {element}
+                </p>
+                {isUnknown && (
+                  <p
+                    className="mt-1 text-[9px] tracking-[0.2em]"
+                    style={{ color: "#998f82" }}
+                  >
+                    시간 미입력
+                  </p>
+                )}
               </div>
-              <p
-                className="mt-3 text-[10px] tracking-[0.2em]"
-                style={{ color: "#998f82" }}
-              >
-                {p.element}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Highlight */}
@@ -109,13 +126,7 @@ export default function SajuChartCards({
             className="mt-2 text-[13px] font-bold leading-relaxed"
             style={{ color: "#FFE2B3" }}
           >
-            {mockSaju.highlight}
-          </p>
-          <p
-            className="mt-2 text-[12px] leading-relaxed"
-            style={{ color: "#D0C5B6" }}
-          >
-            {mockSaju.insight}
+            {highlight}
           </p>
         </div>
 

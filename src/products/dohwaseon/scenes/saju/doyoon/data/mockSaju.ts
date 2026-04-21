@@ -1,16 +1,7 @@
-export type Pillar = {
-  label: string;
-  heaven: string;
-  earth: string;
-  element: string;
-  hue: string;
-};
+import type { Pillar, SajuFreeResponse } from "@/features/saju";
 
-export type MockSaju = {
-  pillars: Pillar[];
-  highlight: string;
-  insight: string;
-};
+export type { Pillar };
+export type MockSaju = Pick<SajuFreeResponse, "pillars" | "highlight">;
 
 export const MOCK_SAJU: MockSaju = {
   pillars: [
@@ -40,10 +31,8 @@ export const MOCK_SAJU: MockSaju = {
       heaven: "辛",
       earth: "亥",
       element: "금 / 수",
-      hue: "#A5BBD9",
+      hue: "#6B8BB5",
     },
   ],
   highlight: "도화살(桃花殺) — 일지(日支)에 위치",
-  insight:
-    "이성 운이 강하지만 변수가 많은 명식. 끌어당기는 힘만큼 흩어지는 힘도 강해, 패턴 통제가 핵심 변수입니다.",
 };
