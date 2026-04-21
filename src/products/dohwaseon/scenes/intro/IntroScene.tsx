@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import ChoiceScreen from "./components/ChoiceScreen";
 
 /* ── 씬 데이터 ── */
 type CutStep =
@@ -20,8 +20,7 @@ type CutStep =
   | { type: "button"; label: string }
   | { type: "video"; src: string }
   | { type: "door"; bg: string }
-  | { type: "flash-sequence"; images: { src: string; duration: number }[] }
-  | { type: "choice" };
+  | { type: "flash-sequence"; images: { src: string; duration: number }[] };
 
 const STEPS: CutStep[] = [
   // 컷1: 골목길
@@ -173,7 +172,7 @@ const STEPS: CutStep[] = [
       "수만 건의 행동 심리 데이터와 알고리즘으로, 당신의 연애 패턴이 왜 망했는지 '수치'로 증명하고 완벽하게 재설계해 드릴 테니까요.",
     ],
   },
-  // 선택 전 플래시 시퀀스
+  // 선택 전 플래시 시퀀스 (이후 /select 로 라우팅)
   {
     type: "flash-sequence",
     images: [
@@ -182,11 +181,17 @@ const STEPS: CutStep[] = [
       { src: "/flash-both.png", duration: 1000 },
     ],
   },
-  // 캐릭터 선택
-  { type: "choice" },
 ];
 
 const CHAR_DELAY = 35;
+
+// 이전 스텝과 "이어지는 장면"으로 처리할 스텝 인덱스 — 블랙 페이드 대신 크로스페이드 진입
+const CROSSFADE_ENTER_STEPS = new Set<number>([4, 9, 12, 15, 16]);
+
+// 이 스텝에서 나갈 때 더 느린 페이드 아웃(1200ms)으로 감정 여운 주는 컷
+const FADEOUT_EXIT_STEPS = new Set<number>([12]);
+
+const IS_DEV = process.env.NODE_ENV !== "production";
 
 /* ── 효과음 재생 헬퍼 ── */
 function playSfx(src: string, muted: boolean) {
@@ -197,6 +202,7 @@ function playSfx(src: string, muted: boolean) {
 }
 
 export default function IntroScene() {
+  const router = useRouter();
   const [started, setStarted] = useState(true);
   const [muted, setMuted] = useState(true);
   const [showSoundHint, setShowSoundHint] = useState(true);
@@ -217,9 +223,16 @@ export default function IntroScene() {
   const [flashSeqIndex, setFlashSeqIndex] = useState(0);
   const [flashSeqWhite, setFlashSeqWhite] = useState(false);
 
+  // 이어지는 장면으로 진입할 때 사용하는 크로스페이드 상태
+  const [crossFading, setCrossFading] = useState(false);
+
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  // goToStep 내부에서 stale closure 없이 현재 stepIndex 접근하기 위한 ref
+  const stepIndexRef = useRef(stepIndex);
+  stepIndexRef.current = stepIndex;
 
   const step = STEPS[stepIndex];
 
@@ -286,32 +299,12 @@ export default function IntroScene() {
     }
   }, [stepIndex, started, step.type, muted]);
 
-  // phone: 알림 자동 시퀀스
+  // phone: 진입 시 상태 리셋 (이후 진행은 탭으로)
   useEffect(() => {
     if (!started || step.type !== "phone") return;
     setVisibleNotifs(0);
     setPhonePhase("animating");
-
-    const t1 = setTimeout(() => {
-      playSfx(step.sfx, muted);
-      setVisibleNotifs(1);
-    }, 1000);
-
-    const t2 = setTimeout(() => {
-      playSfx(step.sfx, muted);
-      setVisibleNotifs(2);
-    }, 2500);
-
-    const t3 = setTimeout(() => {
-      setPhonePhase("dialogue");
-    }, 4000);
-
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-    };
-  }, [stepIndex, started, step.type, muted]);
+  }, [stepIndex, started, step.type]);
 
   // dramatic-dialogue: 화이트 플래시 + 효과음
   useEffect(() => {
@@ -327,13 +320,25 @@ export default function IntroScene() {
   // 페이드 전환으로 다음 스텝 이동
   const goToStep = useCallback((next: number) => {
     const nextStep = STEPS[next];
+    // 이어지는 장면: 크로스페이드 진입
+    if (CROSSFADE_ENTER_STEPS.has(next)) {
+      videoRef.current?.pause();
+      setCrossFading(true);
+      setTimeout(() => {
+        setStepIndex(next);
+        setLineIndex(0);
+        setDisplayedCount(0);
+        setIsComplete(false);
+        setCrossFading(false);
+      }, 400);
+      return;
+    }
     // 즉시 전환 타입들
     if (
       nextStep?.type === "video" ||
       nextStep?.type === "button" ||
       nextStep?.type === "door" ||
-      nextStep?.type === "flash-sequence" ||
-      nextStep?.type === "choice"
+      nextStep?.type === "flash-sequence"
     ) {
       setStepIndex(next);
       setLineIndex(0);
@@ -357,6 +362,8 @@ export default function IntroScene() {
       setIsComplete(false);
       return;
     }
+    // 감정 여운용 긴 페이드 아웃
+    const duration = FADEOUT_EXIT_STEPS.has(stepIndexRef.current) ? 1200 : 300;
     // 기본: 페이드 투 블랙
     setFading(true);
     setTimeout(() => {
@@ -365,7 +372,7 @@ export default function IntroScene() {
       setDisplayedCount(0);
       setIsComplete(false);
       setFading(false);
-    }, 600);
+    }, duration);
   }, []);
 
   // flash-sequence: 자동 이미지 시퀀스
@@ -395,12 +402,12 @@ export default function IntroScene() {
 
     timers.push(
       setTimeout(() => {
-        goToStep(stepIndex + 1);
+        router.push("/select");
       }, elapsed),
     );
 
     return () => timers.forEach(clearTimeout);
-  }, [stepIndex, started, step.type, goToStep]);
+  }, [stepIndex, started, step.type, router]);
 
   // 사운드 활성화 (첫 탭 시)
   const enableSound = () => {
@@ -433,15 +440,23 @@ export default function IntroScene() {
 
   // 대사 탭
   const handleTap = () => {
+    // 크로스페이드 중에는 중복 전환 방지
+    if (crossFading) return;
+
     // 첫 탭 시 사운드 활성화
     if (muted) {
       enableSound();
     }
 
-    // phone animating 중 탭 → 스킵
+    // phone animating 중 탭 → 알림 한 개씩 노출, 다 보이면 대사 단계로
     if (step.type === "phone" && phonePhase === "animating") {
-      setVisibleNotifs((step as { notifications: string[] }).notifications.length);
-      setPhonePhase("dialogue");
+      const total = step.notifications.length;
+      if (visibleNotifs < total) {
+        playSfx(step.sfx, muted);
+        setVisibleNotifs(visibleNotifs + 1);
+      } else {
+        setPhonePhase("dialogue");
+      }
       return;
     }
 
@@ -462,7 +477,7 @@ export default function IntroScene() {
     }
   };
 
-  // 비디오 종료
+  // 비디오 종료 — 다음 스텝이 CROSSFADE_ENTER_STEPS에 있으면 크로스페이드
   const handleVideoEnd = () => {
     goToStep(stepIndex + 1);
   };
@@ -470,6 +485,25 @@ export default function IntroScene() {
   // 문 클릭
   const handleDoorClick = () => {
     goToStep(stepIndex + 1);
+  };
+
+  // 개발용 씬 점프 — 전환 효과 없이 바로 이동, 주요 상태 리셋
+  const jumpToStep = (delta: -1 | 1) => (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const next = Math.max(0, Math.min(STEPS.length - 1, stepIndex + delta));
+    if (next === stepIndex) return;
+    clearTimer();
+    setStepIndex(next);
+    setLineIndex(0);
+    setDisplayedCount(0);
+    setIsComplete(false);
+    setFading(false);
+    setCrossFading(false);
+    setFlashWhite(false);
+    setVisibleNotifs(0);
+    setPhonePhase("animating");
+    setFlashSeqIndex(0);
+    setFlashSeqWhite(false);
   };
 
   /* ── 배경 이미지 결정 ── */
@@ -486,6 +520,7 @@ export default function IntroScene() {
   const showDialogue =
     started &&
     !fading &&
+    !crossFading &&
     (step.type === "dialogue" ||
       step.type === "sfx-dialogue" ||
       step.type === "dramatic-dialogue" ||
@@ -524,6 +559,44 @@ export default function IntroScene() {
         />
       )}
 
+      {/* 이어지는 장면 크로스페이드 — 다음 스텝의 배경을 위에 올리며 페이드인 */}
+      {crossFading && (() => {
+        const nextStep = STEPS[stepIndex + 1];
+        if (!nextStep || !("bg" in nextStep)) return null;
+        return (
+          <Image
+            src={(nextStep as { bg: string }).bg}
+            alt=""
+            fill
+            priority
+            className="absolute inset-0 object-cover object-center animate-[fadeIn_0.4s_ease-out]"
+          />
+        );
+      })()}
+
+      {/* 개발용 씬 네비 */}
+      {IS_DEV && (
+        <div className="absolute left-3 top-3 z-50 flex items-center gap-1.5">
+          <button
+            onClick={jumpToStep(-1)}
+            disabled={stepIndex === 0}
+            className="rounded-md bg-black/60 px-2.5 py-1 text-[11px] text-white backdrop-blur-md transition-opacity active:opacity-80 disabled:opacity-25"
+          >
+            이전
+          </button>
+          <span className="rounded-md bg-black/60 px-2 py-1 text-[11px] tabular-nums text-white backdrop-blur-md">
+            {stepIndex + 1} / {STEPS.length}
+          </span>
+          <button
+            onClick={jumpToStep(1)}
+            disabled={stepIndex === STEPS.length - 1}
+            className="rounded-md bg-black/60 px-2.5 py-1 text-[11px] text-white backdrop-blur-md transition-opacity active:opacity-80 disabled:opacity-25"
+          >
+            다음
+          </button>
+        </div>
+      )}
+
       {/* 사운드 안내 메시지 */}
       {showSoundHint && muted && (
         <div className="pointer-events-none absolute left-0 right-0 top-0 z-30 bg-gradient-to-b from-black/70 to-transparent px-6 pb-16 pt-[100px] text-center">
@@ -533,31 +606,40 @@ export default function IntroScene() {
         </div>
       )}
 
-      {/* 핸드폰 알림 팝업 */}
+      {/* 핸드폰 알림 팝업 — 새 알림이 위로, 기존 알림은 뒤로 밀려 그림자처럼 */}
       {started && step.type === "phone" && !fading && (
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 px-6">
-          {step.notifications.map((src, i) => (
-            <div
-              key={src}
-              className="w-[85%] animate-[slideInNotif_0.4s_ease-out]"
-              style={{
-                opacity: i < visibleNotifs ? 1 : 0,
-                transform:
-                  i < visibleNotifs
-                    ? "translateY(0)"
-                    : "translateY(-20px)",
-                transition: "opacity 0.4s ease, transform 0.4s ease",
-              }}
-            >
-              <Image
-                src={src}
-                alt="알림"
-                width={400}
-                height={80}
-                className="w-full rounded-xl shadow-lg"
-              />
-            </div>
-          ))}
+        <div className="pointer-events-none absolute inset-0 z-30">
+          {step.notifications.map((src, i) => {
+            const isVisible = i < visibleNotifs;
+            const depth = Math.max(0, visibleNotifs - 1 - i);
+            const yOffset = depth * 14;
+            const scale = 1 - depth * 0.05;
+            const opacity = isVisible ? Math.max(0.35, 1 - depth * 0.45) : 0;
+            return (
+              <div
+                key={src}
+                className="absolute left-1/2 w-[92%]"
+                style={{
+                  top: "38%",
+                  zIndex: 50 - depth,
+                  opacity,
+                  transform: isVisible
+                    ? `translate(-50%, ${yOffset}px) scale(${scale})`
+                    : `translate(-50%, 0) scale(0.94)`,
+                  transition:
+                    "opacity 0.35s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1)",
+                }}
+              >
+                <Image
+                  src={src}
+                  alt="알림"
+                  width={400}
+                  height={80}
+                  className="w-full rounded-xl shadow-lg"
+                />
+              </div>
+            );
+          })}
         </div>
       )}
 
@@ -577,7 +659,15 @@ export default function IntroScene() {
             const s = step as { speaker?: string };
             const name = s.speaker ?? "나";
             return (
-              <span className="ml-1 inline-block bg-gray-800/80 px-3 py-1 text-xs font-bold text-white backdrop-blur-md">
+              <span
+                className="ml-1 inline-block rounded-md px-3 py-1 text-[11px] font-semibold tracking-[0.15em]"
+                style={{
+                  background: "rgba(40,38,34,0.75)",
+                  backdropFilter: "blur(10px)",
+                  color: "#E6C58E",
+                  borderTop: "1px solid rgba(245,237,224,0.12)",
+                }}
+              >
                 {name}
               </span>
             );
@@ -655,15 +745,12 @@ export default function IntroScene() {
         </div>
       )}
 
-      {/* 캐릭터 선택 */}
-      {started && step.type === "choice" && <ChoiceScreen />}
-
       {/* 페이드 투 블랙 오버레이 */}
       <div
         className="pointer-events-none absolute inset-0 z-40 bg-black"
         style={{
           opacity: fading ? 1 : 0,
-          transition: "opacity 0.5s ease",
+          transition: "opacity 0.25s ease",
         }}
       />
 

@@ -53,11 +53,11 @@ npm run lint     # Run ESLint
 
 도화선은 서사 중심 서비스이므로, 전형적인 CRUD 앱과 다른 구조를 택한다.
 
-| 구분 | 역할 | 예시 |
-|------|------|------|
-| **Product** | 하나의 완결된 사주 상품 경험 | 도화선 |
-| **Scene** | Product 내부의 화면 단위 연출 | 캐릭터 선택, 웹툰 해석 |
-| **Feature** | Product 간 재사용되는 기능 | 인증, 결제 |
+| 구분        | 역할                          | 예시                   |
+| ----------- | ----------------------------- | ---------------------- |
+| **Product** | 하나의 완결된 사주 상품 경험  | 도화선                 |
+| **Scene**   | Product 내부의 화면 단위 연출 | 캐릭터 선택, 웹툰 해석 |
+| **Feature** | Product 간 재사용되는 기능    | 인증, 결제             |
 
 **왜 이 구조인가:**
 
@@ -142,11 +142,11 @@ products/dohwaseon/scenes/{scene-name}/
 
 Feature는 **실제로 필요해질 때** 만든다. 미리 만들지 않는다.
 
-| Feature | 추가 예정 시점 | 역할 |
-|---------|---------------|------|
-| `auth` | 무료 사주 씬 착수 시 | 로그인, 세션 |
-| `saju` | 무료 사주 씬 착수 시 | 사주 계산 API 호출, 결과 타입 |
-| `payment` | 결제 사주 진입 전 | 결제 플로우 |
+| Feature   | 추가 예정 시점       | 역할                          |
+| --------- | -------------------- | ----------------------------- |
+| `auth`    | 무료 사주 씬 착수 시 | 로그인, 세션                  |
+| `saju`    | 무료 사주 씬 착수 시 | 사주 계산 API 호출, 결과 타입 |
+| `payment` | 결제 사주 진입 전    | 결제 플로우                   |
 
 Feature 추가 시 구조:
 
@@ -243,19 +243,3 @@ export const api = {
 5. 부트캠프/학습용 "과한 구조" 도입 금지 (DDD 4-layer, 복잡한 추상화 등).
 
 ---
-
-## 현재 이터레이션 작업 범위
-
-- [x] 프로젝트 초기 세팅 (Next.js, Tailwind, TypeScript)
-- [ ] `products/dohwaseon/scenes/landing/` 구현
-- [ ] `products/dohwaseon/scenes/intro/` 구현
-- [ ] `products/dohwaseon/scenes/character-select/` 구현
-- [ ] 씬 간 라우팅 연결
-
-**이번 이터레이션에서 만들지 않는 것:**
-
-- `features/auth/`, `features/saju/`, `features/payment/`
-- 결제 관련 UI/로직
-- 사주 계산 관련 기능
-- 웹툰 스크롤 해석 씬
-- 플랫폼 홈, 검색, 보관함
