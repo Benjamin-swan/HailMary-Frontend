@@ -2,18 +2,18 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { DOYOON_CUTS, type Cut } from "./data/cuts";
 import DialogueOverlay from "../shared/components/DialogueOverlay";
 import AsideComment from "../shared/components/AsideComment";
-import InfoForm, { type SajuInfo } from "../shared/components/InfoForm";
+import InfoForm from "../shared/components/InfoForm";
 import SajuChartCards from "../shared/components/SajuChartCards";
 import SurveyMultiSelect from "../shared/components/SurveyMultiSelect";
 import SurveyFreeText from "../shared/components/SurveyFreeText";
-import { SURVEY_STEPS, type SurveyAnswers } from "./data/surveyOptions";
+import { SURVEY_STEPS } from "./data/surveyOptions";
 import { MOCK_SAJU } from "./data/mockSaju";
-import { postSajuSurvey, useSajuCalculate } from "@/features/saju";
 import { useCutProgression } from "../shared/hooks/useCutProgression";
+import { useCharacterSajuFlow } from "../shared/hooks/useCharacterSajuFlow";
 
 const IS_DEV = process.env.NODE_ENV !== "production";
 const SURFACE = "#141311";
@@ -48,52 +48,30 @@ export default function DoyoonSajuScene() {
     crossfadeOnEnter: CROSSFADE_ENTER,
   });
 
-  const [surveyAnswers, setSurveyAnswers] = useState<SurveyAnswers>({
-    step1: [],
-    step2: [],
-    step3: "",
-  });
-  const [loadingStartedAt, setLoadingStartedAt] = useState<number | null>(null);
-  const [showSlowMsg, setShowSlowMsg] = useState(false);
-  const [userName, setUserName] = useState<string>("");
-  const saju = useSajuCalculate();
+  const {
+    userName,
+    surveyAnswers,
+    setSurveyAnswers,
+    loadingStartedAt,
+    showSlowMessage,
+    sajuStatus,
+    sajuData,
+    sajuError,
+    submitInfo,
+    finalizeSurvey,
+    retrySaju,
+  } = useCharacterSajuFlow({ storageKeyPrefix: "doyoon" });
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem("doyoonSaju");
-      if (!raw) return;
-      const info = JSON.parse(raw) as { name?: string };
-      if (info?.name) setUserName(info.name);
-    } catch {}
-  }, []);
-
-  // analysis-loading: API 응답 + 최소 1.2초 노출 양쪽 충족 시 다음 컷으로
+  // analysis-loading 진입 + API 성공 + 최소 1.2초 노출 충족 시 다음 컷으로.
+  // cutProgression 과 sajuFlow 를 잇는 씬 레벨 브릿지 효과.
   useEffect(() => {
     if (cut.type !== "analysis-loading") return;
-    if (saju.status !== "success" || loadingStartedAt === null) return;
+    if (sajuStatus !== "success" || loadingStartedAt === null) return;
     const elapsed = Date.now() - loadingStartedAt;
     const wait = Math.max(0, 1200 - elapsed);
     const t = setTimeout(() => goToCut(cutIndex + 1), wait);
     return () => clearTimeout(t);
-  }, [cut.type, saju.status, loadingStartedAt, cutIndex, goToCut]);
-
-  // 3초 초과 시 문구 전환
-  useEffect(() => {
-    if (cut.type !== "analysis-loading" || saju.status !== "loading") {
-      setShowSlowMsg(false);
-      return;
-    }
-    const t = setTimeout(() => setShowSlowMsg(true), 3000);
-    return () => clearTimeout(t);
-  }, [cut.type, saju.status]);
-
-  // sajuRequestId 보관
-  useEffect(() => {
-    if (saju.status !== "success" || !saju.data) return;
-    try {
-      localStorage.setItem("doyoonSajuRequestId", saju.data.sajuRequestId);
-    } catch {}
-  }, [saju.status, saju.data]);
+  }, [cut.type, sajuStatus, loadingStartedAt, cutIndex, goToCut]);
 
   // CTA 클릭
   const handleCta = (e: React.MouseEvent) => {
@@ -196,19 +174,18 @@ export default function DoyoonSajuScene() {
       {/* 분석 중 표시 (로딩 / 느린 응답 / 에러) */}
       {!fading && cut.type === "analysis-loading" && (
         <div className="relative z-10 my-auto px-6 text-center">
-          {saju.status === "error" && saju.error ? (
+          {sajuStatus === "error" && sajuError ? (
             <>
               <p
                 className="text-[12px] leading-relaxed"
                 style={{ color: "#F5EDE0" }}
               >
-                {saju.error.message}
+                {sajuError.message}
               </p>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setLoadingStartedAt(Date.now());
-                  saju.retry();
+                  retrySaju();
                 }}
                 className="mt-5 rounded-full px-5 py-2 text-[11px] tracking-[0.3em]"
                 style={{
@@ -226,7 +203,7 @@ export default function DoyoonSajuScene() {
                 className="text-[11px] tracking-[0.4em]"
                 style={{ color: "rgba(230,197,142,0.85)" }}
               >
-                {showSlowMsg ? "별의 배치를 읽는 중…" : "데이터 분석 중"}
+                {showSlowMessage ? "별의 배치를 읽는 중…" : "데이터 분석 중"}
               </p>
               <div className="mx-auto mt-3 flex justify-center gap-1.5">
                 {[0, 150, 300].map((d) => (
@@ -245,17 +222,8 @@ export default function DoyoonSajuScene() {
       {/* 정보 입력 폼 (cut 8) */}
       {!fading && cut.type === "info-form" && (
         <InfoForm
-          onSubmit={(info: SajuInfo) => {
-            try {
-              localStorage.setItem("doyoonSaju", JSON.stringify(info));
-            } catch {}
-            setLoadingStartedAt(Date.now());
-            saju.submit({
-              birth: info.birth.replace(/\./g, "-"),
-              time: info.time,
-              calendar: info.calendar,
-              gender: info.gender,
-            });
+          onSubmit={(info) => {
+            submitInfo(info);
             goToCut(cutIndex + 1);
           }}
         />
@@ -265,7 +233,7 @@ export default function DoyoonSajuScene() {
       {!fading && !crossFading && cut.type === "analysis-result" && (
         <SajuChartCards
           intro={cut.intro}
-          data={saju.data ?? MOCK_SAJU}
+          data={sajuData ?? MOCK_SAJU}
           name={userName}
           onNext={() => goToCut(cutIndex + 1)}
         />
@@ -295,28 +263,7 @@ export default function DoyoonSajuScene() {
         <SurveyFreeText
           step={SURVEY_STEPS[3]}
           onNext={(text) => {
-            const finalAnswers = { ...surveyAnswers, step3: text };
-            setSurveyAnswers(finalAnswers);
-            try {
-              localStorage.setItem(
-                "doyoonSurvey",
-                JSON.stringify(finalAnswers),
-              );
-            } catch {}
-            const sajuRequestId =
-              saju.data?.sajuRequestId ??
-              (typeof window !== "undefined"
-                ? localStorage.getItem("doyoonSajuRequestId")
-                : null);
-            if (sajuRequestId) {
-              void postSajuSurvey({
-                sajuRequestId,
-                surveyVersion: "v1",
-                step1: finalAnswers.step1,
-                step2: finalAnswers.step2,
-                step3: finalAnswers.step3.length > 0 ? finalAnswers.step3 : null,
-              });
-            }
+            finalizeSurvey({ ...surveyAnswers, step3: text });
             goToCut(cutIndex + 1);
           }}
         />
