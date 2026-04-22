@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { SurveyMultiStep } from "../data/surveyOptions";
+import type { SurveyMultiStep } from "../types";
 
 type Props = {
   step: SurveyMultiStep;

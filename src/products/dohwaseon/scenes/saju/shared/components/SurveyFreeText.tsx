@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { SurveyTextStep } from "../data/surveyOptions";
+import type { SurveyTextStep } from "../types";
 
 type Props = {
   step: SurveyTextStep;
