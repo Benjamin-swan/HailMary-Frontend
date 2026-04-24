@@ -55,12 +55,12 @@ npm run lint     # Run ESLint
 
 ### 계층 구조
 
-| 레이어 | 역할 | 위치 |
-|--------|------|------|
+| 레이어     | 역할                                 | 위치                      |
+| ---------- | ------------------------------------ | ------------------------- |
 | **Domain** | 상태, Entity, 도메인 규칙, 순수 로직 | `features/[name]/domain/` |
-| **Hooks** | 행동/UseCase, 상태 변환, API 호출 | `features/[name]/hooks/` |
-| **Views** | 화면 렌더링만 담당 | `features/[name]/views/` |
-| **Shared** | 재사용 컴포넌트, 유틸, 공통 타입 | `shared/` |
+| **Hooks**  | 행동/UseCase, 상태 변환, API 호출    | `features/[name]/hooks/`  |
+| **Views**  | 화면 렌더링만 담당                   | `features/[name]/views/`  |
+| **Shared** | 재사용 컴포넌트, 유틸, 공통 타입     | `shared/`                 |
 
 **의존성 방향:** `Views → Hooks → Domain → API`
 
@@ -144,7 +144,7 @@ features/[feature-name]/
 
 ```tsx
 // app/select/page.tsx
-import { CharacterSelect } from '@/features/character-select';
+import { CharacterSelect } from "@/features/character-select";
 
 export default function SelectPage() {
   return <CharacterSelect />;
@@ -197,18 +197,14 @@ export const api = {
 
 ### 작업 범위
 
-1. **한 번에 3개 이하의 파일만 수정/생성**한다.
-2. **명시적으로 요청받지 않은 파일은 건드리지 않는다.**
-3. "전체 구조 구현" 같은 광범위 작업은 거부하고, 범위를 좁혀달라고 요청한다.
-4. 작업 완료 후 **"다음 단계 제안" 금지**. 사용자의 다음 지시를 대기한다.
-5. 새 의존성(npm install) 추가 전 반드시 사용자 확인.
+1. **명시적으로 요청받지 않은 파일은 건드리지 않는다.**
+2. 새 의존성(npm install) 추가 전 반드시 사용자 확인.
 
 ### 커뮤니케이션
 
 1. 구현 전 **5줄 이내 요약 플랜** 제시.
-2. 불확실한 부분은 구현하지 말고 질문.
-3. 가정(assumption)이 필요하면 명시적으로 선언.
-4. **드라이런 요청 시 코드를 한 줄도 쓰지 말 것**. 파일 경로와 역할 설명만 제공.
+2. 가정(assumption)이 필요하면 명시적으로 선언.
+3. **드라이런 요청 시 코드를 한 줄도 쓰지 말 것**. 파일 경로와 역할 설명만 제공.
 
 ### 구조 원칙
 
