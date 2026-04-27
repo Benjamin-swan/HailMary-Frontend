@@ -48,7 +48,7 @@ export default function DoyoonSajuScene() {
 
   const handleCta = (e: React.MouseEvent) => {
     e.stopPropagation();
-    router.push("/saju/result?character=doyoon");
+    router.push("/saju/loading?character=doyoon");
   };
 
   const isAside = cut.type === "aside";
