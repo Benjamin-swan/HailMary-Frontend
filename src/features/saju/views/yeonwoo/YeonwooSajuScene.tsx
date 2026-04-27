@@ -49,7 +49,7 @@ export default function YeonwooSajuScene() {
 
   const handleCta = (e: React.MouseEvent) => {
     e.stopPropagation();
-    router.push("/saju/result?character=yeonwoo");
+    router.push("/saju/loading?character=yeonwoo");
   };
 
   const isAside = cut.type === "aside";
