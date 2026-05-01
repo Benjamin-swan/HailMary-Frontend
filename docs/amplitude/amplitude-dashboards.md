@@ -1,121 +1,180 @@
 # Amplitude — 도화선 분석 자산 인덱스
 
-> 생성일: 2026-04-28 · 프로젝트: `dohwasun` (appId `808332`, org `phm-service`)
+> 프로젝트: `dohwasun` (appId `808332`, org `phm-service`)
+> 마지막 갱신: 2026-04-30 — STEP 4 전면 재구성 v2 (사용자 퍼널 + 사용자 정보 대시보드 추가)
 
-도화선 서비스의 16개 이벤트를 기반으로 차트 8종과 대시보드 8개를 Amplitude에 구축했다. 이 문서는 그 자산의 위치, 해석 가이드, 후속 액션을 한 곳에 모아둔 것이다.
+도화선 서비스의 16개 이벤트를 기반으로 차트 10개와 대시보드 5개를 운용 중이다. 이 문서는 그 자산의 위치, 운용 리듬, 후속 액션을 한 곳에 모아둔 단일 인덱스다.
 
 ---
 
-## 1. 대시보드 (8개)
+## 0. 운용 리듬
 
-각 대시보드는 비공개(unpublished) 상태로 개인 스페이스에 생성되었다. 검토 후 팀 스페이스로 게시하면 된다.
+| 리듬 | 보는 시점 | 대시보드 | 핵심 질문 |
+| --- | --- | --- | --- |
+| **데일리** | 매일 오후 3시 5분 | D-1 일일 모니터링 (통합) | 어제 어디서 빠졌는가? 누가 들어왔는가? |
+| **주 1~2회 깊게** | 주 1~2회 30~60분 | D-3 콘텐츠 분석 | scene 단계별 도달은? 자유서술 활용도는? |
+| **주 1회** | 주 1회 30분 | D-5 사용자 정보 | 인구통계 분포 추세 — 마케팅 페르소나 |
+| **수시 점검** | 이슈/QA 시 | D-4 Data Health | 데이터 수집 자체의 건강 |
 
-| 대시보드 | 용도 | URL |
+> D-2 주간 리뷰는 이번 재구성에서 폐지 (Retention·Stickiness 차트 삭제로 잔여 차트 0). 일일 트렌드는 D-1에 흡수.
+
+---
+
+## 1. 대시보드 (5개)
+
+각 대시보드는 비공개(unpublished) 상태로 개인 스페이스에 생성됨. 검토 후 팀 스페이스로 게시 가능.
+
+| # | 대시보드 | 용도 | URL |
+| --- | --- | --- | --- |
+| D-1 | **일일 모니터링 (통합)** | 단순 퍼널 13단계 + DAU + 캐릭터 비중 + 성별×캐릭터 + 신규/활성 추이 | <https://app.amplitude.com/analytics/phm-service/dashboard/s8dzaqka> |
+| D-3 | **콘텐츠 분석** | scene별 도달률 (scenario_progress + story_cut_view 통합) + 자유서술 활용도 | <https://app.amplitude.com/analytics/phm-service/dashboard/q2raaehz> |
+| D-4 | **Data Health Assessment** | rich_text만 — 이슈·QA 메모 | <https://app.amplitude.com/analytics/phm-service/dashboard/4n9tfcww> |
+| D-5 | **사용자 정보 (신규)** | 성별 비중 + 연령대 분포 (birth_year raw) | <https://app.amplitude.com/analytics/phm-service/dashboard/pqsr439y> |
+
+> archive 처리됨: `hk38g9ap`, `4nh5e2hg`, `v4g7ew2a`, `ss1klq9s`, `bwnrkbwn`, `2cuhejza`, `ef4hnhkt`, `h8a9cbfp` (D-2 주간 리뷰는 차트 0이라 archive 권장).
+
+---
+
+## 2. 차트 (10개 — 슬롯 한도 정확히 사용)
+
+### D-1 일일 모니터링용 (5개)
+
+| chartId | 이름 | 유형 | 상태 |
+| --- | --- | --- | --- |
+| `dig0nibm` | 사용자 단순 퍼널 (13단계) | funnels | **신규** |
+| `r3l963rv` | 일별 활성 사용자 (DAU) | eventsSegmentation | 보존 |
+| `bzx6afk3` | 캐릭터 선택 비중 | eventsSegmentation | 보존 |
+| `pll6v8c6` | 성별 × 캐릭터 분포 | eventsSegmentation | 보존 |
+| `67cgv3qe` | 신규 vs 활성 사용자 추이 (주간) | eventsSegmentation | 보존 |
+
+### D-3 콘텐츠 분석용 (2개, 모두 신규)
+
+| chartId | 이름 | 유형 | 상태 |
+| --- | --- | --- | --- |
+| `d85fh9bw` | scene별 도달률 (scenario_progress + story_cut_view) | eventsSegmentation | **신규** — 구 `p7g2z1ae` 대체 |
+| `nv0y0ku2` | 자유서술 submit vs skip 비율 | eventsSegmentation | **신규** |
+
+### D-5 사용자 정보용 (2개, 모두 신규)
+
+| chartId | 이름 | 유형 | 상태 |
+| --- | --- | --- | --- |
+| `9g1tmhas` | 사용자 성별 비중 | eventsSegmentation | **신규** |
+| `nsgw8iwq` | 사용자 연령대 분포 (birth_year raw) | eventsSegmentation | **신규** |
+
+### 사용자 UI 삭제 권장
+
+| chartId | 이름 | 사유 |
 | --- | --- | --- |
-| Funnel Analysis | 랜딩 → 결과 클릭 5단계 전환과 캐릭터별 분기 | <https://app.amplitude.com/analytics/phm-service/dashboard/hk38g9ap> |
-| Feature Adoption | 16개 이벤트 전체의 기능별 사용량 | <https://app.amplitude.com/analytics/phm-service/dashboard/4nh5e2hg> |
-| Getting Started KPIs (Web) | 신규 사용자 온보딩 구간 | <https://app.amplitude.com/analytics/phm-service/dashboard/v4g7ew2a> |
-| Product KPIs | DAU·전환·유지율·고착도 종합 | <https://app.amplitude.com/analytics/phm-service/dashboard/ss1klq9s> |
-| Session Engagement | 세션 길이·고착도 | <https://app.amplitude.com/analytics/phm-service/dashboard/bwnrkbwn> |
-| Marketing Analytics | 유입·캐릭터 선호도·사용자 구성 | <https://app.amplitude.com/analytics/phm-service/dashboard/2cuhejza> |
-| User Activity | 사용자 활동량·구성·재방문 | <https://app.amplitude.com/analytics/phm-service/dashboard/ef4hnhkt> |
-| Data Health Assessment | 데이터 수집 품질 점검 체크리스트 | <https://app.amplitude.com/analytics/phm-service/dashboard/4n9tfcww> |
+| `p7g2z1ae` | (구) 컷별 도달률 | 신규 `d85fh9bw`가 두 이벤트(scenario_progress + story_cut_view) 통합 추적하므로 대체됨 |
+
+`p7g2z1ae` UI 삭제 시 슬롯 9/10. 신규 차트 추가 여유.
 
 ---
 
-## 2. 차트 (8종)
+## 3. 단순 퍼널(`dig0nibm`) 13단계 — 실제 사용자 동선
 
-| 유형 | 차트 이름 | URL |
-| --- | --- | --- |
-| 세분화 (eventsSegmentation) | 일별 활성 사용자 | <https://app.amplitude.com/analytics/phm-service/chart/r3l963rv> |
-| 퍼널 (funnels) | 랜딩 → 결과 클릭 핵심 전환 | <https://app.amplitude.com/analytics/phm-service/chart/a2ccac5m> |
-| 데이터 테이블 (eventsSegmentation·table view) | 16개 이벤트별 발생 회수 | <https://app.amplitude.com/analytics/phm-service/chart/gl5djv34> |
-| 유지율 (retention) | 신규 사용자 N-day Retention | <https://app.amplitude.com/analytics/phm-service/chart/w6m1u4qy> |
-| 여정 (funnels + byProp) | 캐릭터별 안내 수월 (연우 vs 도윤) | <https://app.amplitude.com/analytics/phm-service/chart/gwz7ick9> |
-| 세션 (sessions) | 평균 세션 길이 추이 | <https://app.amplitude.com/analytics/phm-service/chart/po9o7p89> |
-| 사용자 구성 (eventsSegmentation·group_by gender) | 정보 입력 사용자 성별 분포 | <https://app.amplitude.com/analytics/phm-service/chart/dtw84xrs> |
-| ~~사용자 구성 (composition, deprecated)~~ | ~~정보 입력 사용자 성별 분포~~ | <https://app.amplitude.com/analytics/phm-service/chart/csc6q810> |
-| 고착도 (stickiness) | 활성 사용자 주간 사용 빈도 | <https://app.amplitude.com/analytics/phm-service/chart/4g5gziwk> |
+```
+1. landing_enter            → 진입
+2. intro_step_complete      → 인트로 완주
+3. scenario_progress        → 시나리오 진행 (인트로 21단계)
+4. character_select         → 캐릭터 결정
+5. story_scene_start        → 스토리 시작 (캐릭터 선택 직후)
+6. story_cut_view           → 첫 컷
+7. info_form_view           → 정보 폼 노출 (스토리 도중 임베드)
+8. info_form_submit         → 정보 제출
+9. survey_step_view         → 설문 진입
+10. survey_step_submit      → 설문 제출
+11. loading_enter           → 로딩 진입
+12. loading_done            → 로딩 완료
+13. loading_result_clicked  → 결과 클릭 (최종 KPI)
+```
 
----
+**자유서술(`survey_freetext_submit` / `survey_freetext_skip`)은 funnel에서 제외.** ordered funnel 구조상 옵셔널 단계를 포함시키면 skip 사용자가 그 단계 미통과로 잡혀 이후 단계 0으로 떨어진다. 자유서술 활용도는 D-3의 `nv0y0ku2` 차트로 별도 추적.
 
-## 3. 검증된 16개 이벤트와 속성
+### 단계간 이탈 점검 가이드
 
-모든 이벤트는 4월 25일경부터 수신되고 있고 `isActive=true`, `isQueryable=true`로 정상이다. 2026-04-28 트래킹 플랜 등록 완료 — `isInSchema=true`로 전환됨. (`isPlanned` API 필드는 새 Amplitude UI 흐름에서는 신뢰할 수 있는 지표가 아니므로 무시.)
-
-| 이벤트 | 핵심 속성 | 비고 |
-| --- | --- | --- |
-| `landing_enter` | (없음) | |
-| `intro_step_complete` | `step` | |
-| `scenario_progress` | `chapter_index`, `scene_label` | |
-| `character_select` | `character_id` (`yeonwoo`/`doyoon`) | |
-| `info_form_view` | `character_id` | |
-| `info_form_submit` | `character_id`, `birth_year`, `birth_month`, `calendar`, `gender`, `has_birth_time` | gender 값 정상 수집 확인됨 |
-| `survey_step_view` | `character_id`, `step` | |
-| `survey_step_submit` | `character_id`, `step` | |
-| `survey_freetext_submit` | `character_id` | |
-| `survey_freetext_skip` | `character_id` | |
-| `loading_enter` | `character_id` | 코드 수정 완료 (구 데이터: `character`) |
-| `loading_slot_change` | `character_id`, `slot_index`, `line_slug` | 코드 수정 완료 |
-| `loading_done` | `character_id` | 코드 수정 완료 |
-| `loading_result_clicked` | `character_id` | 코드 수정 완료 |
-| `story_scene_start` | `character_id` | |
-| `story_cut_view` | `character_id` | |
-
-공통 속성: `device_id`, `session_id`, `timestamp` (모두 `analytics.ts`의 `trackEvent`에서 자동 첨부).
+- 1→2 (50% 미만) → 인트로가 길거나 답답함
+- 4→5 (낮음) → 캐릭터 매력·섬네일 부족 가능성
+- 7→8 (80% 미만) → 정보 입력 부담
+- 9→10 (낮음) → 설문 길이 부담
+- 12→13 (30% 미만) → 결제 유도 이전에 서사 콘텐츠가 도달
+- 13의 절대 도달자 수 = 핵심 KPI
 
 ---
 
-## 4. 데이터에서 즉시 보이는 인사이트 (4/25 ~ 4/28)
+## 4. 검증된 16개 이벤트와 속성
 
-- **서비스 가동 4일차.** landing_enter 누적 19, character_select 14, info_form_submit 16, loading_result_clicked 2.
-- **캐릭터 편향**: 도윤 5명 vs 연우 1명. 도윤만 결제 유도 단계까지 도달, 연우는 character_select → info_form 단계에서 100% 이탈. 표본이 작아 결론은 보류하되 5월 중순 다시 확인 권장.
-- **연우 이탈 가설**: ① 캐릭터 매력 격차 ② 연우 플로우의 UI 이슈 ③ 단순 표본 부족. `survey_step_view` × `character_id` 분기 카드를 추가하면 단계별 이탈 지점을 잡을 수 있다.
-- **세션 길이 5860초 → 1206초 → 106초**로 급감. 4/26은 외부 trafic spike(사용자 한 명이 1시간 머무름) 가능성, 4/28은 일상적인 한 사이클(2분)으로 보임. 표본 누적 후 재해석 필요.
+| 이벤트 | 핵심 속성 |
+| --- | --- |
+| `landing_enter` | (없음) |
+| `intro_step_complete` | `step` |
+| `scenario_progress` | `chapter_index`, `scene_label` (1/21 ~ 21/21) |
+| `character_select` | `character_id` |
+| `info_form_view` | `character_id` |
+| `info_form_submit` | `character_id`, `birth_year`, `birth_month`, `calendar`, `gender`, `has_birth_time` |
+| `survey_step_view` | `character_id`, `step` |
+| `survey_step_submit` | `character_id`, `step` |
+| `survey_freetext_submit` | `character_id` |
+| `survey_freetext_skip` | `character_id` |
+| `loading_enter` | `character_id` |
+| `loading_slot_change` | `character_id`, `slot_index`, `line_slug` |
+| `loading_done` | `character_id` |
+| `loading_result_clicked` | `character_id` |
+| `story_scene_start` | `character_id` |
+| `story_cut_view` | `character_id`, `cut_index`, `cut_type`, `scene_label` (+ user 속성 `gender`/`birth_year`/`birth_month`/`calendar` 자동 첨부) |
 
----
+공통 속성: `device_id`, `session_id`, `timestamp`.
 
-## 5. Data Health 액션 항목 (우선순위 순)
-
-1. ~~**`gender` 속성 미수집 검증**~~ — **해결됨 (2026-04-28).** 데이터는 정상 수집되고 있었다 (4/27 female 10, male 5; 4/28 female 1). 문제는 차트 쿼리였다. `composition` 차트는 본래 user property 전용이라 event property를 넣으면 (none)으로 잡힌다. `eventsSegmentation + group_by gender`로 차트 교체 완료 (chartId `dtw84xrs`). Marketing Analytics, User Activity 대시보드에 반영됨.
-2. ~~**`character_id` vs `character` 속성 키 통일**~~ — **해결됨 (2026-04-28).** `SajuLoadingView.tsx`의 `loading_*` 4개 이벤트(`loading_enter`, `loading_slot_change`, `loading_done`, `loading_result_clicked`)에서 `character` 키를 `character_id`로 변경. 다음 배포 이후 데이터에서는 단일 키로 통일된다.
-   - **주의**: 배포 직후 일정 기간은 옛 데이터(`character`)와 새 데이터(`character_id`)가 혼재. 차트 분기 시 OR 조건으로 둘 다 잡거나, 이행 기간(예: 7일) 후 `character_id`로 단일화.
-3. ~~**트래킹 플랜 등록**~~ — **해결됨 (2026-04-28).** 16개 이벤트 모두 스키마 등록 완료(`isInSchema: true`)이며 Description도 명세대로 입력됨. Amplitude UI가 변경되면서 "Approve & Publish" 단계가 사라지고 UI 편집이 자동으로 라이브 반영되는 구조로 바뀌었다. 즉 `isPlanned` 필드는 새 UI 흐름에서는 신뢰할 수 있는 지표가 아니며, 현재 트래킹 플랜은 정상 라이브 상태다.
-4. **자동 수집 속성 정리 판단** — `[Amplitude] Page *` 속성이 자동으로 들어오는데 `analytics.ts`는 `defaultTracking: false`로 설정되어 있다. 어딘가에서 default tracking이 켜진 SDK가 추가 초기화되지 않았는지 확인 필요. 안 쓸 거면 끄고, 쓸 거면 그대로 두기.
-
----
-
-## 6. 결제 이벤트 (placeholder)
-
-현재 코드와 Amplitude 모두 결제 이벤트가 없다. 추가 시 권장 스펙:
-
-| 이벤트 | 시점 | 권장 속성 |
-| --- | --- | --- |
-| `payment_cta_view` | 결제 유도 화면 노출 | `character_id`, `cta_position` |
-| `payment_initiate` | 결제 위젯 진입 | `character_id`, `amount`, `payment_method` |
-| `payment_success` | 결제 완료 콜백 | `character_id`, `amount`, `payment_method`, `order_id` |
-| `payment_fail` | 결제 실패 콜백 | `character_id`, `payment_method`, `failure_reason` |
-
-추가 후 교체할 자리:
-- **Funnel Analysis** 대시보드의 5단계 퍼널에서 마지막 `loading_result_clicked` → `payment_initiate` (또는 `payment_success`)
-- **Product KPIs** 대시보드 상단에 `paid_users / GMV / ARPPU` headline 차트 추가
-- **Marketing Analytics**에 `payment_method` 분포 composition 차트 추가
+모든 이벤트 `isInSchema: true` (트래킹 플랜 라이브 등록 완료).
 
 ---
 
-## 7. 후속 차트 추천
+## 5. 데이터에서 즉시 보이는 인사이트 (4/25 ~ 4/30)
 
-지금은 만들지 않았지만 데이터 누적 후 다음 차트가 유용할 것이다.
-
-- 단계별 이탈 사용자의 `survey_step_submit.step` 분포 — UX 보강 우선순위 산정
-- `info_form_submit.calendar` (양력/음력) × `has_birth_time` 분포 — 사주 계산 정밀도와 사용자 입력 패턴
-- `scenario_progress.chapter_index` × `character_id` heatmap — 어느 챕터에서 이탈이 많은지
-- 시간대별 landing_enter 분포 — 마케팅 타이밍 최적화
+- **Apr 28·30 단순 퍼널 100% 완주** — 표본은 작지만(2명, 1명) 13단계 전 구간을 통과하는 흐름이 실제 작동함을 검증.
+- **Apr 27 단순 퍼널 14% 완주** — 7명 중 1명만 결과 클릭. 단계간 첫 큰 드롭은 7→8(`info_form_view → info_form_submit`)이 아니라 9→10(`survey_step_view → survey_step_submit`, 5→4) 그리고 10→11(`survey_step_submit → loading_enter`, 4→1). 설문 단계가 핵심 병목.
+- **자유서술 활용도** — Apr 27: submit 3 vs skip 4 (43% 활용). Apr 28: submit 2 vs skip 0 (100%). 표본 작아 노이즈, 한 달 후 재해석.
+- **연령대 분포** — Apr 27 `1997` 3명 + `1999` 3명 = 20대 후반 6명이 가장 많음. 1964·1988·1995·2001·2005도 각 1명씩 (4/27만). `(none)` 2명 — 사용자가 birth_year 입력 안 한 경우(코드 변경 전 데이터일 가능성).
+- **성별 비중** — Apr 27 female 5 vs male 4 (균등). Apr 28 female 1 vs male 1 (균등).
+- **female-yeonwoo 0** — 누적 0 유지. 마케팅 타겟팅 재검토 신호.
 
 ---
 
-## 부록: 작업 실행 환경
+## 6. Data Health 액션 항목
 
-- Amplitude MCP 사용 (직접 차트/대시보드 생성, 데이터 검증)
-- 모든 차트는 unpublished 상태 — 검토 후 게시 권장
-- chartId/dashboardId는 영구 식별자이므로 위 URL은 안정적
+1. ~~`gender` 속성 미수집~~ — **해결됨** (차트 쿼리 방식 문제였음)
+2. ~~`character_id` vs `character` 키 통일~~ — **해결됨** (코드 수정)
+3. ~~트래킹 플랜 등록~~ — **해결됨** (라이브)
+4. **결제 이벤트 부재** — 미해결. 결제 페이지 구현 후 추가.
+5. **자동 수집 속성 정리** — `[Amplitude] Page *` 검토 필요.
+6. **`(none)` birth_year 발생** — Apr 27 2명. 코드 변경 전 데이터인지 또는 폼 입력 우회 경로가 있는지 확인 필요.
+
+---
+
+## 7. 향후 보완 (UTM·결제 구현 후)
+
+UTM 추가 시:
+- 새 대시보드 D-6 마케팅 채널 분석
+- D-1에 채널별 슬라이스
+
+결제 추가 시:
+- D-1 단순 퍼널의 마지막 스텝 `loading_result_clicked` → `payment_initiate`(또는 `payment_success`)로 교체 또는 14단계 확장
+- D-5에 `paid_users` / GMV / ARPPU headline 추가 검토
+
+---
+
+## 8. 미사용 후보 차트 (필요 시 추가)
+
+지금은 슬롯 한도로 안 만든 차트 (P7g2z1ae 삭제 시 슬롯 1개 여유):
+- `survey_step_submit.step` 분포 — 어느 설문 단계에서 가장 많이 빠지는가
+- `info_form_submit.calendar` (양력/음력) × `has_birth_time` 분포
+- 시간대별 `landing_enter` 분포 — 마케팅 타이밍
+
+---
+
+## 부록: 운영 메모
+
+- 모든 차트는 unpublished — 검토 후 게시 권장
+- chartId / dashboardId 영구 식별자 — URL 안정적
+- 차트/대시보드 삭제는 Amplitude MCP 도구 부재 — 사용자가 UI에서 직접 처리
+- D-3의 `d85fh9bw`(scene별 도달률)는 user property 자동 첨부 — **차트 안에서 segment만 추가**하면 성별/연령대별 컷 소비 패턴 즉석 도출 (신규 차트 불필요)
