@@ -79,14 +79,33 @@ export interface DaeUn {
   periods: DaeUnPeriod[];
 }
 
+// 백엔드 /api/saju/free 응답 (sajuData는 FortuneTeller raw 출력).
+// charm/blocking/spouseAvoid/spouseMatch/monthlyRomanceFlow는 최상위 분석 필드.
 export interface SajuFreeResponse {
-  pillars: Pillar[];
-  highlight: string;
-  wuxing: Wuxing;
-  yongSin: YongSinView | null;
-  dayMaster: DayMaster;
-  daeUn: DaeUn;
-  sajuRequestId: string;
+  sajuRequestId: number | string;
+  // FortuneTeller raw output (pillars 등은 sajuData 안에 중첩 or 없을 수 있음)
+  sajuData?: {
+    pillars?: Pillar[];
+    highlight?: string;
+    wuxing?: Wuxing;
+    yongSin?: YongSinView | null;
+    dayMaster?: DayMaster;
+    daeUn?: DaeUn;
+    [key: string]: unknown;
+  };
+  // 기존 flat 형식 호환 (레거시)
+  pillars?: Pillar[];
+  highlight?: string;
+  wuxing?: Wuxing;
+  yongSin?: YongSinView | null;
+  dayMaster?: DayMaster;
+  daeUn?: DaeUn;
+  // 분석 필드 (backend-saju 팀이 추가)
+  charm?: import("@/features/saju-result/domain/types").CharmView;
+  blocking?: import("@/features/saju-result/domain/types").BlockingView;
+  spouseAvoid?: import("@/features/saju-result/domain/types").SpouseAvoidView;
+  spouseMatch?: import("@/features/saju-result/domain/types").SpouseMatchView;
+  monthlyRomanceFlow?: import("@/features/saju-result/domain/types").MonthlyRomanceFlowView;
 }
 
 export interface SajuSurveyRequest {

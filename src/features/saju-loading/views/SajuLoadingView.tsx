@@ -35,6 +35,15 @@ export default function SajuLoadingView({ character }: Props) {
   const [slotIdx, setSlotIdx] = useState(0);
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
+  const [isMobilePortrait, setIsMobilePortrait] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(orientation: portrait) and (max-width: 768px)");
+    setIsMobilePortrait(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobilePortrait(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   useEffect(() => {
     trackEvent("loading_enter", { character_id: character });
@@ -78,22 +87,51 @@ export default function SajuLoadingView({ character }: Props) {
       className="fixed inset-0 z-[100] overflow-hidden"
       style={{ background: COLOR.surface }}
     >
-      {/* Layer 0: 배경 사진 스택 (크로스페이드) — 머리 보존 위해 +80px 오프셋 */}
+      {/* Layer 0: 배경 사진 스택
+          모바일 portrait: 패널 위 영역만 차지하는 컨테이너를 90도 회전.
+          → 이미지 영역과 패널 영역이 완전히 분리됨.
+          → 시계방향 90도 회전 시 컨테이너 left = 화면 하단(패널 방향).
+          → object-position: left center → 이미지가 패널 위에 딱 붙음.
+          데스크탑/landscape: 풀스크린 object-cover. */}
       {tmis.map((tmi, i) => (
-        <Image
+        <div
           key={tmi.bg}
-          src={tmi.bg}
-          alt=""
-          fill
-          priority={i === 0}
-          sizes="100vw"
-          className="object-cover"
-          style={{
-            objectPosition: "center calc(50% + 80px)",
-            opacity: slotIdx === i ? 1 : 0,
-            transition: `opacity ${CROSSFADE_MS}ms ease`,
-          }}
-        />
+          style={
+            isMobilePortrait
+              ? {
+                  // 회전 후 apparent size: 100vw × (100vh - 원래 패널 높이)
+                  // 패널이 50px 더 커져서 이미지 하단을 자연스럽게 가림
+                  position: "absolute",
+                  top: "calc((100vh - max(28vh, 160px)) / 2)",
+                  left: "50%",
+                  width: "calc(100vh - max(28vh, 160px))",
+                  height: "100vw",
+                  transform: "translate(-50%, -50%) rotate(90deg)",
+                  opacity: slotIdx === i ? 1 : 0,
+                  transition: `opacity ${CROSSFADE_MS}ms ease`,
+                }
+              : {
+                  position: "absolute",
+                  inset: 0,
+                  opacity: slotIdx === i ? 1 : 0,
+                  transition: `opacity ${CROSSFADE_MS}ms ease`,
+                }
+          }
+        >
+          <Image
+            src={tmi.bg}
+            alt=""
+            fill
+            priority={i === 0}
+            sizes="100vw"
+            className={isMobilePortrait ? "object-contain" : "object-cover"}
+            style={{
+              // 시계방향 90도: 컨테이너 left(x=0) → 화면 하단
+              // left center → 이미지 하단이 패널에 딱 붙음
+              objectPosition: isMobilePortrait ? "left center" : "center calc(50% + 80px)",
+            }}
+          />
+        </div>
       ))}
 
       {/* Layer 1: 하단 가독성용 그라디언트 베일 */}
@@ -109,8 +147,8 @@ export default function SajuLoadingView({ character }: Props) {
       <div
         className="absolute bottom-0 left-0 w-full z-20 backdrop-blur-xl"
         style={{
-          height: "min(28vh, 180px)",
-          minHeight: "160px",
+          height: isMobilePortrait ? "calc(min(28vh, 180px) + 80px)" : "min(28vh, 180px)",
+          minHeight: isMobilePortrait ? "240px" : "160px",
           background: "rgba(0,0,0,0.28)",
           borderTop: "1px solid rgba(255,140,66,0.5)",
           boxShadow: "0 -10px 20px rgba(255,140,66,0.15)",
@@ -146,7 +184,10 @@ export default function SajuLoadingView({ character }: Props) {
         </div>
 
         {/* 패널 내부 — 컨텐츠 하단 정렬 */}
-        <div className="relative w-full h-full flex flex-col items-center justify-end px-4 sm:px-6 pb-4 text-center">
+        <div
+          className="relative w-full h-full flex flex-col items-center justify-end px-4 sm:px-6 text-center"
+          style={{ paddingBottom: isMobilePortrait ? "calc(1rem + 15px)" : "1rem" }}
+        >
           {/* Filigree 4 모서리 */}
           {[
             "top-3 left-3 border-t-2 border-l-2",
@@ -178,7 +219,7 @@ export default function SajuLoadingView({ character }: Props) {
                 background: "transparent",
                 border: `1px solid ${COLOR.goldPulse}`,
                 padding: "0.65rem 1.25rem 0.55rem",
-                marginBottom: "0.625rem",
+                marginBottom: isMobilePortrait ? "calc(0.625rem + 15px)" : "0.625rem",
                 filter: "drop-shadow(0 0 8px rgba(255,140,66,0.4))",
                 transition: "background 0.2s ease",
               }}
@@ -201,7 +242,7 @@ export default function SajuLoadingView({ character }: Props) {
                 fontWeight: 800,
                 color: COLOR.onSurface,
                 filter: "drop-shadow(0 0 6px rgba(255,140,66,0.28))",
-                marginBottom: "0.625rem",
+                marginBottom: isMobilePortrait ? "calc(0.625rem + 15px)" : "0.625rem",
               }}
             >
               LOADING...
@@ -210,15 +251,17 @@ export default function SajuLoadingView({ character }: Props) {
 
           {/* TMI 블록 — 상하 골드 디바이더 */}
           <div
-            className="flex flex-col items-center gap-1 w-full py-3 sm:py-3.5 mt-1"
+            className="flex flex-col items-center gap-1 w-full mt-1"
             style={{
+              padding: isMobilePortrait ? "calc(0.75rem * 2.5) 0" : "0.75rem 0",
               borderTop: "1px solid rgba(164,140,127,0.3)",
               borderBottom: "1px solid rgba(164,140,127,0.3)",
             }}
           >
             <p
-              className="uppercase font-bold text-[11px] sm:text-[13px]"
+              className="uppercase font-bold"
               style={{
+                fontSize: isMobilePortrait ? "calc(11px * 1.2)" : "11px",
                 color: COLOR.primary,
                 letterSpacing: "0.15em",
                 lineHeight: 1.5,

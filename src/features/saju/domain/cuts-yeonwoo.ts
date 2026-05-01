@@ -2,7 +2,6 @@ export type Cut =
   | { type: "dialogue"; bg: string; speaker: "강연우" | "내레이션"; lines: string[] }
   | { type: "dialogue-closeup"; bg: string; speaker: "강연우"; lines: string[] }
   | { type: "aside"; bg: string; speaker: "도윤"; lines: string[] }
-  | { type: "tablet-handoff"; bg: string }
   | { type: "scene-pause"; bg: string }
   | { type: "info-form"; bg: string }
   | { type: "survey"; step: 1 | 2 | 3 }
@@ -38,8 +37,6 @@ export const YEONWOO_CUTS: Cut[] = [
       "가. 가서 통계니 심리학이니 번지르르한 말장난에 돈이나 뜯겨보든가.",
     ],
   },
-  { type: "tablet-handoff", bg: ASSET("4") },
-  { type: "tablet-handoff", bg: ASSET("5") },
   {
     type: "dialogue-closeup",
     bg: ASSET("6"),

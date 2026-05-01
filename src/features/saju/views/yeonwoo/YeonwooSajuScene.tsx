@@ -124,18 +124,6 @@ export default function YeonwooSajuScene() {
         />
       )}
 
-      {/* 태블릿 핸드오프 */}
-      {!fading && cut.type === "tablet-handoff" && (
-        <div className="relative z-10 mt-auto mb-24 px-6 text-center">
-          <p
-            className="animate-pulse text-[11px] tracking-[0.4em]"
-            style={{ color: "rgba(208,197,182,0.7)" }}
-          >
-            태블릿을 받아드는 중…
-          </p>
-        </div>
-      )}
-
       {/* scene-pause — 자동 진행 (useCutProgression에서 처리), 배경만 표시 */}
       {cut.type === "scene-pause" && null}
 

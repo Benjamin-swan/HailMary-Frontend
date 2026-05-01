@@ -44,9 +44,19 @@ export function useCharacterSajuFlow(config: CharacterSajuFlowConfig) {
   useEffect(() => {
     if (saju.status !== "success" || !saju.data) return;
     try {
-      localStorage.setItem(requestIdKey, saju.data.sajuRequestId);
+      const dataKey = `${storageKeyPrefix}SajuData`;
+      // 백엔드 응답에서 sajuRequestId를 제외한 나머지를 저장.
+      // sajuData(FT raw) + charm/blocking/spouseAvoid/spouseMatch/monthlyRomanceFlow 모두 포함.
+      const { sajuRequestId, sajuData, ...analysisFields } = saju.data as unknown as {
+        sajuRequestId: unknown;
+        sajuData?: Record<string, unknown>;
+        [key: string]: unknown;
+      };
+      const toStore = { ...(sajuData ?? {}), ...analysisFields };
+      localStorage.setItem(dataKey, JSON.stringify(toStore));
+      localStorage.setItem(requestIdKey, String(sajuRequestId ?? ""));
     } catch {}
-  }, [saju.status, saju.data, requestIdKey]);
+  }, [saju.status, saju.data, requestIdKey, storageKeyPrefix]);
 
   const submitInfo = useCallback(
     (info: SajuInfo) => {
@@ -76,7 +86,7 @@ export function useCharacterSajuFlow(config: CharacterSajuFlowConfig) {
         localStorage.setItem(surveyKey, JSON.stringify(finalAnswers));
       } catch {}
       const sajuRequestId =
-        saju.data?.sajuRequestId ??
+        (saju.data?.sajuRequestId != null ? String(saju.data.sajuRequestId) : null) ??
         (typeof window !== "undefined" ? localStorage.getItem(requestIdKey) : null);
       if (sajuRequestId) {
         void postSajuSurvey({
