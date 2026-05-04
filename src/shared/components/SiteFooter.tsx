@@ -1,17 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 
 export function SiteFooter() {
   return (
     <footer className="select-text bg-neutral-800 px-6 py-10 text-center text-[11px] leading-relaxed text-neutral-300">
-      <Image
-        src="/footer-logo.png"
-        alt="도화선"
-        width={72}
-        height={72}
-        className="mx-auto mb-5 h-[72px] w-[72px]"
-      />
-
       <div className="space-y-1.5">
         <p>
           <span className="font-medium text-neutral-100">상호</span> 슈퍼빌더즈
