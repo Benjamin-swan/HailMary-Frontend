@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-black/80 px-6 py-8 text-[11px] leading-relaxed text-neutral-300">
+    <footer className="select-text bg-black/80 px-6 py-8 text-[11px] leading-relaxed text-neutral-300">
       <div className="space-y-1">
         <p>대표 : 배성현 | 사업자등록번호 : 376-35-01679</p>
         <p>상호 : 슈퍼빌더즈 (SuperBuilders)</p>
