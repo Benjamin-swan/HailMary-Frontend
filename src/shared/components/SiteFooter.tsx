@@ -16,6 +16,17 @@ export function SiteFooter() {
         </p>
         <p>
           <span className="font-medium text-neutral-100">고객센터</span>{" "}
+          <a
+            href="http://pf.kakao.com/_axcGxbX/chat"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="underline"
+          >
+            카카오톡 도화선 채널
+          </a>
+        </p>
+        <p>
+          <span className="font-medium text-neutral-100">MAIL</span>{" "}
           <a href="mailto:skwogusdld@gmail.com" className="underline">
             skwogusdld@gmail.com
           </a>
@@ -25,6 +36,9 @@ export function SiteFooter() {
           <a href="tel:070-8064-6831" className="underline">
             070-8064-6831
           </a>
+        </p>
+        <p className="text-neutral-400">
+          (전화 상담은 운영하지 않으며, 채팅으로 문의해 주세요.)
         </p>
       </div>
 
@@ -46,17 +60,19 @@ export function SiteFooter() {
 
       <div className="mt-5 flex items-center justify-center gap-3">
         <a
-          href="#"
-          aria-label="카카오톡 채널"
+          href="http://pf.kakao.com/_axcGxbX"
+          target="_blank"
+          rel="noreferrer noopener"
+          aria-label="카카오톡 도화선 채널"
           className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-700 text-neutral-200 transition-colors hover:bg-neutral-600"
         >
           <KakaoIcon />
         </a>
         <a
-          href="#"
-          aria-label="인스타그램"
+          href="https://www.instagram.com/dohwaseon_saju/"
           target="_blank"
           rel="noreferrer noopener"
+          aria-label="인스타그램 @dohwaseon_saju"
           className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-700 text-neutral-200 transition-colors hover:bg-neutral-600"
         >
           <InstagramIcon />
