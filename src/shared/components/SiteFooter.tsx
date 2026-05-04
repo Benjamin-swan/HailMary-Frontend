@@ -24,8 +24,7 @@ export function SiteFooter() {
           >
             카카오톡 도화선 채널
           </a>
-        </p>
-        <p>
+          <span className="mx-2 text-neutral-500">|</span>
           <span className="font-medium text-neutral-100">MAIL</span>{" "}
           <a href="mailto:skwogusdld@gmail.com" className="underline">
             skwogusdld@gmail.com
