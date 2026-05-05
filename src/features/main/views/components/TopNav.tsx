@@ -9,10 +9,10 @@ export function TopNav() {
       <Image
         src="/dohwaseon-logo.png"
         alt="도화선"
-        height={32}
-        width={120}
+        height={35}
+        width={132}
         priority
-        className="h-8 w-auto"
+        className="h-[35px] w-auto"
       />
       <button
         type="button"

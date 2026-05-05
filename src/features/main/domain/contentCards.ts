@@ -19,14 +19,14 @@ export const SECONDARY_CARDS: ContentCard[] = [
     variant: "kkebi",
     title: "깨비의 일일운세",
     tag: "매일",
-    microCopy: "매일 운세 보기",
+    microCopy: "오늘의 운명, 깨비가 알려줄게!",
     poster: "/kkebi-card-poster.png",
     route: "/fortune/daily",
   },
   {
     id: "coming-soon-1",
     variant: "coming-soon",
-    title: "곧 만나요",
+    title: "사주 총운 컨텐츠 준비중",
     tag: "준비 중",
   },
 ];
@@ -39,6 +39,3 @@ export const HERO_CARD: ContentCard = {
   poster: "/dohwaseon-hero-poster.png",
   route: "/landing",
 };
-
-export const QUOTE_TEXT =
-  "운명은 정해져 있지만, 마음은 매일 새롭게 쓰여진다.";

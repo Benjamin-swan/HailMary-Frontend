@@ -6,7 +6,7 @@ export function ComingSoonCard() {
     >
       <div className="flex flex-col items-center gap-2 text-white/40">
         <span className="text-2xl" aria-hidden>🔒</span>
-        <span className="text-[13px]">곧 만나요</span>
+        <span className="text-[13px]">사주 총운 컨텐츠 준비중</span>
       </div>
     </div>
   );
