@@ -203,51 +203,58 @@ export default function SajuLoadingView({ character }: Props) {
           ))}
 
           {/* LOADING... → "결과 보기 →" 토글 */}
-          {done ? (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleClick();
-              }}
-              className={`${epilogue.className} uppercase animate-[fadeIn_0.4s_ease-out] cursor-pointer inline-flex items-center justify-center`}
-              style={{
-                fontSize: "clamp(16px, 2.6vw, 24px)",
-                lineHeight: 1,
-                letterSpacing: "-0.02em",
-                fontWeight: 800,
-                color: COLOR.primaryContainer,
-                background: "transparent",
-                border: `1px solid ${COLOR.goldPulse}`,
-                padding: "0.65rem 1.25rem 0.55rem",
-                marginBottom: isMobilePortrait ? "calc(0.625rem + 15px)" : "0.625rem",
-                filter: "drop-shadow(0 0 8px rgba(255,140,66,0.4))",
-                transition: "background 0.2s ease",
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background = "rgba(255,140,66,0.1)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.background = "transparent")
-              }
-            >
-              결과 보기 →
-            </button>
-          ) : (
-            <h1
-              className={`${epilogue.className} uppercase`}
-              style={{
-                fontSize: "clamp(20px, 3.2vw, 30px)",
-                lineHeight: 1.2,
-                letterSpacing: "-0.04em",
-                fontWeight: 800,
-                color: COLOR.onSurface,
-                filter: "drop-shadow(0 0 6px rgba(255,140,66,0.28))",
-                marginBottom: isMobilePortrait ? "calc(0.625rem + 15px)" : "0.625rem",
-              }}
-            >
-              LOADING...
-            </h1>
-          )}
+          <div
+            className="flex items-center justify-center"
+            style={{
+              height: "44px",
+              marginBottom: isMobilePortrait ? "calc(0.625rem + 15px)" : "0.625rem",
+            }}
+          >
+            {done ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleClick();
+                }}
+                className={`${epilogue.className} uppercase animate-[fadeIn_0.4s_ease-out] cursor-pointer inline-flex items-center justify-center`}
+                style={{
+                  fontSize: "16px",
+                  lineHeight: 1,
+                  letterSpacing: "-0.02em",
+                  fontWeight: 800,
+                  color: COLOR.primaryContainer,
+                  background: "transparent",
+                  border: `1px solid ${COLOR.goldPulse}`,
+                  borderRadius: "8px",
+                  padding: "0.65rem 1.25rem 0.55rem",
+                  filter: "drop-shadow(0 0 8px rgba(255,140,66,0.4))",
+                  transition: "background 0.2s ease",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.background = "rgba(255,140,66,0.1)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.background = "transparent")
+                }
+              >
+                결과 보기 →
+              </button>
+            ) : (
+              <h1
+                className={`${epilogue.className} uppercase`}
+                style={{
+                  fontSize: "clamp(20px, 3.2vw, 30px)",
+                  lineHeight: 1.2,
+                  letterSpacing: "-0.04em",
+                  fontWeight: 800,
+                  color: COLOR.onSurface,
+                  filter: "drop-shadow(0 0 6px rgba(255,140,66,0.28))",
+                }}
+              >
+                LOADING...
+              </h1>
+            )}
+          </div>
 
           {/* TMI 블록 — 상하 골드 디바이더 */}
           <div
@@ -259,9 +266,9 @@ export default function SajuLoadingView({ character }: Props) {
             }}
           >
             <p
-              className="uppercase font-bold"
+              className="uppercase font-extrabold"
               style={{
-                fontSize: isMobilePortrait ? "calc(11px * 1.2)" : "11px",
+                fontSize: isMobilePortrait ? "calc(12px * 1.2)" : "12px",
                 color: COLOR.primary,
                 letterSpacing: "0.15em",
                 lineHeight: 1.5,
