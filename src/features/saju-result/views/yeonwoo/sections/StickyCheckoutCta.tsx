@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const TWELVE_HOURS_MS = 12 * 60 * 60 * 1000;
 
@@ -16,6 +17,7 @@ function formatHMSD(totalMs: number): string {
 }
 
 export function StickyCheckoutCta() {
+  const router = useRouter();
   const [endAt, setEndAt] = useState<number>(() => Date.now() + TWELVE_HOURS_MS);
   const [now, setNow] = useState<number>(() => Date.now());
 
@@ -67,9 +69,7 @@ export function StickyCheckoutCta() {
           fontWeight: 700,
           gap: "10px",
         }}
-        onClick={() => {
-          alert("결제 페이지는 준비 중이에요.");
-        }}
+        onClick={() => router.push("/checkout/yeonwoo")}
       >
         결제하고 연우의 정밀 리포트 읽기
       </button>

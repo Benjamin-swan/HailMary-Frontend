@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useDoyoonSajuData } from "../../hooks/useDoyoonSajuData";
 import { useFirstName } from "../../hooks/useFirstName";
 import {
@@ -47,6 +48,7 @@ import { DOYOON_REVIEWS } from "./reviews-doyoon";
 const SURFACE = "#FDF5EA";
 
 export default function DoyoonResultScene() {
+  const router = useRouter();
   const data = useDoyoonSajuData();
   const firstName = useFirstName("doyoon");
   const displayName = firstName ?? "당신";
@@ -172,6 +174,7 @@ export default function DoyoonResultScene() {
       <StickyCheckoutCta
         ctaLabel="결제하고 한도윤의 정밀 리포트 읽기"
         visible={showCta}
+        onCheckout={() => router.push("/checkout/doyoon")}
       />
     </>
   );
