@@ -11,14 +11,14 @@ export default function AsideComment({ speaker, text, isComplete }: Props) {
     <div className="relative z-10 mt-auto mb-20 px-6">
       <div className="flex items-center gap-2 mb-2">
         <span
-          className="text-[10px] tracking-[0.3em] uppercase"
-          style={{ color: "rgba(208,197,182,0.55)" }}
+          className="text-[14px] tracking-[0.3em] uppercase"
+          style={{ color: "rgba(208,197,182,0.6)" }}
         >
           멀리서
         </span>
         <span
-          className="text-[11px] tracking-[0.15em]"
-          style={{ color: "rgba(208,197,182,0.7)" }}
+          className="text-[15px] tracking-[0.15em]"
+          style={{ color: "rgba(208,197,182,0.9)" }}
         >
           {speaker}
         </span>
