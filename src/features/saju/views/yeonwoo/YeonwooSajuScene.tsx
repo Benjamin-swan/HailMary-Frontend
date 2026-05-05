@@ -63,7 +63,7 @@ export default function YeonwooSajuScene() {
 
   return (
     <div
-      className="relative flex flex-col h-dvh w-full overflow-hidden select-none"
+      className="relative flex flex-col h-dvh w-full overflow-hidden select-text"
       style={{ background: SURFACE }}
       onClick={handleTap}
     >

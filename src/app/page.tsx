@@ -1,5 +1,5 @@
-import { LandingView } from "@/features/landing";
+import { MainView } from "@/features/main";
 
 export default function Home() {
-  return <LandingView />;
+  return <MainView />;
 }
