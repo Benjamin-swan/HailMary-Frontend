@@ -1,7 +1,7 @@
 export type Cut =
   | { type: "dialogue"; bg: string; speaker: "강연우" | "내레이션"; lines: string[] }
   | { type: "dialogue-closeup"; bg: string; speaker: "강연우"; lines: string[] }
-  | { type: "aside"; bg: string; speaker: "도윤"; lines: string[] }
+  | { type: "aside"; bg: string; speaker: "한도윤"; lines: string[] }
   | { type: "scene-pause"; bg: string }
   | { type: "info-form"; bg: string }
   | { type: "survey"; step: 1 | 2 | 3 }
@@ -15,17 +15,16 @@ export const YEONWOO_CUTS: Cut[] = [
     bg: ASSET("1"),
     speaker: "강연우",
     lines: [
-      "하... 또 귀찮은 게 들어왔네.",
-      "대충 보니까 연애운 때문이네. 따라와.",
+      "하...눈빛만 봐도 알겠군",
+      "연애운 때문에 답답해서 온 거지? 따라와.",
     ],
   },
   {
     type: "aside",
     bg: ASSET("2"),
-    speaker: "도윤",
+    speaker: "한도윤",
     lines: [
-      "난 네가 무식하게 깎아 먹는 기력을 아껴주려고 합리적인 데이터를 제공하는 것뿐인데.",
-      "아쉽네.",
+      "그렇게까지 스스로를 소모할 필요 없다고 몇 번을 말해. 또 괜찮은 척하면서 괜히 힘 뺄까 봐 내가 대신 정리하려는 건데…",
     ],
   },
   {
@@ -33,8 +32,8 @@ export const YEONWOO_CUTS: Cut[] = [
     bg: ASSET("3"),
     speaker: "강연우",
     lines: [
-      "왜, 저기 양복 빼입은 놈한테 가고 싶어?",
-      "가. 가서 통계니 심리학이니 번지르르한 말장난에 돈이나 뜯겨보든가.",
+      "왜, 저쪽이 더 나아보여?",
+      "당신한테 뭐가 필요한지는 내가 제일 잘 알아. 후회하지 말고 이쪽으로 와.",
     ],
   },
   {
@@ -47,21 +46,21 @@ export const YEONWOO_CUTS: Cut[] = [
     type: "dialogue",
     bg: ASSET("7"),
     speaker: "강연우",
-    lines: ["딱 보니까 견적 나오는데.", "지금 널 제일 갉아먹고 있는 게 뭐야? 솔직하게 말해."],
+    lines: ["얼굴에 다 쓰여 있는데. 너 지금 뭐 때문에 온 건지.", "지금 널 제일 갉아먹고 있는 게 뭐야? 솔직하게 말해."],
   },
   {
     type: "dialogue",
     bg: ASSET("9"),
     speaker: "강연우",
-    lines: ["어휴, 답답해.", "양손에 쓰레기를 쥐고 있는데 새 인연이 어떻게 들어오냐?"],
+    lines: ["알았으니까 고개 들어.", "여기까지 온 이상 빈손으로 보낼 생각 없으니까. 네가 쥐어야 할 진짜 인연이 뭔지, 내가 지금 바로 보여줄게"],
   },
   {
     type: "dialogue",
     bg: ASSET("10"),
     speaker: "강연우",
     lines: [
-      "됐고. 내가 그 썩은 동아줄 끊어내고 길 터줄 테니까, 사주나 똑바로 불러봐.",
-      "네 명줄의 좌표가 있어야 뭘 하든 말든 할 거 아냐.",
+      "입으로 하는 고민 상담은 여기까지. 이제 네 팔자가 어떻게 굴러가는지 제대로 들여다볼 거야.",
+      "여기 네 명식 넣어봐. 네 연애운이 왜 그 모양이었는지 내가 소름 끼치게 증명해 줄 테니까.",
     ],
   },
   { type: "info-form", bg: ASSET("11") },
