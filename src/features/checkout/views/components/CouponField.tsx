@@ -9,7 +9,7 @@ interface CouponFieldProps {
 export function CouponField({ value, onChange, onApply }: CouponFieldProps) {
   return (
     <section className="space-y-2">
-      <label htmlFor="checkout-coupon" className="block text-[14px] font-medium text-white">
+      <label htmlFor="checkout-coupon" className="block text-[14px] font-medium text-neutral-900">
         쿠폰 입력
       </label>
       <div className="flex gap-2">
@@ -19,12 +19,12 @@ export function CouponField({ value, onChange, onApply }: CouponFieldProps) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="쿠폰 코드를 입력하세요"
-          className="flex-1 rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-[14px] text-white placeholder:text-white/30 focus:border-white/40 focus:bg-white/10 focus:outline-none"
+          className="flex-1 rounded-xl border border-neutral-300 bg-white px-4 py-3 text-[14px] text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-500 focus:outline-none"
         />
         <button
           type="button"
           onClick={onApply}
-          className="rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-[13px] font-medium text-white transition-colors hover:bg-white/10"
+          className="rounded-xl border border-neutral-300 bg-white px-4 py-3 text-[13px] font-medium text-neutral-700 transition-colors hover:bg-neutral-100"
         >
           적용
         </button>

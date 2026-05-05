@@ -1,6 +1,7 @@
 "use client";
 
 import { LegalModal } from "@/shared/components/LegalModal";
+import { SiteFooter } from "@/shared/components/SiteFooter";
 import type { CheckoutCharacter } from "../domain/checkoutProducts";
 import { useCheckout } from "../hooks/useCheckout";
 import { CheckoutHeader } from "./components/CheckoutHeader";
@@ -28,13 +29,14 @@ export function CheckoutView({ character }: CheckoutViewProps) {
     setAgreePayment,
     openConsent,
     setOpenConsent,
+    isProcessing,
     applyCoupon,
     handleBack,
     handleSubmit,
   } = useCheckout(character);
 
   return (
-    <div className="flex min-h-[100dvh] flex-1 flex-col bg-neutral-950">
+    <div className="flex min-h-[100dvh] flex-1 flex-col bg-white text-neutral-900">
       <CheckoutHeader onBack={handleBack} />
 
       <main className="flex-1 space-y-6 px-6 py-8">
@@ -46,7 +48,7 @@ export function CheckoutView({ character }: CheckoutViewProps) {
 
         <CouponField value={coupon} onChange={setCoupon} onApply={applyCoupon} />
 
-        <CheckoutCta onClick={handleSubmit} />
+        <CheckoutCta onClick={handleSubmit} loading={isProcessing} />
 
         <div className="space-y-3 pt-2">
           <ConsentRow
@@ -65,6 +67,8 @@ export function CheckoutView({ character }: CheckoutViewProps) {
           />
         </div>
       </main>
+
+      <SiteFooter variant="light" />
 
       <LegalModal doc={openConsent} onClose={() => setOpenConsent(null)} />
     </div>
