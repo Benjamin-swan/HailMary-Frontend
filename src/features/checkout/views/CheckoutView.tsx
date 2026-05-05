@@ -1,0 +1,72 @@
+"use client";
+
+import { LegalModal } from "@/shared/components/LegalModal";
+import type { CheckoutCharacter } from "../domain/checkoutProducts";
+import { useCheckout } from "../hooks/useCheckout";
+import { CheckoutHeader } from "./components/CheckoutHeader";
+import { EmailField } from "./components/EmailField";
+import { PriceSummary } from "./components/PriceSummary";
+import { CouponField } from "./components/CouponField";
+import { CheckoutCta } from "./components/CheckoutCta";
+import { ConsentRow } from "./components/ConsentRow";
+
+interface CheckoutViewProps {
+  character: CheckoutCharacter;
+}
+
+export function CheckoutView({ character }: CheckoutViewProps) {
+  const {
+    product,
+    email,
+    setEmail,
+    emailError,
+    coupon,
+    setCoupon,
+    agreeDataUsage,
+    setAgreeDataUsage,
+    agreePayment,
+    setAgreePayment,
+    openConsent,
+    setOpenConsent,
+    applyCoupon,
+    handleBack,
+    handleSubmit,
+  } = useCheckout(character);
+
+  return (
+    <div className="flex min-h-[100dvh] flex-1 flex-col bg-neutral-950">
+      <CheckoutHeader onBack={handleBack} />
+
+      <main className="flex-1 space-y-6 px-6 py-8">
+        <EmailField value={email} onChange={setEmail} error={emailError} />
+
+        <hr className="border-white/[0.06]" />
+
+        <PriceSummary product={product} />
+
+        <CouponField value={coupon} onChange={setCoupon} onApply={applyCoupon} />
+
+        <CheckoutCta onClick={handleSubmit} />
+
+        <div className="space-y-3 pt-2">
+          <ConsentRow
+            id="agree-data-usage"
+            label="개인정보 이용 동의"
+            checked={agreeDataUsage}
+            onChange={setAgreeDataUsage}
+            onDetail={() => setOpenConsent("data-usage")}
+          />
+          <ConsentRow
+            id="agree-payment"
+            label="결제진행 동의"
+            checked={agreePayment}
+            onChange={setAgreePayment}
+            onDetail={() => setOpenConsent("payment")}
+          />
+        </div>
+      </main>
+
+      <LegalModal doc={openConsent} onClose={() => setOpenConsent(null)} />
+    </div>
+  );
+}
