@@ -19,7 +19,7 @@ export function ButtonCut({ step, fading, onNext }: ButtonCutProps) {
           e.stopPropagation();
           onNext();
         }}
-        className="w-full rounded-full bg-gradient-to-r from-red-700 via-red-500 to-orange-500 py-4 text-center text-lg font-semibold text-white shadow-lg shadow-red-900/40 transition-opacity hover:opacity-90 active:opacity-80"
+        className="w-full rounded-full bg-[#D73F59] py-4 text-center text-lg font-semibold text-white shadow-lg shadow-red-900/40 transition-opacity hover:opacity-90 active:opacity-80"
       >
         {step.label}
       </button>

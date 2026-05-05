@@ -26,7 +26,7 @@ export function LandingView() {
         />
         <CtaButton
           label="1화 연애운편 시작하기"
-          gradient="from-purple-600 via-violet-500 to-purple-600"
+          gradient="bg-[#D73F59]"
           onClick={handleStart}
         />
         <div
