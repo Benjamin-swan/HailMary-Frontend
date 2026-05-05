@@ -1,12 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { YEONWOO_CUTS, type Cut } from "@/features/saju/domain/cuts-yeonwoo";
 import { SURVEY_STEPS } from "@/features/saju/domain/surveyOptions";
 import { useCutProgression } from "@/features/saju/hooks/useCutProgression";
 import { useCharacterSajuFlow } from "@/features/saju/hooks/useCharacterSajuFlow";
+import { usePreloadImages } from "@/shared/hooks/usePreloadImages";
 import { trackEvent } from "@/shared/utils/analytics";
 import { DialogueBox } from "@/components/DialogueBox";
 import AsideComment from "@/features/saju/views/shared/AsideComment";
@@ -33,6 +34,17 @@ export default function YeonwooSajuScene() {
     isComplete, fading, crossFading, leanInZoomed, ctaVisible,
     handleTap, goToCut, jumpTo,
   } = useCutProgression<Cut>(YEONWOO_CUTS, { crossfadeOnEnter: CROSSFADE_ENTER });
+
+  // 컷 전환 flicker 방지: 모든 cut 이미지(bg + bgZoomed)를 마운트 시 일괄 프리로드
+  const cutImages = useMemo(() => {
+    const list: string[] = [];
+    for (const c of YEONWOO_CUTS) {
+      if ("bg" in c) list.push(c.bg);
+      if ("bgZoomed" in c && c.bgZoomed) list.push(c.bgZoomed);
+    }
+    return list;
+  }, []);
+  usePreloadImages(cutImages);
 
   useEffect(() => {
     trackEvent("story_scene_start", { character_id: "yeonwoo" });
