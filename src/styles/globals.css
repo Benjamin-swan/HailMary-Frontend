@@ -1,5 +1,35 @@
 @import "tailwindcss";
 
+@theme {
+  /* base (다크 무드) */
+  --color-base-900: #0a0518;
+  --color-base-800: #0f0a22;
+  --color-base-700: #1a1530;
+
+  /* 도화선 액센트 */
+  --color-dohwaseon-primary: #e8536e;
+  --color-dohwaseon-light: #f5b3c4;
+
+  /* 깨비 액센트 */
+  --color-kkebi-primary: #a78bfa;
+  --color-kkebi-light: #d6c8ff;
+  --color-kkebi-cta-from: #ff8c5a;
+  --color-kkebi-cta-mid: #ef4d6e;
+  --color-kkebi-cta-to: #c4329b;
+
+  /* 메인·깨비 페이지 shine 애니메이션 */
+  --animate-shine: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  50%, 100% { left: 100%; }
+}
+
+/* 가로 캐러셀에서 스크롤바 숨김 */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
 :root {
   --background: #0a0a0a;
   --foreground: #ededed;
