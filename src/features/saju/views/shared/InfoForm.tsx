@@ -57,8 +57,7 @@ export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려�
       />
       <div className="relative flex flex-1 flex-col overflow-y-auto px-6 pb-8 pt-14">
         <div className="text-center">
-          <p className="text-[10px] tracking-[0.4em]" style={{ color: "#E6C58E" }}>CELESTIAL ARCHIVE</p>
-          <p className="mt-3 text-[15px] leading-relaxed" style={{ color: "#F5EDE0" }}>
+          <p className="mt-3 text-[16px] leading-relaxed font-medium" style={{ color: "#F5EDE0" }}>
             정확한 분석을 위해<br />사주 정보를 입력해 주세요.
           </p>
         </div>
@@ -67,7 +66,7 @@ export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려�
           <Field label="이름">
             <input type="text" value={name} onChange={(e) => setName(e.target.value)}
               placeholder="이름을 입력하세요"
-              className="w-full bg-transparent py-2 text-[15px] outline-none placeholder:text-[#998f82]"
+              className="w-full bg-transparent py-2 text-[16px] font-medium outline-none placeholder:text-[#998f82]"
               style={{ color: "#F5EDE0", borderBottom: "1px solid rgba(245,237,224,0.15)" }} />
           </Field>
 
@@ -75,7 +74,7 @@ export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려�
             <div className="flex items-center gap-2">
               <input type="text" value={birth} onChange={(e) => setBirth(formatBirth(e.target.value))}
                 placeholder="YYYY.MM.DD" maxLength={10} inputMode="numeric"
-                className="flex-1 bg-transparent py-2 text-[15px] outline-none placeholder:text-[#998f82]"
+                className="flex-1 bg-transparent py-2 text-[16px] font-medium outline-none placeholder:text-[#998f82]"
                 style={{ color: "#F5EDE0", borderBottom: "1px solid rgba(245,237,224,0.15)" }} />
               <Chip selected={calendar === "solar"} onClick={() => setCalendar("solar")}>양력</Chip>
               <Chip selected={calendar === "lunar"} onClick={() => setCalendar("lunar")}>음력</Chip>
@@ -86,7 +85,7 @@ export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려�
             <div className="flex items-center gap-2">
               <input type="text" value={time} onChange={(e) => setTime(formatTime(e.target.value))}
                 placeholder="HH:MM" maxLength={5} inputMode="numeric" disabled={unknownTime}
-                className="flex-1 bg-transparent py-2 text-[15px] outline-none placeholder:text-[#998f82] disabled:opacity-40"
+                className="flex-1 bg-transparent py-2 text-[16px] outline-none placeholder:text-[#998f82] disabled:opacity-40"
                 style={{ color: "#F5EDE0", borderBottom: "1px solid rgba(245,237,224,0.15)" }} />
               <Chip selected={unknownTime} onClick={() => { setUnknownTime(!unknownTime); if (!unknownTime) setTime(""); }}>모름</Chip>
             </div>
@@ -101,11 +100,12 @@ export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려�
         </div>
 
         <button onClick={handleSubmit} disabled={!isValid}
-          className="mt-10 w-full rounded-2xl py-3.5 text-[13px] font-bold tracking-[0.3em] transition-all disabled:cursor-not-allowed"
+          className="mt-8 w-full rounded-lg py-3.5 text-[16px] font-bold tracking-[0.1em] transition-all"
           style={{
             background: isValid ? "linear-gradient(135deg, #FFE2B3, #E6C58E)" : "rgba(230,197,142,0.18)",
             color: isValid ? "#412d04" : "rgba(208,197,182,0.5)",
             boxShadow: isValid ? "0 0 28px rgba(230,197,142,0.2)" : "none",
+            cursor: isValid ? "pointer" : "not-allowed",
           }}>
           {buttonLabel}
         </button>
@@ -117,7 +117,7 @@ export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려�
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="mb-2 block text-[11px] tracking-[0.25em]" style={{ color: "#D0C5B6" }}>{label}</label>
+      <label className="mb-2 block text-[16px] font-medium tracking-[0.1em]" style={{ color: "#D0C5B6" }}>{label}</label>
       {children}
     </div>
   );
@@ -128,12 +128,12 @@ function Chip({ selected, onClick, children, wide = false }: {
 }) {
   return (
     <button type="button" onClick={onClick}
-      className={`rounded-full text-[12px] tracking-[0.2em] transition-all ${wide ? "flex-1 py-2.5" : "px-4 py-1.5"}`}
+      className={`rounded-lg tracking-[0.1em] transition-all ${wide ? "flex-1 py-2.5 text-[16px]" : "px-4 py-1.5 text-[14px]"}`}
       style={{
         background: selected ? "#E6C58E" : "rgba(40,38,34,0.6)",
         color: selected ? "#412d04" : "#D0C5B6",
         backdropFilter: "blur(10px)",
-        fontWeight: selected ? 700 : 500,
+        fontWeight: selected ? 800 : 600,
       }}>
       {children}
     </button>

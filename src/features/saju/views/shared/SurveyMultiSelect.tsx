@@ -52,10 +52,7 @@ export default function SurveyMultiSelect({ step, onNext, characterId }: Props) 
 
       <div className="relative flex flex-1 flex-col px-6 pb-8 pt-14">
         <div className="text-center">
-          <p className="text-[10px] tracking-[0.4em]" style={{ color: "#E6C58E" }}>
-            CELESTIAL ARCHIVE
-          </p>
-          <p className="mt-2 text-[10px] tracking-[0.3em]" style={{ color: "#998f82" }}>
+          <p className="mt-2 text-[14px] tracking-[0.1em]" style={{ color: "#998f82" }}>
             {step.pageLabel}
           </p>
           <h2
@@ -64,7 +61,7 @@ export default function SurveyMultiSelect({ step, onNext, characterId }: Props) 
           >
             {step.title}
           </h2>
-          <p className="mt-3 text-[11px] tracking-[0.2em]" style={{ color: "#998f82" }}>
+          <p className="mt-3 text-[14px] tracking-[0.2em]" style={{ color: "#998f82" }}>
             {step.subtitle}
           </p>
         </div>
@@ -76,7 +73,7 @@ export default function SurveyMultiSelect({ step, onNext, characterId }: Props) 
               <button
                 key={opt.id}
                 onClick={(e) => { e.stopPropagation(); toggle(opt.id); }}
-                className="flex items-center justify-between rounded-full px-6 py-4 text-left transition-all active:scale-[0.99]"
+                className="flex items-center justify-between rounded-xl px-6 py-4 text-left transition-all active:scale-[0.99]"
                 style={{
                   background: sel ? "rgba(230,197,142,0.15)" : "rgba(40,38,34,0.6)",
                   backdropFilter: "blur(14px)",
@@ -86,16 +83,10 @@ export default function SurveyMultiSelect({ step, onNext, characterId }: Props) 
                 }}
               >
                 <span
-                  className="text-[14px] tracking-[0.05em]"
+                  className="text-[16px] tracking-[0.05em]"
                   style={{ color: sel ? "#FFE2B3" : "#D0C5B6", fontWeight: sel ? 600 : 400 }}
                 >
                   {opt.label}
-                </span>
-                <span
-                  className="ml-3 text-[14px]"
-                  style={{ color: sel ? "#E6C58E" : "rgba(208,197,182,0.4)" }}
-                >
-                  {opt.icon}
                 </span>
               </button>
             );
@@ -107,7 +98,7 @@ export default function SurveyMultiSelect({ step, onNext, characterId }: Props) 
         <button
           onClick={handleNext}
           disabled={!isValid}
-          className="mt-8 w-full rounded-2xl py-3.5 text-[13px] font-bold tracking-[0.3em] transition-all"
+          className="mt-8 w-full rounded-lg py-3.5 text-[16px] font-bold tracking-[0.1em] transition-all"
           style={{
             background: isValid
               ? "linear-gradient(135deg, #FFE2B3, #E6C58E)"
