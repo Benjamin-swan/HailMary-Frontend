@@ -14,7 +14,7 @@ export function ContentCard({ card, onClick }: ContentCardProps) {
     <button
       type="button"
       onClick={() => onClick(card)}
-      className="group relative flex w-[305px] flex-shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-white/[0.08] text-left"
+      className="group relative flex w-[340px] flex-shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-white/[0.08] text-left"
       style={{ background: "#1a0d2e" }}
     >
       <div className="relative aspect-[3/4] w-full overflow-hidden">

@@ -11,11 +11,11 @@ interface HeroSectionProps {
 export function HeroSection({ card, onClick }: HeroSectionProps) {
   if (!card.poster) return null;
   return (
-    <section className="px-4 pt-4">
+    <section className="px-6 pt-4">
       <button
         type="button"
         onClick={() => onClick(card)}
-        className="group relative block w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-black text-left"
+        className="group relative block w-full cursor-pointer overflow-hidden rounded-2xl border border-white/[0.08] bg-black text-left"
       >
         <Image
           src={card.poster}
@@ -23,7 +23,7 @@ export function HeroSection({ card, onClick }: HeroSectionProps) {
           width={760}
           height={1351}
           priority
-          className="block h-auto w-full mt-[30px] -mb-[40px]"
+          className="block h-auto w-full mt-[30px] -mb-[40px] transition-transform duration-500 ease-out group-hover:scale-[1.03]"
         />
         {/* 상단 페이드 — 캐릭터 정수리에 검은 여백 자연스럽게 연결 */}
         <div

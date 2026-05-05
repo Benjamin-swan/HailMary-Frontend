@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { BackButton } from "@/shared/components/BackButton";
 import { CtaButton } from "@/shared/components/CtaButton";
-import { SiteFooter } from "@/shared/components/SiteFooter";
 import { useLanding } from "../hooks/useLanding";
 
 export function LandingView() {
+  const router = useRouter();
   const { fading, handleStart } = useLanding();
 
   return (
@@ -17,6 +19,10 @@ export function LandingView() {
           fill
           priority
           className="object-cover object-top"
+        />
+        <BackButton
+          onClick={() => router.push("/")}
+          className="absolute left-5 top-5 z-30"
         />
         <CtaButton
           label="1화 연애운편 시작하기"
@@ -31,7 +37,6 @@ export function LandingView() {
           }}
         />
       </section>
-      <SiteFooter />
     </>
   );
 }

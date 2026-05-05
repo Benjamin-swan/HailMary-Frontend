@@ -6,7 +6,7 @@ import { ContentCard } from "./ContentCard";
 import { ComingSoonCard } from "./ComingSoonCard";
 import { NavArrow } from "./NavArrow";
 
-const STEP = 317; // 305px (card) + 12px (gap)
+const STEP = 352; // 340px (card) + 12px (gap)
 
 interface ContentCarouselProps {
   cards: ContentCardData[];
@@ -35,9 +35,8 @@ export function ContentCarousel({ cards, onCardClick }: ContentCarouselProps) {
 
   return (
     <section className="relative">
-      <header className="flex items-end justify-between px-5 pb-3 pt-6">
+      <header className="px-6 pb-3 pt-6">
         <h2 className="text-[15px] font-medium text-white/90">다른 콘텐츠</h2>
-        <span className="text-[11px] text-white/50">전체 ›</span>
       </header>
       <div className="relative">
         <NavArrow
@@ -53,7 +52,7 @@ export function ContentCarousel({ cards, onCardClick }: ContentCarouselProps) {
         <div
           ref={trackRef}
           onScroll={updateButtons}
-          className="no-scrollbar flex gap-3 overflow-x-auto scroll-smooth px-4 pb-2"
+          className="no-scrollbar flex gap-3 overflow-x-auto scroll-smooth px-6 pb-2 scroll-px-6"
           style={{ scrollSnapType: "x mandatory" }}
         >
           {cards.map((card) =>
