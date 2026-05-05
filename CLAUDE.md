@@ -248,4 +248,4 @@ export const api = {
 2. Views에서 직접 API 호출 금지 (Hooks를 통해).
 3. Domain에서 다른 Feature import 금지.
 4. Feature 간 직접 참조 금지.
-5. 과한 추상화 도입 금지.
+5. 과한 추상화 도입 금지..
