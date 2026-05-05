@@ -7,7 +7,7 @@ type Props = {
 export default function TipLine({ line }: Props) {
   return (
     <p
-      className="text-[13px] sm:text-[16px] leading-[1.6] font-normal animate-[fadeIn_0.5s_ease-out]"
+      className="text-[14px] sm:text-[17px] leading-[1.6] font-medium animate-[fadeIn_0.5s_ease-out]"
       style={{ color: "#ddc1b3", wordBreak: "keep-all" }}
     >
       {line}
