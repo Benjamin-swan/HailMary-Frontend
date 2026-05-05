@@ -1,6 +1,10 @@
-import Link from "next/link";
+"use client";
+
+import { useState } from "react";
+import { LegalModal, type LegalDoc } from "./LegalModal";
 
 export function SiteFooter() {
+  const [openDoc, setOpenDoc] = useState<LegalDoc | null>(null);
   return (
     <footer className="select-text bg-neutral-800 px-6 py-10 text-center text-[11px] leading-relaxed text-neutral-300">
       <div className="space-y-1.5">
@@ -42,15 +46,23 @@ export function SiteFooter() {
       </div>
 
       <div className="mt-5 flex items-center justify-center gap-3">
-        <Link href="/terms" className="underline">
+        <button
+          type="button"
+          onClick={() => setOpenDoc("terms")}
+          className="underline"
+        >
           이용약관
-        </Link>
+        </button>
         <span aria-hidden className="text-neutral-500">
           |
         </span>
-        <Link href="/privacy" className="underline">
+        <button
+          type="button"
+          onClick={() => setOpenDoc("privacy")}
+          className="underline"
+        >
           개인정보처리방침
-        </Link>
+        </button>
       </div>
 
       <p className="mt-3 text-neutral-400">
@@ -77,6 +89,8 @@ export function SiteFooter() {
           <InstagramIcon />
         </a>
       </div>
+
+      <LegalModal doc={openDoc} onClose={() => setOpenDoc(null)} />
     </footer>
   );
 }
