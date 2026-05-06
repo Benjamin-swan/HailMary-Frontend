@@ -7,5 +7,9 @@
       "Bash(cp \"C:/Users/skwog/Documents/dohwa_project/dohwa_frontend/public/saju/doyoon/\"*.png \"C:/Users/skwog/Documents/HailMary-Frontend/public/saju/doyoon/\")",
       "Bash(cp \"C:/Users/skwog/Documents/dohwa_project/dohwa_frontend/public/saju/yeonwoo/\"*.png \"C:/Users/skwog/Documents/HailMary-Frontend/public/saju/yeonwoo/\")"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "tosspayments-integration-guide"
+  ],
+  "enableAllProjectMcpServers": true
 }
