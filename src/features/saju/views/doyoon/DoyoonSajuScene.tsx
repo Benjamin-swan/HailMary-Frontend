@@ -64,7 +64,7 @@ export default function DoyoonSajuScene() {
   return (
     <div
       className="relative flex flex-col h-dvh w-full overflow-hidden select-text"
-      style={{ background: SURFACE }}
+      style={{ background: SURFACE, fontFamily: "var(--font-pretendard)" }}
       onClick={handleTap}
     >
       {/* 배경 이미지 */}
