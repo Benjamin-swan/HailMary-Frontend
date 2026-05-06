@@ -102,7 +102,7 @@
 
 ---
 
-## 4. 검증된 16개 이벤트와 속성
+## 4. 검증된 26개 이벤트와 속성
 
 | 이벤트 | 핵심 속성 |
 | --- | --- |
@@ -122,6 +122,18 @@
 | `loading_result_clicked` | `character_id` |
 | `story_scene_start` | `character_id` |
 | `story_cut_view` | `character_id`, `cut_index`, `cut_type`, `scene_label` (+ user 속성 `gender`/`birth_year`/`birth_month`/`calendar` 자동 첨부) |
+| `result_page_view` | `character_id`, `saju_request_id` (마운트 + saju_request_id 로드 후 세션당 1회 발화 — 퍼널용) |
+| `paid_report_cta_clicked` | `character_id` (Sticky 결제 CTA 클릭) |
+| `result_page_exit` | `character_id`, `saju_request_id`, `max_scroll` (0~100 정수 %) (unmount/pagehide 시 — engagement용, 같은 탭 재진입 시 max_scroll 누적) |
+| `checkout_page_view` | `character_id`, `saju_request_id`, `amount` (`/checkout/[character]` 마운트 시 세션당 1회) |
+| `checkout_validation_failed` | `character_id`, `reason` (`"email_invalid" \| "consent_missing"`) — 결제 버튼 눌렀으나 이메일/약관 검증 실패 |
+| `payment_method_selected` | `character_id`, `saju_request_id`, `payment_method` (`"GENERAL" \| "KAKAOPAY" \| "NAVERPAY"`), `amount`, `order_id` — 검증 통과 후 결제수단 결정 |
+| `payment_initiated` | `character_id`, `saju_request_id`, `payment_method`, `amount`, `order_id` — `tossPayments.requestPayment()` 호출 직후, 결제창 노출 시점 |
+| `payment_failed` | `character_id`, `order_id`, `error_code`, `error_message` — `/checkout/fail` 진입 또는 SDK catch (USER_CANCEL 포함) |
+| `checkout_success_view` | `character_id`, `order_id` — `/checkout/success` 마운트 시 (F/E 신호, 실제 결제 검증은 B/E `payment_completed`) |
+| `payment_completed` | **B/E** | `character_id`, `saju_request_id`, `order_id`, `amount`, `payment_method`, `paid_at` — 토스 webhook `DONE` 수신 → 백엔드 검증 → Amplitude 직접 전송 (KPI 단일 진실원) |
+
+> **개인정보 정책**: 모든 결제 이벤트는 PII(이메일·이름·전화번호)를 포함하지 않는다. CS 대응이 필요하면 `order_id`를 키로 운영 DB를 조회한다 (Amplitude(익명) ↔ DB(PII) 분리). 이름·전화번호는 Toss Payments confirm API 응답을 B/E가 받아 운영 DB에만 저장.
 
 공통 속성: `device_id`, `session_id`, `timestamp`.
 

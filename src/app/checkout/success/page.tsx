@@ -1,8 +1,9 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { trackEvent } from "@/shared/utils/analytics";
 
 type ConfirmStatus = "pending" | "success" | "error";
 
@@ -25,6 +26,21 @@ function SuccessBody() {
   const [status, setStatus] = useState<ConfirmStatus>("pending");
   const [data, setData] = useState<ConfirmedPayment | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const viewSentRef = useRef(false);
+
+  useEffect(() => {
+    if (viewSentRef.current) return;
+    viewSentRef.current = true;
+    let character: string | null = null;
+    try {
+      const raw = sessionStorage.getItem("checkoutPending");
+      if (raw) character = (JSON.parse(raw)?.character as string) ?? null;
+    } catch {}
+    trackEvent("checkout_success_view", {
+      character_id: character,
+      order_id: orderId || null,
+    });
+  }, [orderId]);
 
   useEffect(() => {
     if (!paymentKey || !orderId || !amount) {

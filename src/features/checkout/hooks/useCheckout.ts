@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ANONYMOUS, loadTossPayments } from "@tosspayments/tosspayments-sdk";
 import { isValidEmail } from "@/shared/utils/validation";
+import { trackEvent } from "@/shared/utils/analytics";
 import {
   PRODUCTS,
   type CheckoutCharacter,
@@ -75,10 +76,18 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
     async (method: CheckoutMethod) => {
       if (!isValidEmail(email)) {
         setEmailError("이메일 형식을 확인해 주세요.");
+        trackEvent("checkout_validation_failed", {
+          character_id: character,
+          reason: "email_invalid",
+        });
         return;
       }
       if (!agreeDataUsage || !agreePayment) {
         alert("결제 진행에는 두 가지 동의가 모두 필요합니다.");
+        trackEvent("checkout_validation_failed", {
+          character_id: character,
+          reason: "consent_missing",
+        });
         return;
       }
       const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY;
@@ -88,10 +97,15 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
       }
       if (isProcessing) return;
       setIsProcessing(true);
+      const sajuRequestId =
+        typeof window !== "undefined"
+          ? localStorage.getItem(`${character}SajuRequestId`)
+          : null;
+      let orderId: string | null = null;
       try {
         const tossPayments = await loadTossPayments(clientKey);
         const payment = tossPayments.payment({ customerKey: ANONYMOUS });
-        const orderId = generateOrderId(character);
+        orderId = generateOrderId(character);
         try {
           sessionStorage.setItem(
             "checkoutPending",
@@ -103,6 +117,14 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
             }),
           );
         } catch {}
+
+        trackEvent("payment_method_selected", {
+          character_id: character,
+          saju_request_id: sajuRequestId,
+          payment_method: method,
+          amount: product.priceKrw,
+          order_id: orderId,
+        });
 
         // 결제 수단별 분기:
         //   GENERAL  → 통합결제창 (flowMode DEFAULT) — 카드·간편결제·계좌이체 등 종합
@@ -125,6 +147,14 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
                 useAppCardOnly: false,
               };
 
+        trackEvent("payment_initiated", {
+          character_id: character,
+          saju_request_id: sajuRequestId,
+          payment_method: method,
+          amount: product.priceKrw,
+          order_id: orderId,
+        });
+
         await payment.requestPayment({
           method: "CARD",
           amount: { currency: "KRW", value: product.priceKrw },
@@ -137,6 +167,16 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
         });
       } catch (err) {
         const message = err instanceof Error ? err.message : "결제를 시작하지 못했어요.";
+        const errorCode =
+          err && typeof err === "object" && "code" in err
+            ? String((err as { code: unknown }).code)
+            : "UNKNOWN";
+        trackEvent("payment_failed", {
+          character_id: character,
+          order_id: orderId,
+          error_code: errorCode,
+          error_message: message,
+        });
         if (!message.includes("USER_CANCEL") && !message.includes("취소")) {
           alert(`결제를 시작하지 못했어요: ${message}`);
         }
