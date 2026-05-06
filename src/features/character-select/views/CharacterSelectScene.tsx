@@ -17,7 +17,7 @@ export function CharacterSelectScene() {
   } = useCharacterSelect();
 
   return (
-    <div className="relative flex flex-1 flex-col">
+    <div className="relative flex flex-1 flex-col" style={{ fontFamily: "var(--font-pretendard)" }}>
       <div className="absolute inset-0 z-30">
         <AnimatePresence mode="wait">
           {phase === "selecting" ? (
@@ -102,7 +102,7 @@ export function CharacterSelectScene() {
                 style={{ zIndex: 20, top: "88px", left: "32px",
                   opacity: hovered === "left" && !selected ? 1 : 0,
                   transform: hovered === "left" && !selected ? "translateX(0)" : "translateX(-20px)" }}>
-                <h2 className="font-black"
+                <h2 className="font-extrabold"
                   style={{ fontSize: "34px", letterSpacing: "8px", marginBottom: "4px", color: "#ffd4a8",
                     textShadow: "0 0 20px rgba(255,150,50,0.8), 2px 2px 12px rgba(0,0,0,0.95)" }}>
                   강 연 우
@@ -117,7 +117,7 @@ export function CharacterSelectScene() {
                 style={{ zIndex: 20, bottom: "112px", right: "32px", textAlign: "right",
                   opacity: hovered === "right" && !selected ? 1 : 0,
                   transform: hovered === "right" && !selected ? "translateX(0)" : "translateX(20px)" }}>
-                <h2 className="font-black"
+                <h2 className="font-extrabold"
                   style={{ fontSize: "34px", letterSpacing: "8px", marginBottom: "4px", color: "#fff5d6",
                     textShadow: "0 0 20px rgba(255,230,150,0.8), 2px 2px 12px rgba(0,0,0,0.95)" }}>
                   한 도 윤
@@ -170,7 +170,7 @@ export function CharacterSelectScene() {
               {/* Selected message */}
               <div className="pointer-events-none absolute w-full text-center"
                 style={{ bottom: "70px", zIndex: 25, opacity: selected ? 1 : 0, transition: "opacity 0.7s ease 0.3s" }}>
-                <h3 className="font-bold text-white"
+                <h3 className="font-semibold text-white"
                   style={{ fontSize: "28px", letterSpacing: "8px", marginBottom: "12px",
                     textShadow: "0 2px 25px rgba(0,0,0,0.9), 0 0 18px rgba(255,220,150,0.4)" }}>
                   {selected === "left" ? "강 연 우" : selected === "right" ? "한 도 윤" : ""}
@@ -205,7 +205,7 @@ export function CharacterSelectScene() {
                 <div className="absolute inset-0 z-10 flex flex-col justify-end px-6 pb-8">
                   <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.3, duration: 0.6 }}>
-                    <h2 className="mb-1 font-black"
+                    <h2 className="mb-1 font-extrabold"
                       style={{ fontSize: "36px", letterSpacing: "10px", color: selectedInfo.nameColor,
                         textShadow: `0 0 30px ${selectedInfo.accentColor}, 2px 2px 12px rgba(0,0,0,0.95)` }}>
                       {selectedInfo.fullName}
