@@ -31,7 +31,7 @@ export default function PortraitNotebookSection() {
           paddingY={15}
           borderWidth={2.5}
           speakerSize={14}
-          letterSpacing="1.36px"
+          letterSpacing="0.36px"
         >
           분석 가능한 것들을
           <br />

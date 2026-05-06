@@ -49,13 +49,13 @@ export default function TabletSection({ displayName }: Props) {
         className="absolute top-[5%] left-[5%] z-10"
         style={{ transform: "translateY(40px)" }}
       >
-        <SpeechBubble widthPct={100} tail={false} radius={40} textSize={14} paddingX={18}>
+        <SpeechBubble widthPct={100} tail={false} radius={40} textSize={16} paddingX={18}>
           사주 데이터 입력 완료.
         </SpeechBubble>
       </div>
 
       <div className="absolute bottom-[6%] right-[5%] z-10 flex justify-end">
-        <SpeechBubble speaker="한도윤" widthPct={100} tail={false} radius={40} textSize={15} paddingX={20}>
+        <SpeechBubble speaker="한도윤" widthPct={100} tail={false} radius={40} textSize={16} paddingX={20}>
           흥미로운 구조네요. {displayName}님.
         </SpeechBubble>
       </div>

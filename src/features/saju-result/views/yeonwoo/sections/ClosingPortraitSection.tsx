@@ -14,17 +14,17 @@ export function ClosingPortraitSection() {
         sizes="(max-width: 448px) 100vw, 448px"
       />
       <div
-        className="absolute top-[6%] left-[4%] max-w-[58%] inline-flex"
+        className="absolute top-[4%] left-[4%] max-w-[58%] inline-flex"
         style={{
           padding: "14px 20px",
           borderRadius: "20px",
           border: "1px solid #856C51",
           background: "#12110F",
           color: "#e8e0d4",
-          fontSize: "13px",
-          lineHeight: "1.5",
-          fontWeight: 300,
-          transform: "translateY(40px)",
+          fontSize: "16px",
+          lineHeight: "28px",
+          fontWeight: 500,
+          letterSpacing: "0.36px",
         }}
       >
         <span>
@@ -43,9 +43,10 @@ export function ClosingPortraitSection() {
           border: "1px solid #856C51",
           background: "#12110F",
           color: "#e8e0d4",
-          fontSize: "13px",
-          lineHeight: "1.5",
-          fontWeight: 300,
+          fontSize: "16px",
+          lineHeight: "28px",
+          fontWeight: 500,
+          letterSpacing: "0.36px",
           transform: "translateY(40px)",
         }}
       >

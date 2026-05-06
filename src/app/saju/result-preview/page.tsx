@@ -197,7 +197,7 @@ const MOCK_REVIEWS: ReviewItem[] = [
 
 export default function ResultPreviewPage() {
   return (
-    <main className="min-h-screen bg-[#FDF5EA] pb-32">
+    <main className="min-h-screen bg-[#FDF5EA] pb-32" style={{ fontFamily: "var(--font-pretendard)" }}>
       <SajuChartSection pillars={MOCK_PILLARS} displayName="도윤" />
       <WuxingChartSection
         pillars={MOCK_PILLARS}

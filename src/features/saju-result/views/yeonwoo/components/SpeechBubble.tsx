@@ -22,7 +22,7 @@ export function SpeechBubble({
   widthPct = 64,
   tail = true,
   radius = 33,
-  textSize = 17,
+  textSize = 16,
   paddingX = 24,
 }: Props) {
   return (
@@ -79,7 +79,7 @@ export function SpeechBubble({
             fontFamily: "Pretendard, sans-serif",
             fontSize: `${textSize}px`,
             fontWeight: 500,
-            lineHeight: "29px",
+            lineHeight: "28px",
             letterSpacing: "0.36px",
           }}
         >
