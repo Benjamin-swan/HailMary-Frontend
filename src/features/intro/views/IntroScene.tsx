@@ -1,10 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useIntroScene } from "../hooks/useIntroScene";
 import { STEPS } from "../domain/introSteps";
+import { ConfirmModal } from "@/shared/components/ConfirmModal";
 import { SceneProgressBar } from "@/components/SceneProgressBar";
 import { FadeOverlay } from "@/components/FadeOverlay";
+
+type PendingNav = "home" | "skip" | null;
+
+const NAV_PROMPT: Record<Exclude<PendingNav, null>, { message: string; confirmLabel: string; href: string }> = {
+  home: { message: "메인 화면으로 돌아갈까요?\n진행 중인 인트로는 종료돼요", confirmLabel: "메인으로", href: "/" },
+  skip: { message: "인트로를 건너뛰고\n캐릭터 선택으로 넘어갈까요?", confirmLabel: "건너뛰기", href: "/select" },
+};
 import { DialogueCut } from "./components/DialogueCut";
 import { ButtonCut } from "./components/ButtonCut";
 import { VideoCut } from "./components/VideoCut";
@@ -13,6 +23,8 @@ import { PhoneCut } from "./components/PhoneCut";
 import { FlashSequenceCut } from "./components/FlashSequenceCut";
 
 export function IntroScene() {
+  const router = useRouter();
+  const [pendingNav, setPendingNav] = useState<PendingNav>(null);
   const {
     step, stepIndex, bgImage,
     displayedText, isComplete, showDialogue,
@@ -21,7 +33,7 @@ export function IntroScene() {
     visibleNotifs, phonePhase,
     flashSeqIndex, flashSeqWhite,
     handleTap, handleVideoEnd, handleDoorClick, handleButtonClick, toggleMute,
-    jumpToStep, videoRef,
+    videoRef,
   } = useIntroScene();
 
   return (
@@ -42,8 +54,7 @@ export function IntroScene() {
         );
       })()}
 
-      <SceneProgressBar stepIndex={stepIndex} totalSteps={STEPS.length}
-        onPrev={jumpToStep(-1)} onNext={jumpToStep(1)} />
+      <SceneProgressBar stepIndex={stepIndex} totalSteps={STEPS.length} />
 
       {/* 사운드 안내 — 모든 스텝에서 표시 */}
       {showSoundHint && muted && (
@@ -63,7 +74,9 @@ export function IntroScene() {
             return showDialogue
               ? <DialogueCut step={step} displayedText={displayedText} isComplete={isComplete}
                   muted={muted} showSoundHint={false} fading={fading}
-                  crossFading={crossFading} flashWhite={flashWhite} onToggleMute={toggleMute} />
+                  crossFading={crossFading} flashWhite={flashWhite} onToggleMute={toggleMute}
+                  onGoHome={(e) => { e.stopPropagation(); setPendingNav("home"); }}
+                  onSkip={(e) => { e.stopPropagation(); setPendingNav("skip"); }} />
               : null;
           case "button":
             return <ButtonCut step={step} bgImage={bgImage} fading={fading} onNext={handleButtonClick} />;
@@ -82,6 +95,20 @@ export function IntroScene() {
 
       <FadeOverlay visible={fading} color="black" durationMs={250} />
       <FadeOverlay visible={flashWhite} color="white" durationMs={150} easing="ease-out" />
+
+      <ConfirmModal
+        open={pendingNav !== null}
+        message={pendingNav ? NAV_PROMPT[pendingNav].message : ""}
+        confirmLabel={pendingNav ? NAV_PROMPT[pendingNav].confirmLabel : "확인"}
+        cancelLabel="취소"
+        onConfirm={() => {
+          if (!pendingNav) return;
+          const href = NAV_PROMPT[pendingNav].href;
+          setPendingNav(null);
+          router.push(href);
+        }}
+        onCancel={() => setPendingNav(null)}
+      />
     </div>
   );
 }

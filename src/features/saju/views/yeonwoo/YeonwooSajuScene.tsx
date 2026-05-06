@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { YEONWOO_CUTS, type Cut } from "@/features/saju/domain/cuts-yeonwoo";
 import { SURVEY_STEPS } from "@/features/saju/domain/surveyOptions";
@@ -16,6 +16,15 @@ import SurveyCut from "@/features/saju/views/shared/SurveyCut";
 import CtaOverlay from "@/features/saju/views/shared/CtaOverlay";
 import { FadeOverlay } from "@/components/FadeOverlay";
 import { SceneProgressBar } from "@/components/SceneProgressBar";
+import { NavIconButton } from "@/shared/components/NavIconButton";
+import { ConfirmModal } from "@/shared/components/ConfirmModal";
+import { HomeIcon, UsersIcon } from "@/features/saju/views/shared/StoryNavIcons";
+
+type PendingNav = "home" | "consultant" | null;
+const NAV_PROMPT: Record<Exclude<PendingNav, null>, { message: string; confirmLabel: string; href: string }> = {
+  home: { message: "메인 화면으로 돌아갈까요?\n진행 중인 풀이는 종료돼요", confirmLabel: "메인으로", href: "/" },
+  consultant: { message: "진행 중인 풀이를 멈추고\n캐릭터 선택으로 돌아갈까요?", confirmLabel: "상담사 변경", href: "/select" },
+};
 
 const CROSSFADE_ENTER = new Set<number>([5]);
 const SURFACE = "#141311";
@@ -26,13 +35,14 @@ function getBg(c: Cut): string | null {
 
 export default function YeonwooSajuScene() {
   const router = useRouter();
+  const [pendingNav, setPendingNav] = useState<PendingNav>(null);
   const { surveyAnswers, setSurveyAnswers, submitInfo, finalizeSurvey } =
     useCharacterSajuFlow({ storageKeyPrefix: "yeonwoo" });
 
   const {
     cut, cutIndex, lineIndex, displayedCount, fullText,
     isComplete, fading, crossFading, leanInZoomed, ctaVisible,
-    handleTap, goToCut, jumpTo,
+    handleTap, goToCut,
   } = useCutProgression<Cut>(YEONWOO_CUTS, { crossfadeOnEnter: CROSSFADE_ENTER });
 
   // 컷 전환 flicker 방지: 모든 cut 이미지(bg + bgZoomed)를 마운트 시 일괄 프리로드
@@ -75,7 +85,7 @@ export default function YeonwooSajuScene() {
 
   return (
     <div
-      className="relative flex flex-col h-dvh w-full overflow-hidden select-text"
+      className="relative flex flex-col h-dvh w-full overflow-hidden select-none"
       style={{ background: SURFACE, fontFamily: "var(--font-pretendard)" }}
       onClick={handleTap}
     >
@@ -119,6 +129,22 @@ export default function YeonwooSajuScene() {
       {!fading && !crossFading &&
         (cut.type === "dialogue" || cut.type === "dialogue-closeup" || isLeanIn) && (
           <div className={`relative z-10 mt-auto px-5 ${isLeanIn ? "mb-24" : cut.type === "dialogue-closeup" ? "mb-20" : "mb-16"}`}>
+            <div className="-mb-5 flex justify-end gap-2">
+              <NavIconButton
+                label="메인으로"
+                onClick={(e) => { e.stopPropagation(); setPendingNav("home"); }}
+                tooltipPlacement="top"
+              >
+                <HomeIcon />
+              </NavIconButton>
+              <NavIconButton
+                label="상담사 변경"
+                onClick={(e) => { e.stopPropagation(); setPendingNav("consultant"); }}
+                tooltipPlacement="top"
+              >
+                <UsersIcon />
+              </NavIconButton>
+            </div>
             <DialogueBox
               speaker={cut.speaker}
               text={fullText.slice(0, displayedCount)}
@@ -191,27 +217,22 @@ export default function YeonwooSajuScene() {
       {/* CTA */}
       {isLeanIn && ctaVisible && !fading && <CtaOverlay onClick={handleCta} />}
 
-      {/* 상담사 변경 */}
-      <button
-        className="absolute right-4 top-6 z-[60] rounded-full px-3 py-1.5 text-[11px] tracking-[0.15em]"
-        style={{
-          background: "rgba(20,19,17,0.7)",
-          backdropFilter: "blur(8px)",
-          color: "white",
-          border: "1px solid rgba(245,237,224,0.12)",
-        }}
-        onClick={(e) => { e.stopPropagation(); router.push("/select"); }}
-      >
-        상담사 변경
-      </button>
-
       <FadeOverlay visible={fading || crossFading} color="black" durationMs={380} />
 
-      <SceneProgressBar
-        stepIndex={cutIndex}
-        totalSteps={YEONWOO_CUTS.length}
-        onPrev={(e: React.MouseEvent) => { e.stopPropagation(); jumpTo(-1); }}
-        onNext={(e: React.MouseEvent) => { e.stopPropagation(); jumpTo(1); }}
+      <SceneProgressBar stepIndex={cutIndex} totalSteps={YEONWOO_CUTS.length} />
+
+      <ConfirmModal
+        open={pendingNav !== null}
+        message={pendingNav ? NAV_PROMPT[pendingNav].message : ""}
+        confirmLabel={pendingNav ? NAV_PROMPT[pendingNav].confirmLabel : "확인"}
+        cancelLabel="취소"
+        onConfirm={() => {
+          if (!pendingNav) return;
+          const href = NAV_PROMPT[pendingNav].href;
+          setPendingNav(null);
+          router.push(href);
+        }}
+        onCancel={() => setPendingNav(null)}
       />
     </div>
   );

@@ -10,7 +10,7 @@ export function TopNav() {
         src="/dohwaseon-logo.png"
         alt="도화선"
         height={35}
-        width={132}
+        width={98}
         priority
         className="h-[35px] w-auto"
       />
