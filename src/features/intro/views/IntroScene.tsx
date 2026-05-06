@@ -25,7 +25,7 @@ export function IntroScene() {
   } = useIntroScene();
 
   return (
-    <div className="relative flex flex-1 flex-col animate-[fadeIn_0.8s_ease-in]" onClick={handleTap}>
+    <div className="relative flex flex-1 flex-col animate-[fadeIn_0.8s_ease-in]" style={{ fontFamily: "var(--font-pretendard)" }} onClick={handleTap}>
       {/* 배경 이미지 */}
       {step.type !== "video" && bgImage && (
         <Image src={bgImage} alt="" fill priority className="object-cover object-center"
