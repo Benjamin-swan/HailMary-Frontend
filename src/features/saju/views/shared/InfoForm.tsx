@@ -89,20 +89,20 @@ export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려�
           </Field>
 
           <Field label="태어난 시간">
-            <div className="space-y-2.5">
+            <div
+              className="flex items-center gap-3 py-2"
+              style={{ borderBottom: "1px solid rgba(245,237,224,0.15)" }}
+            >
               <input type="text" value={time} onChange={(e) => setTime(formatTime(e.target.value))}
                 placeholder="HH:MM" maxLength={5} inputMode="numeric" disabled={unknownTime}
-                className="w-full bg-transparent py-2 text-[16px] outline-none placeholder:text-[#998f82] disabled:opacity-40"
-                style={{ color: "#F5EDE0", borderBottom: "1px solid rgba(245,237,224,0.15)" }} />
-              <div className="flex">
-                <Chip
-                  selected={unknownTime}
-                  onClick={() => { setUnknownTime(!unknownTime); if (!unknownTime) setTime(""); }}
-                  wide
-                >
-                  시간 모름
-                </Chip>
-              </div>
+                className="flex-1 bg-transparent text-[16px] outline-none placeholder:text-[#998f82] disabled:opacity-40"
+                style={{ color: "#F5EDE0" }} />
+              <Chip
+                selected={unknownTime}
+                onClick={() => { setUnknownTime(!unknownTime); if (!unknownTime) setTime(""); }}
+              >
+                시간 모름
+              </Chip>
             </div>
           </Field>
 
