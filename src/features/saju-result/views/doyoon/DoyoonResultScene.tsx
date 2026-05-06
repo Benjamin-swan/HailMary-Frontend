@@ -221,7 +221,7 @@ export default function DoyoonResultScene() {
         />
       </div>
       <StickyCheckoutCta
-        ctaLabel="결제하고 한도윤의 정밀 리포트 읽기"
+        ctaLabel="결제하고 도윤의 정밀 리포트 읽기"
         visible={showCta}
         onCheckout={() => {
           trackEvent("paid_report_cta_clicked", { character_id: "doyoon" });

@@ -17,24 +17,6 @@ type Props = {
   characterId?: string;
 };
 
-// 십이지시 — 자(子) 시는 조자(早子)/야자(夜子)로 분리
-const TIME_SLOTS: ReadonlyArray<{ value: string; label: string }> = [
-  { value: "unknown", label: "시간 모름" },
-  { value: "00:00", label: "조자/朝子 (00:00~01:29)" },
-  { value: "01:30", label: "축/丑 (01:30~03:29)" },
-  { value: "03:30", label: "인/寅 (03:30~05:29)" },
-  { value: "05:30", label: "묘/卯 (05:30~07:29)" },
-  { value: "07:30", label: "진/辰 (07:30~09:29)" },
-  { value: "09:30", label: "사/巳 (09:30~11:29)" },
-  { value: "11:30", label: "오/午 (11:30~13:29)" },
-  { value: "13:30", label: "미/未 (13:30~15:29)" },
-  { value: "15:30", label: "신/申 (15:30~17:29)" },
-  { value: "17:30", label: "유/酉 (17:30~19:29)" },
-  { value: "19:30", label: "술/戌 (19:30~21:29)" },
-  { value: "21:30", label: "해/亥 (21:30~23:29)" },
-  { value: "23:30", label: "야자/夜子 (23:30~23:59)" },
-];
-
 export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려주기 →", characterId }: Props) {
   useEffect(() => {
     trackEvent("info_form_view", { character_id: characterId });
@@ -43,7 +25,8 @@ export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려�
   const [name, setName] = useState("");
   const [birth, setBirth] = useState("");
   const [calendar, setCalendar] = useState<"solar" | "lunar">("solar");
-  const [timeSlot, setTimeSlot] = useState<string>("");
+  const [time, setTime] = useState("");
+  const [unknownTime, setUnknownTime] = useState(false);
   const [gender, setGender] = useState<"female" | "male" | null>(null);
 
   const birthError = useMemo(() => validateBirth(birth), [birth]);
@@ -51,7 +34,7 @@ export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려�
     name.trim().length > 0 &&
     /^\d{4}\.\d{2}\.\d{2}$/.test(birth) &&
     birthError === null &&
-    timeSlot !== "" &&
+    (unknownTime || /^\d{2}:\d{2}$/.test(time)) &&
     gender !== null;
 
   const handleSubmit = (e: React.MouseEvent) => {
@@ -63,9 +46,9 @@ export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려�
       birth_year: birth.slice(0, 4),
       birth_month: birth.slice(5, 7),
       calendar,
-      has_birth_time: timeSlot !== "unknown",
+      has_birth_time: !unknownTime,
     });
-    onSubmit({ name: name.trim(), birth, calendar, time: timeSlot, gender });
+    onSubmit({ name: name.trim(), birth, calendar, time: unknownTime ? "unknown" : time, gender });
   };
 
   return (
@@ -106,30 +89,20 @@ export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려�
           </Field>
 
           <Field label="태어난 시간">
-            <div className="relative">
-              <select
-                value={timeSlot}
-                onChange={(e) => setTimeSlot(e.target.value)}
-                className="w-full cursor-pointer appearance-none bg-transparent py-2 pr-8 text-[16px] font-medium outline-none"
-                style={{
-                  color: timeSlot ? "#F5EDE0" : "#998f82",
-                  borderBottom: "1px solid rgba(245,237,224,0.15)",
-                }}
-              >
-                <option value="" disabled>시간을 선택하세요</option>
-                {TIME_SLOTS.map((slot) => (
-                  <option key={slot.value} value={slot.value} style={{ color: "#141311", background: "#F5EDE0" }}>
-                    {slot.label}
-                  </option>
-                ))}
-              </select>
-              <span
-                aria-hidden
-                className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px]"
-                style={{ color: "#998f82" }}
-              >
-                ▼
-              </span>
+            <div className="space-y-2.5">
+              <input type="text" value={time} onChange={(e) => setTime(formatTime(e.target.value))}
+                placeholder="HH:MM" maxLength={5} inputMode="numeric" disabled={unknownTime}
+                className="w-full bg-transparent py-2 text-[16px] outline-none placeholder:text-[#998f82] disabled:opacity-40"
+                style={{ color: "#F5EDE0", borderBottom: "1px solid rgba(245,237,224,0.15)" }} />
+              <div className="flex">
+                <Chip
+                  selected={unknownTime}
+                  onClick={() => { setUnknownTime(!unknownTime); if (!unknownTime) setTime(""); }}
+                  wide
+                >
+                  시간 모름
+                </Chip>
+              </div>
             </div>
           </Field>
 
@@ -187,6 +160,12 @@ function formatBirth(input: string): string {
   if (digits.length <= 4) return digits;
   if (digits.length <= 6) return `${digits.slice(0, 4)}.${digits.slice(4)}`;
   return `${digits.slice(0, 4)}.${digits.slice(4, 6)}.${digits.slice(6)}`;
+}
+
+function formatTime(input: string): string {
+  const digits = input.replace(/\D/g, "").slice(0, 4);
+  if (digits.length <= 2) return digits;
+  return `${digits.slice(0, 2)}:${digits.slice(2)}`;
 }
 
 function validateBirth(birth: string): string | null {

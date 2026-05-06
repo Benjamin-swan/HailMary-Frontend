@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-const PRIMARY_COLOR = "#E94E3F";
-const TEXT_COLOR = "#2a1f15";
+const PRIMARY_COLOR = "#D73F59";
+const TEXT_COLOR = "#ECECEC";
 const TWELVE_HOURS_MS = 12 * 60 * 60 * 1000;
 
 function formatHMSD(totalMs: number): string {
@@ -50,7 +50,7 @@ export default function StickyCheckoutCta({
       style={{
         maxWidth: "28rem",
         background:
-          "linear-gradient(to top, rgba(253,245,234,0.98) 0%, rgba(253,245,234,0.92) 65%, rgba(253,245,234,0) 100%)",
+          "linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 65%, rgba(0,0,0,0) 100%)",
         opacity: visible ? 1 : 0,
         pointerEvents: visible ? "auto" : "none",
         transform: visible ? "translateY(0)" : "translateY(20px)",
