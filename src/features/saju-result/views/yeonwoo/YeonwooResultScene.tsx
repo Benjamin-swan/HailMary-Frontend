@@ -35,7 +35,7 @@ export default function YeonwooResultScene() {
     <>
       <div
         className="flex-1 w-full overflow-y-auto"
-        style={{ background: SURFACE, paddingBottom: "120px" }}
+        style={{ background: SURFACE, paddingBottom: "120px", fontFamily: "var(--font-pretendard)" }}
       >
         <HeroSection />
         <SceneOpeningSection />

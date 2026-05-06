@@ -30,7 +30,7 @@ const GOLD = "#c9a96e";
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between py-3">
-      <span className="text-[12px]" style={{ color: LABEL_COLOR }}>
+      <span className="text-[13px]" style={{ color: LABEL_COLOR }}>
         {label}
       </span>
       <span className="text-[13px] font-medium" style={{ color: TEXT_COLOR }}>
@@ -127,7 +127,7 @@ export function DestinedPartnerSection({ spouseMatch }: Props) {
         >
           “
         </span>
-        <p className="text-[13px] text-center leading-relaxed" style={{ color: TEXT_COLOR }}>
+        <p className="text-[14px] text-center leading-relaxed" style={{ color: TEXT_COLOR }}>
           {copy.quote}
         </p>
         <span
@@ -138,7 +138,7 @@ export function DestinedPartnerSection({ spouseMatch }: Props) {
         </span>
       </div>
 
-      <p className="text-[11px] font-medium mb-1" style={{ color: GOLD }}>
+      <p className="text-[13px] font-semibold mb-1" style={{ color: GOLD }}>
         공개 정보
       </p>
       <div className="border-t" style={{ borderColor: ROW_DIVIDER }}>
@@ -149,7 +149,7 @@ export function DestinedPartnerSection({ spouseMatch }: Props) {
         <InfoRow label="첫 느낌" value={copy.firstFeel} />
       </div>
 
-      <p className="text-[11px] font-medium mt-7 mb-1" style={{ color: LABEL_COLOR }}>
+      <p className="text-[13px] font-semibold mt-7 mb-1" style={{ color: LABEL_COLOR }}>
         잠긴 정보
       </p>
       <div className="border-t" style={{ borderColor: ROW_DIVIDER }}>
@@ -162,7 +162,7 @@ export function DestinedPartnerSection({ spouseMatch }: Props) {
 
       <button
         type="button"
-        className="w-full rounded-xl py-3.5 mt-7 flex items-center justify-center gap-2 text-[12px] tracking-[0.05em]"
+        className="w-full rounded-xl py-3.5 mt-7 flex items-center justify-center gap-2 text-[14px] font-semibold tracking-[0.05em]"
         style={{
           border: "1px solid #5a2026",
           background: "#1a0a0c",

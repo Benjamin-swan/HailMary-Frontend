@@ -150,14 +150,14 @@ function CardShell({
       <div className="px-4 pt-5 pb-6">
         <div className="flex items-center justify-between mb-3">
           <p
-            className="text-[12px] tracking-[0.35em]"
+            className="text-[14px] tracking-[0.2em] font-medium"
             style={{ color: labelColor }}
           >
             {label}
           </p>
           {badge && (
             <span
-              className="text-[10px] tracking-wider px-2.5 py-1 rounded-full"
+              className="text-[11px] tracking-wider px-2.5 py-1 rounded-full"
               style={{ border: `1px solid ${borderColor}`, color: borderColor }}
             >
               {badge}
@@ -199,11 +199,8 @@ function CharmTypeCard({
       labelColor={tokens.labelColor}
     >
       <p
-        className="text-xl font-black tracking-[0.15em] mb-2"
-        style={{
-          color: tokens.typeNameColor,
-          textShadow: tokens.typeNameShadow,
-        }}
+        className="text-base font-extrabold tracking-[0.15em] mb-2"
+        style={{ color: tokens.typeNameColor }}
       >
         {typeKo}
       </p>
@@ -241,21 +238,14 @@ function DohwaCard({
       glowColor={hasDohwa ? `${dohwaHue}33` : "transparent"}
       labelColor={tokens.labelColor}
     >
-      <div className="flex items-center gap-2 mb-2">
-        <p
-          className="text-base font-black tracking-[0.1em]"
-          style={{
-            color: hasDohwa ? dohwaHue : tokens.typeBorderColor,
-            textShadow: hasDohwa ? `0 0 10px ${dohwaHue}80` : "none",
-            fontFamily: '"NotoSerifTC", "ChosunNm", serif',
-            fontWeight: 700,
-          }}
-        >
-          {hasDohwa
-            ? `도화(桃花殺) ${charm.dohwa.hanja ?? "있음"}`
-            : "도화살 없음"}
-        </p>
-      </div>
+      <p
+        className="text-base font-extrabold tracking-[0.15em] mb-2"
+        style={{ color: hasDohwa ? dohwaHue : tokens.typeBorderColor }}
+      >
+        {hasDohwa
+          ? `도화(桃花殺) ${charm.dohwa.hanja ?? "있음"}`
+          : "도화살 없음"}
+      </p>
       <p
         className="text-[12px] leading-relaxed"
         style={{ color: tokens.bodyColor }}
@@ -277,14 +267,7 @@ function StrengthCard({
   const pct = charm.charmStrength;
   const steps = 10;
   const filled = Math.round((pct / 100) * steps);
-  const hue =
-    pct >= 78
-      ? "#E6A88E"
-      : pct >= 52
-        ? "#E6C58E"
-        : pct >= 28
-          ? "#9CC8B0"
-          : "#6B8BB5";
+  const hue = "#D2A965";
 
   return (
     <CardShell
@@ -296,8 +279,8 @@ function StrengthCard({
       labelColor={tokens.labelColor}
     >
       <p
-        className="text-lg font-black tracking-[0.15em] mb-3"
-        style={{ color: hue, textShadow: `0 0 10px ${hue}66` }}
+        className="text-base font-extrabold tracking-[0.15em] mb-3"
+        style={{ color: hue }}
       >
         {label}
       </p>
@@ -356,11 +339,8 @@ function ManifestationCard({
       labelColor={tokens.labelColor}
     >
       <p
-        className="text-base font-black tracking-[0.1em] mb-2"
-        style={{
-          color: tokens.manifestNameColor,
-          textShadow: tokens.manifestNameShadow,
-        }}
+        className="text-base font-extrabold tracking-[0.15em] mb-2"
+        style={{ color: tokens.manifestNameColor }}
       >
         {manifestKo} 빛남
       </p>

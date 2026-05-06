@@ -57,10 +57,10 @@ export default function PortraitTabletSection() {
           block
           tail={false}
           radius={30}
-          textSize={17}
+          textSize={16}
           paddingX={20}
           paddingY={24}
-          lineHeight="27px"
+          lineHeight="28px"
           borderWidth={2.5}
         >
           딴 데 기웃거리지 마시고,

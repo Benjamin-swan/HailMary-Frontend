@@ -114,6 +114,7 @@ export default function DoyoonResultScene() {
           background: SURFACE,
           scrollbarWidth: "none",
           paddingBottom: "120px",
+          fontFamily: "var(--font-pretendard)",
         }}
       >
         <HeroSection />

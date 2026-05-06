@@ -28,7 +28,7 @@ export default function PortraitSection({ displayName }: Props) {
           widthPct={100}
           tail="up"
           radius={30}
-          textSize={14}
+          textSize={16}
           paddingX={30}
           paddingY={15}
         >

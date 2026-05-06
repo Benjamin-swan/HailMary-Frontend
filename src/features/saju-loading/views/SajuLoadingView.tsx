@@ -85,7 +85,7 @@ export default function SajuLoadingView({ character }: Props) {
   return (
     <div
       className="fixed inset-0 z-[100] overflow-hidden"
-      style={{ background: COLOR.surface }}
+      style={{ background: COLOR.surface, fontFamily: "var(--font-pretendard)" }}
     >
       {/* Layer 0: 배경 사진 스택
           모바일 portrait: 패널 위 영역만 차지하는 컨테이너를 90도 회전.
