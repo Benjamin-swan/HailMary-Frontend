@@ -11,7 +11,7 @@ export function CheckoutHeader({ onBack }: CheckoutHeaderProps) {
         type="button"
         aria-label="뒤로가기"
         onClick={onBack}
-        className="flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 transition-colors hover:bg-neutral-100"
+        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-neutral-700 transition-colors hover:bg-neutral-100"
       >
         <svg
           width="20"
