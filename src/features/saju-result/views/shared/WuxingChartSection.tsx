@@ -38,9 +38,12 @@ export default function WuxingChartSection({ pillars, dayMaster, wuxing }: Props
 
   const safeRatio = (el: WuxingKey): number => {
     const v = Number(wuxing?.ratios?.[el]);
-    return Number.isFinite(v) && v >= 0 ? Math.min(v, 100) : 0;
+    return Number.isFinite(v) && v >= 0 ? v : 0;
   };
   const ratios = WUXING_ELEMENTS.map(safeRatio);
+  // 한국 사주는 대부분 단일 오행 비율이 50%를 넘지 않아, 상대 스케일링(가장 큰 값 = 100%)으로 시각화.
+  const maxRatio = Math.max(...ratios);
+  const denom = maxRatio > 0 ? maxRatio : 1;
 
   const overdoneEls = WUXING_ELEMENTS.filter(
     (el) => wuxing?.judgments?.[el] === "과다",
@@ -234,7 +237,8 @@ export default function WuxingChartSection({ pillars, dayMaster, wuxing }: Props
                 {WUXING_ELEMENTS.map((el, i) => {
                   const ratio = ratios[i];
                   const color = DOYOON_WUXING_HUES[el];
-                  const barH = (ratio / 100) * BAR_AREA_H;
+                  const rawH = Math.round((ratio / denom) * BAR_AREA_H);
+                  const barH = ratio > 0 ? Math.max(rawH, 4) : 0;
 
                   return (
                     <div

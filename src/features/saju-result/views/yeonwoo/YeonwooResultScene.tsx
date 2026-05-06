@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { trackEvent } from "@/shared/utils/analytics";
 import { useYeonwooSajuData } from "../../hooks/useYeonwooSajuData";
 import { HeroSection } from "./sections/HeroSection";
@@ -34,6 +34,7 @@ export default function YeonwooResultScene() {
   const data = useYeonwooSajuData();
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const [showCta, setShowCta] = useState(false);
   const maxScrollRef = useRef(0);
   const sajuRequestIdRef = useRef(data.sajuRequestId);
   useEffect(() => {
@@ -59,6 +60,7 @@ export default function YeonwooResultScene() {
     const handleScroll = () => {
       const p = measureProgress();
       if (p > maxScrollRef.current) maxScrollRef.current = p;
+      setShowCta(p >= 0.4);
     };
 
     let sent = false;
@@ -122,7 +124,7 @@ export default function YeonwooResultScene() {
         <RomanceTimingSection flow={data.monthlyRomanceFlow} />
         <RealReviewsSection />
       </div>
-      <StickyCheckoutCta />
+      <StickyCheckoutCta visible={showCta} />
     </>
   );
 }

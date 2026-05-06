@@ -17,7 +17,11 @@ function formatHMSD(totalMs: number): string {
   return `${pad(h)}:${pad(m)}:${pad(s)}.${d}`;
 }
 
-export function StickyCheckoutCta() {
+type Props = {
+  visible?: boolean;
+};
+
+export function StickyCheckoutCta({ visible = true }: Props = {}) {
   const router = useRouter();
   const [endAt, setEndAt] = useState<number>(() => Date.now() + TWELVE_HOURS_MS);
   const [now, setNow] = useState<number>(() => Date.now());
@@ -42,6 +46,10 @@ export function StickyCheckoutCta() {
         maxWidth: "28rem",
         background:
           "linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 65%, rgba(0,0,0,0) 100%)",
+        opacity: visible ? 1 : 0,
+        pointerEvents: visible ? "auto" : "none",
+        transform: visible ? "translateY(0)" : "translateY(20px)",
+        transition: "opacity 0.3s ease, transform 0.3s ease",
       }}
     >
       <p

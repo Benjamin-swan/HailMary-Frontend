@@ -13,7 +13,7 @@ export default function BeigeBlockSection() {
       style={{
         background: BG,
         minHeight: "230px",
-        padding: "15px 20px 32px",
+        padding: "35px 20px 52px",
         textAlign: "center",
       }}
     >

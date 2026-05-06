@@ -18,7 +18,6 @@ import {
 import type { CharmCopyPool } from "../../domain/types";
 
 import HeroSection from "./sections/HeroSection";
-import TitleBannerSection from "./sections/TitleBannerSection";
 import CharacterIntroSection from "./sections/CharacterIntroSection";
 import TabletSection from "./sections/TabletSection";
 import PortraitSection from "./sections/PortraitSection";
@@ -140,7 +139,6 @@ export default function DoyoonResultScene() {
         }}
       >
         <HeroSection />
-        <TitleBannerSection />
         <CharacterIntroSection displayName={displayName} />
         <div
           aria-hidden="true"

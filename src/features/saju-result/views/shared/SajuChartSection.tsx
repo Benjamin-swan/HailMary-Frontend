@@ -50,24 +50,24 @@ function getEarthHue(pillar: Pillar, isDay: boolean): string {
   return isDay ? DOYOON_WUXING_HUES_DAY[earth] : DOYOON_WUXING_HUES[earth];
 }
 
-type CellProps = {
+type PillarBoxProps = {
   hanja: string;
   hangul: string;
   hue: string;
+  isDay: boolean;
   unknown: boolean;
   unknownLabel?: string;
-  isHeaven: boolean;
 };
 
-function Cell({ hanja, hangul, hue, unknown, unknownLabel, isHeaven }: CellProps) {
+function PillarBox({ hanja, hangul, hue, isDay, unknown, unknownLabel }: PillarBoxProps) {
   return (
     <div
-      className="flex flex-col items-center justify-center"
+      className="w-full flex flex-col items-center justify-center rounded-xl gap-2"
       style={{
-        position: "relative",
-        zIndex: 1,
-        paddingTop: isHeaven ? "16px" : "14px",
-        paddingBottom: isHeaven ? "14px" : "16px",
+        background: isDay ? DAY_HIGHLIGHT_BG : "#FDF5EA",
+        border: `${isDay ? "1.5px" : "1px"} solid ${isDay ? DAY_BORDER : GRID_BORDER}`,
+        opacity: unknown ? 0.6 : 1,
+        aspectRatio: "9 / 11",
       }}
     >
       <span
@@ -77,7 +77,6 @@ function Cell({ hanja, hangul, hue, unknown, unknownLabel, isHeaven }: CellProps
           fontSize: "clamp(28px, 7vw, 40px)",
           lineHeight: 1,
           color: hue,
-          opacity: unknown ? 0.6 : 1,
         }}
       >
         {unknown ? "?" : hanja}
@@ -88,8 +87,6 @@ function Cell({ hanja, hangul, hue, unknown, unknownLabel, isHeaven }: CellProps
           fontWeight: 400,
           fontSize: "12px",
           color: "#9C8A6D",
-          marginTop: "6px",
-          opacity: unknown ? 0.6 : 1,
         }}
       >
         {unknown ? unknownLabel ?? "" : hangul}
@@ -98,66 +95,40 @@ function Cell({ hanja, hangul, hue, unknown, unknownLabel, isHeaven }: CellProps
   );
 }
 
-function PillarColumn({
-  pillar: p,
-  isDay,
-  isLast,
-}: {
-  pillar: Pillar;
-  isDay: boolean;
-  isLast: boolean;
-}) {
+function PillarCard({ pillar: p }: { pillar: Pillar }) {
+  const isDay = p.label === "일주";
   const heavenHue = getHeavenHue(p, isDay);
   const earthHue = getEarthHue(p, isDay);
 
   return (
-    <div
-      style={{
-        position: "relative",
-        borderRight: isLast ? "none" : `1px solid ${GRID_BORDER}`,
-      }}
-    >
-      {isDay && (
-        <div
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            inset: 0,
-            border: `1.5px solid ${DAY_BORDER}`,
-            borderRadius: "11px",
-            background: DAY_HIGHLIGHT_BG,
-            pointerEvents: "none",
-            zIndex: 0,
-          }}
-        />
-      )}
-
-      <div
+    <div className="flex flex-col items-center gap-1.5">
+      <p
+        className="text-center"
         style={{
-          borderBottom: `1px solid ${GRID_BORDER}`,
-          position: "relative",
+          fontSize: "14px",
+          fontFamily: "Pretendard, sans-serif",
+          fontWeight: 500,
+          color: "#A89272",
         }}
       >
-        <Cell
-          hanja={p.heaven}
-          hangul={p.heavenHangul}
-          hue={heavenHue}
-          unknown={p.unknown}
-          unknownLabel="미입력"
-          isHeaven
-        />
-      </div>
-
-      <div style={{ position: "relative" }}>
-        <Cell
-          hanja={p.earth}
-          hangul={p.earthHangul}
-          hue={earthHue}
-          unknown={p.unknown}
-          unknownLabel="시간 미입력"
-          isHeaven={false}
-        />
-      </div>
+        {p.label}
+      </p>
+      <PillarBox
+        hanja={p.heaven}
+        hangul={p.heavenHangul}
+        hue={heavenHue}
+        isDay={isDay}
+        unknown={p.unknown}
+        unknownLabel="미입력"
+      />
+      <PillarBox
+        hanja={p.earth}
+        hangul={p.earthHangul}
+        hue={earthHue}
+        isDay={isDay}
+        unknown={p.unknown}
+        unknownLabel="시간 미입력"
+      />
     </div>
   );
 }
@@ -222,40 +193,10 @@ export default function SajuChartSection({ pillars, displayName }: Props) {
 
           <div
             className="grid grid-cols-4 gap-2 sm:gap-3"
-            style={{ marginTop: "24px", marginBottom: "10px" }}
+            style={{ marginTop: "24px" }}
           >
             {orderedPillars.map((p) => (
-              <p
-                key={p.label}
-                className="text-center"
-                style={{
-                  fontSize: "14px",
-                  fontFamily: "Pretendard, sans-serif",
-                  fontWeight: 500,
-                  color: "#A89272",
-                }}
-              >
-                {p.label}
-              </p>
-            ))}
-          </div>
-
-          <div
-            className="grid grid-cols-4"
-            style={{
-              border: `1px solid ${GRID_BORDER}`,
-              borderRadius: "12px",
-              overflow: "hidden",
-              background: "#FDF5EA",
-            }}
-          >
-            {orderedPillars.map((p, idx) => (
-              <PillarColumn
-                key={p.label}
-                pillar={p}
-                isDay={p.label === "일주"}
-                isLast={idx === orderedPillars.length - 1}
-              />
+              <PillarCard key={p.label} pillar={p} />
             ))}
           </div>
 
