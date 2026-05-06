@@ -27,7 +27,7 @@ export default function AsideComment({ speaker, text, isComplete }: Props) {
         className="text-[14px] italic leading-relaxed"
         style={{ color: "rgba(208,197,182,0.85)", textShadow: "0 1px 8px rgba(0,0,0,0.85)" }}
       >
-        &ldquo;{text}&rdquo;
+        {text}
         {isComplete && (
           <span
             className="ml-1.5 inline-block animate-pulse text-[10px]"
