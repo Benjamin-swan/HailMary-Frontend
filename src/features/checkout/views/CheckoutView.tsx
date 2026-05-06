@@ -48,7 +48,7 @@ export function CheckoutView({ character }: CheckoutViewProps) {
 
         <CouponField value={coupon} onChange={setCoupon} onApply={applyCoupon} />
 
-        <CheckoutCta onClick={handleSubmit} loading={isProcessing} />
+        <CheckoutCta onSubmit={handleSubmit} loading={isProcessing} />
 
         <div className="space-y-3 pt-2">
           <ConsentRow
