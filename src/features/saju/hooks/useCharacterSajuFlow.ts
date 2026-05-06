@@ -76,9 +76,12 @@ export function useCharacterSajuFlow(config: CharacterSajuFlowConfig) {
         time: info.time,
         calendar: info.calendar,
         gender: info.gender,
+        character_id: storageKeyPrefix === "yeonwoo" || storageKeyPrefix === "doyoon"
+          ? storageKeyPrefix
+          : undefined,
       });
     },
-    [infoKey, saju],
+    [infoKey, saju, storageKeyPrefix],
   );
 
   const finalizeSurvey = useCallback(
