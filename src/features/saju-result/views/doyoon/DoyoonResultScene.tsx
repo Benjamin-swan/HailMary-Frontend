@@ -44,6 +44,7 @@ import FullResultIndexSection from "../shared/FullResultIndexSection";
 import StickyCheckoutCta from "../shared/StickyCheckoutCta";
 
 import { DOYOON_REVIEWS } from "./reviews-doyoon";
+import { trackEvent } from "@/shared/utils/analytics";
 
 const SURFACE = "#FDF5EA";
 
@@ -55,6 +56,11 @@ export default function DoyoonResultScene() {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [showCta, setShowCta] = useState(false);
+  const maxScrollRef = useRef(0);
+  const sajuRequestIdRef = useRef(data.sajuRequestId);
+  useEffect(() => {
+    sajuRequestIdRef.current = data.sajuRequestId;
+  }, [data.sajuRequestId]);
 
   const charmCopies: CharmCopyPool = useMemo(
     () => ({
@@ -92,16 +98,32 @@ export default function DoyoonResultScene() {
     };
 
     const handleScroll = () => {
-      setShowCta(measureProgress() >= 0.4);
+      const p = measureProgress();
+      if (p > maxScrollRef.current) maxScrollRef.current = p;
+      setShowCta(p >= 0.4);
+    };
+
+    let sent = false;
+    const sendOnce = () => {
+      if (sent) return;
+      sent = true;
+      trackEvent("result_page_view", {
+        character_id: "doyoon",
+        saju_request_id: sajuRequestIdRef.current ?? null,
+        max_scroll: Math.round(maxScrollRef.current * 100),
+      });
     };
 
     el?.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("pagehide", sendOnce);
     handleScroll();
 
     return () => {
       el?.removeEventListener("scroll", handleScroll);
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("pagehide", sendOnce);
+      sendOnce();
     };
   }, []);
 
@@ -174,7 +196,10 @@ export default function DoyoonResultScene() {
       <StickyCheckoutCta
         ctaLabel="결제하고 한도윤의 정밀 리포트 읽기"
         visible={showCta}
-        onCheckout={() => router.push("/checkout/doyoon")}
+        onCheckout={() => {
+          trackEvent("paid_report_cta_clicked", { character_id: "doyoon" });
+          router.push("/checkout/doyoon");
+        }}
       />
     </>
   );
