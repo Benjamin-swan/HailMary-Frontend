@@ -16,6 +16,7 @@ export function useIntroScene() {
   const router = useRouter();
   const [started] = useState(true);
   const [muted, setMuted] = useState(true);
+  const [userMuted, setUserMuted] = useState(false);
   const [showSoundHint, setShowSoundHint] = useState(true);
   const [stepIndex, setStepIndex] = useState(0);
   const [lineIndex, setLineIndex] = useState(0);
@@ -235,15 +236,17 @@ export function useIntroScene() {
     if (muted) {
       audio.muted = false;
       if (stepIndex < 7) audio.play().catch(() => {});
+      setUserMuted(false);
     } else {
       audio.muted = true;
+      setUserMuted(true);
     }
     setMuted(!muted);
   };
 
   const handleTap = () => {
     if (crossFading) return;
-    if (muted) enableSound();
+    if (muted && !userMuted) enableSound();
 
     // phone animating 중 탭 → 알림 한 개씩 노출
     if (step.type === "phone" && phonePhase === "animating") {
