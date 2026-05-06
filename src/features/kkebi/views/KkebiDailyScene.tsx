@@ -12,7 +12,7 @@ export function KkebiDailyScene() {
   return (
     <div
       className="flex min-h-[100dvh] flex-1 flex-col"
-      style={{ background: "#000" }}
+      style={{ background: "#000", fontFamily: "var(--font-pretendard)" }}
     >
       <section className="relative h-[100dvh] w-full overflow-hidden">
         <VideoBackground src={KKEBI_STATIC.videoSrc} />
