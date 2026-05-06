@@ -13,8 +13,8 @@ export function MainView() {
     <div
       className="flex min-h-[100dvh] flex-1 flex-col"
       style={{
-        background:
-          "linear-gradient(180deg, #1a1530 0%, #0f0a22 100%)",
+        background: "linear-gradient(180deg, #1a1530 0%, #0f0a22 100%)",
+        fontFamily: "var(--font-pretendard)",
       }}
     >
       <TopNav />

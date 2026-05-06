@@ -12,7 +12,7 @@ export function LandingView() {
 
   return (
     <>
-      <section className="relative flex min-h-[100dvh] items-end justify-center">
+      <section className="relative flex min-h-[100dvh] items-end justify-center" style={{ fontFamily: "var(--font-pretendard)" }}>
         <Image
           src="/landing-poster.png"
           alt="도화선 — 운명을 태우고 너에게 닿을, 붉은 실"
