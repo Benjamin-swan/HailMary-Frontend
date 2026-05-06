@@ -10,6 +10,9 @@ export function useLanding(): LandingState & { handleStart: () => void } {
   const [fading, setFading] = useState(false);
 
   useEffect(() => {
+    const SENT_KEY = "hm_landing_enter_sent";
+    if (sessionStorage.getItem(SENT_KEY)) return;
+    sessionStorage.setItem(SENT_KEY, "1");
     trackEvent("landing_enter");
   }, []);
 
