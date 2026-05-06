@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { trackEvent } from "@/shared/utils/analytics";
 
 const TWELVE_HOURS_MS = 12 * 60 * 60 * 1000;
 
@@ -69,7 +70,10 @@ export function StickyCheckoutCta() {
           fontWeight: 700,
           gap: "10px",
         }}
-        onClick={() => router.push("/checkout/yeonwoo")}
+        onClick={() => {
+          trackEvent("paid_report_cta_clicked", { character_id: "yeonwoo" });
+          router.push("/checkout/yeonwoo");
+        }}
       >
         결제하고 연우의 정밀 리포트 읽기
       </button>
