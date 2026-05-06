@@ -3,23 +3,67 @@
 import { useState } from "react";
 import { LegalModal, type LegalDoc } from "./LegalModal";
 
-export function SiteFooter() {
+export type SiteFooterVariant = "dark" | "light";
+
+interface SiteFooterProps {
+  /** "dark" (기본): 어두운 배경 + 밝은 텍스트. "light": 연한 회색 배경 + 어두운 텍스트. */
+  variant?: SiteFooterVariant;
+}
+
+interface FooterTheme {
+  footerBg: string;
+  body: string;
+  label: string;
+  separator: string;
+  copyright: string;
+  socialBg: string;
+  socialFg: string;
+  socialHover: string;
+}
+
+const THEMES: Record<SiteFooterVariant, FooterTheme> = {
+  dark: {
+    footerBg: "bg-neutral-800",
+    body: "text-neutral-300",
+    label: "text-neutral-100",
+    separator: "text-neutral-500",
+    copyright: "text-neutral-400",
+    socialBg: "bg-neutral-700",
+    socialFg: "text-neutral-200",
+    socialHover: "hover:bg-neutral-600",
+  },
+  light: {
+    footerBg: "bg-neutral-100",
+    body: "text-neutral-600",
+    label: "text-neutral-900",
+    separator: "text-neutral-400",
+    copyright: "text-neutral-500",
+    socialBg: "bg-neutral-300",
+    socialFg: "text-neutral-700",
+    socialHover: "hover:bg-neutral-400",
+  },
+};
+
+export function SiteFooter({ variant = "dark" }: SiteFooterProps) {
   const [openDoc, setOpenDoc] = useState<LegalDoc | null>(null);
+  const t = THEMES[variant];
   return (
-    <footer className="select-text bg-neutral-800 px-6 py-10 text-center text-[11px] leading-relaxed text-neutral-300">
+    <footer
+      className={`select-text px-6 py-10 text-center text-[11px] leading-relaxed ${t.footerBg} ${t.body}`}
+    >
       <div className="space-y-1.5">
         <p>
-          <span className="font-medium text-neutral-100">상호</span> 슈퍼빌더즈
-          <span className="mx-2 text-neutral-500">|</span>
-          <span className="font-medium text-neutral-100">대표이사</span> 배성현
+          <span className={`font-medium ${t.label}`}>상호</span> 슈퍼빌더즈
+          <span className={`mx-2 ${t.separator}`}>|</span>
+          <span className={`font-medium ${t.label}`}>대표이사</span> 배성현
         </p>
         <p>경기도 용인시 기흥구 구갈로60번길 9-1, 6층 602-A61호 (구갈동, 라파빌딩)</p>
         <p>
-          <span className="font-medium text-neutral-100">사업자등록번호</span>{" "}
+          <span className={`font-medium ${t.label}`}>사업자등록번호</span>{" "}
           376-35-01679
         </p>
         <p>
-          <span className="font-medium text-neutral-100">고객센터</span>{" "}
+          <span className={`font-medium ${t.label}`}>고객센터</span>{" "}
           <a
             href="http://pf.kakao.com/_axcGxbX/chat"
             target="_blank"
@@ -28,19 +72,19 @@ export function SiteFooter() {
           >
             카카오톡 도화선 채널
           </a>
-          <span className="mx-2 text-neutral-500">|</span>
-          <span className="font-medium text-neutral-100">MAIL</span>{" "}
+          <span className={`mx-2 ${t.separator}`}>|</span>
+          <span className={`font-medium ${t.label}`}>MAIL</span>{" "}
           <a href="mailto:skwogusdld@gmail.com" className="underline">
             skwogusdld@gmail.com
           </a>
         </p>
         <p>
-          <span className="font-medium text-neutral-100">대표번호</span>{" "}
+          <span className={`font-medium ${t.label}`}>대표번호</span>{" "}
           <a href="tel:070-8064-6831" className="underline">
             070-8064-6831
           </a>
         </p>
-        <p className="text-neutral-400">
+        <p className={t.copyright}>
           (전화 상담은 운영하지 않으며, 채팅으로 문의해 주세요.)
         </p>
       </div>
@@ -53,7 +97,7 @@ export function SiteFooter() {
         >
           이용약관
         </button>
-        <span aria-hidden className="text-neutral-500">
+        <span aria-hidden className={t.separator}>
           |
         </span>
         <button
@@ -65,7 +109,7 @@ export function SiteFooter() {
         </button>
       </div>
 
-      <p className="mt-3 text-neutral-400">
+      <p className={`mt-3 ${t.copyright}`}>
         Copyright © 2026 슈퍼빌더즈. All rights reserved.
       </p>
 
@@ -75,7 +119,7 @@ export function SiteFooter() {
           target="_blank"
           rel="noreferrer noopener"
           aria-label="카카오톡 도화선 채널"
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-700 text-neutral-200 transition-colors hover:bg-neutral-600"
+          className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${t.socialBg} ${t.socialFg} ${t.socialHover}`}
         >
           <KakaoIcon />
         </a>
@@ -84,7 +128,7 @@ export function SiteFooter() {
           target="_blank"
           rel="noreferrer noopener"
           aria-label="인스타그램 @dohwaseon_saju"
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-700 text-neutral-200 transition-colors hover:bg-neutral-600"
+          className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${t.socialBg} ${t.socialFg} ${t.socialHover}`}
         >
           <InstagramIcon />
         </a>
