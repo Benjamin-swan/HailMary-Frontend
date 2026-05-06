@@ -24,7 +24,7 @@ export function CouponField({ value, onChange, onApply }: CouponFieldProps) {
         <button
           type="button"
           onClick={onApply}
-          className="rounded-xl border border-neutral-300 bg-white px-4 py-3 text-[13px] font-medium text-neutral-700 transition-colors hover:bg-neutral-100"
+          className="cursor-pointer rounded-xl border border-neutral-300 bg-white px-4 py-3 text-[13px] font-medium text-neutral-700 transition-colors hover:bg-neutral-100"
         >
           적용
         </button>
