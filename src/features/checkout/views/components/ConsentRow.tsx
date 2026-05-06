@@ -30,7 +30,7 @@ export function ConsentRow({
       <button
         type="button"
         onClick={onDetail}
-        className="text-[12px] text-neutral-500 underline underline-offset-2 hover:text-neutral-900"
+        className="cursor-pointer text-[12px] text-neutral-500 underline underline-offset-2 hover:text-neutral-900"
       >
         자세히 보기
       </button>

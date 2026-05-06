@@ -18,7 +18,7 @@ export function CheckoutCta({ onSubmit, loading }: CheckoutCtaProps) {
           aria-label="카카오페이 결제"
           disabled={disabled}
           onClick={() => onSubmit("KAKAOPAY")}
-          className="flex h-12 items-center justify-center gap-2 rounded-md bg-[#FEE500] text-[14px] font-semibold text-black/85 shadow-sm transition-opacity hover:opacity-95 active:opacity-85 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-12 items-center justify-center gap-2 rounded-md bg-[#FEE500] text-[14px] font-semibold text-black/85 shadow-sm transition-opacity hover:opacity-95 active:opacity-85 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Image
             src="/kakaopay-logo.svg"
@@ -36,7 +36,7 @@ export function CheckoutCta({ onSubmit, loading }: CheckoutCtaProps) {
           aria-label="네이버페이 결제"
           disabled={disabled}
           onClick={() => onSubmit("NAVERPAY")}
-          className="flex h-12 items-center justify-center gap-2 rounded-md bg-[#03C75A] text-[14px] font-semibold text-black/85 shadow-sm transition-opacity hover:opacity-95 active:opacity-85 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-12 items-center justify-center gap-2 rounded-md bg-[#03C75A] text-[14px] font-semibold text-black/85 shadow-sm transition-opacity hover:opacity-95 active:opacity-85 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Image
             src="/naverpay-logo.svg"
@@ -54,7 +54,7 @@ export function CheckoutCta({ onSubmit, loading }: CheckoutCtaProps) {
         type="button"
         disabled={disabled}
         onClick={() => onSubmit("GENERAL")}
-        className="w-full rounded-md bg-neutral-900 px-6 py-3 text-[15px] font-semibold text-white shadow-sm transition-colors hover:bg-neutral-800 active:bg-neutral-950 disabled:cursor-not-allowed disabled:bg-neutral-400"
+        className="w-full rounded-md bg-neutral-900 px-6 py-3 text-[15px] font-semibold text-white shadow-sm transition-colors hover:bg-neutral-800 active:bg-neutral-950 cursor-pointer disabled:cursor-not-allowed disabled:bg-neutral-400"
       >
         {loading ? "결제창을 여는 중…" : "일반 결제"}
       </button>
