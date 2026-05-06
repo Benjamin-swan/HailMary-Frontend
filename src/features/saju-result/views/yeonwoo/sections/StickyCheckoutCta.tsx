@@ -6,15 +6,14 @@ import { trackEvent } from "@/shared/utils/analytics";
 
 const TWELVE_HOURS_MS = 12 * 60 * 60 * 1000;
 
-function formatHMSD(totalMs: number): string {
+function formatHMS(totalMs: number): string {
   const ms = Math.max(0, totalMs);
-  const totalDecis = Math.floor(ms / 100);
-  const h = Math.floor(totalDecis / 36000);
-  const m = Math.floor((totalDecis % 36000) / 600);
-  const s = Math.floor((totalDecis % 600) / 10);
-  const d = totalDecis % 10;
+  const totalSec = Math.floor(ms / 1000);
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
   const pad = (n: number) => n.toString().padStart(2, "0");
-  return `${pad(h)}:${pad(m)}:${pad(s)}.${d}`;
+  return `${pad(h)}:${pad(m)}:${pad(s)}`;
 }
 
 type Props = {
@@ -27,7 +26,7 @@ export function StickyCheckoutCta({ visible = true }: Props = {}) {
   const [now, setNow] = useState<number>(() => Date.now());
 
   useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 100);
+    const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, []);
 
@@ -63,7 +62,7 @@ export function StickyCheckoutCta({ visible = true }: Props = {}) {
           letterSpacing: "-0.64px",
         }}
       >
-        마지막 오픈 할인까지 {formatHMSD(remainingMs)}
+        마지막 오픈 할인까지 {formatHMS(remainingMs)}
       </p>
       <button
         type="button"
