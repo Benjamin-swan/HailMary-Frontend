@@ -110,8 +110,11 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
         failUrl: `${window.location.origin}/checkout/fail`,
         customerEmail: email.trim(),
         card: {
+          // 자체창 모드: 결제하기 누르면 통합결제창 스킵하고 바로 카카오페이 테스트로 진입
+          // 계약 후엔 flowMode: "DEFAULT"로 되돌려 통합결제창 사용 권장
           useEscrow: false,
-          flowMode: "DEFAULT",
+          flowMode: "DIRECT",
+          easyPay: "카카오페이",
           useCardPoint: false,
           useAppCardOnly: false,
         },
