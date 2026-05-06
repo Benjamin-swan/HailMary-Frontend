@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect } from "react";
 import { LegalModal } from "@/shared/components/LegalModal";
 import { SiteFooter } from "@/shared/components/SiteFooter";
+import { trackEvent } from "@/shared/utils/analytics";
 import type { CheckoutCharacter } from "../domain/checkoutProducts";
 import { useCheckout } from "../hooks/useCheckout";
 import { CheckoutHeader } from "./components/CheckoutHeader";
@@ -34,6 +36,19 @@ export function CheckoutView({ character }: CheckoutViewProps) {
     handleBack,
     handleSubmit,
   } = useCheckout(character);
+
+  useEffect(() => {
+    const SENT_KEY = `hm_checkout_${character}_view_sent`;
+    if (sessionStorage.getItem(SENT_KEY)) return;
+    sessionStorage.setItem(SENT_KEY, "1");
+    const sajuRequestId =
+      localStorage.getItem(`${character}SajuRequestId`) ?? null;
+    trackEvent("checkout_page_view", {
+      character_id: character,
+      saju_request_id: sajuRequestId,
+      amount: product.priceKrw,
+    });
+  }, [character, product.priceKrw]);
 
   return (
     <div className="flex min-h-[100dvh] flex-1 flex-col bg-white text-neutral-900">

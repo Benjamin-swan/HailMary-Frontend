@@ -41,7 +41,30 @@ export default function YeonwooResultScene() {
   }, [data.sajuRequestId]);
 
   useEffect(() => {
+    const SCROLL_KEY = "hm_yeonwoo_max_scroll";
+    const VIEW_SENT_KEY = "hm_yeonwoo_view_sent";
+    const FALLBACK_ID = "mock_yeonwoo";
+
+    const id = data.sajuRequestId;
+    if (!id || id === FALLBACK_ID) return;
+    if (sessionStorage.getItem(VIEW_SENT_KEY)) return;
+
+    sessionStorage.setItem(VIEW_SENT_KEY, "1");
+    trackEvent("result_page_view", {
+      character_id: "yeonwoo",
+      saju_request_id: id,
+    });
+
+    const stored = Number(sessionStorage.getItem(SCROLL_KEY) ?? 0);
+    if (stored > maxScrollRef.current) maxScrollRef.current = stored;
+  }, [data.sajuRequestId]);
+
+  useEffect(() => {
     const el = containerRef.current;
+    const SCROLL_KEY = "hm_yeonwoo_max_scroll";
+
+    const stored = Number(sessionStorage.getItem(SCROLL_KEY) ?? 0);
+    if (stored > maxScrollRef.current) maxScrollRef.current = stored;
 
     const measureProgress = (): number => {
       if (el && el.scrollHeight > el.clientHeight) {
@@ -58,30 +81,35 @@ export default function YeonwooResultScene() {
 
     const handleScroll = () => {
       const p = measureProgress();
-      if (p > maxScrollRef.current) maxScrollRef.current = p;
+      if (p > maxScrollRef.current) {
+        maxScrollRef.current = p;
+        sessionStorage.setItem(SCROLL_KEY, String(p));
+      }
     };
 
     let sent = false;
-    const sendOnce = () => {
+    const sendExit = () => {
       if (sent) return;
+      const id = sajuRequestIdRef.current;
+      if (!id || id === "mock_yeonwoo") return;
       sent = true;
-      trackEvent("result_page_view", {
+      trackEvent("result_page_exit", {
         character_id: "yeonwoo",
-        saju_request_id: sajuRequestIdRef.current ?? null,
+        saju_request_id: id,
         max_scroll: Math.round(maxScrollRef.current * 100),
       });
     };
 
     el?.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("pagehide", sendOnce);
+    window.addEventListener("pagehide", sendExit);
     handleScroll();
 
     return () => {
       el?.removeEventListener("scroll", handleScroll);
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("pagehide", sendOnce);
-      sendOnce();
+      window.removeEventListener("pagehide", sendExit);
+      sendExit();
     };
   }, []);
 
