@@ -1,14 +1,32 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { trackEvent } from "@/shared/utils/analytics";
 
 function FailBody() {
   const params = useSearchParams();
   const code = params.get("code") ?? "";
   const message = params.get("message") ?? "결제가 정상적으로 완료되지 않았어요.";
   const orderId = params.get("orderId") ?? "";
+  const sentRef = useRef(false);
+
+  useEffect(() => {
+    if (sentRef.current) return;
+    sentRef.current = true;
+    let character: string | null = null;
+    try {
+      const raw = sessionStorage.getItem("checkoutPending");
+      if (raw) character = (JSON.parse(raw)?.character as string) ?? null;
+    } catch {}
+    trackEvent("payment_failed", {
+      character_id: character,
+      order_id: orderId || null,
+      error_code: code || "UNKNOWN",
+      error_message: message,
+    });
+  }, [orderId, code, message]);
 
   return (
     <main className="flex min-h-[100dvh] flex-1 flex-col items-center justify-center gap-6 bg-white px-6 py-10 text-neutral-900">
