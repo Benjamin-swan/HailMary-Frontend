@@ -15,8 +15,11 @@ export default function SurveyFreeText({ step, onNext, buttonLabel = "도윤에�
   const [text, setText] = useState("");
 
   useEffect(() => {
+    const SENT_KEY = `hm_survey_step_view_sent_${characterId ?? "unknown"}_3`;
+    if (sessionStorage.getItem(SENT_KEY)) return;
+    sessionStorage.setItem(SENT_KEY, "1");
     trackEvent("survey_step_view", { character_id: characterId, step: 3 });
-  }, []);
+  }, [characterId]);
 
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation();
