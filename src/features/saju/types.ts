@@ -7,6 +7,7 @@ export interface SajuFreeRequest {
   time: string;
   calendar: SajuCalendar;
   gender: SajuGender;
+  character_id?: "yeonwoo" | "doyoon";
 }
 
 export type WuxingKey = "목" | "화" | "토" | "금" | "수";

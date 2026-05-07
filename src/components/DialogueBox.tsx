@@ -27,7 +27,7 @@ export function DialogueBox({ speaker, text, isComplete }: DialogueBoxProps) {
           <Image src="/dialogue-deco.png" alt="" fill className="object-fill opacity-40" />
         </div>
         <p className="relative flex h-full items-center px-7 py-4 text-[14px] leading-relaxed text-white">
-          &ldquo;{text}&rdquo;
+          {text}
           {isComplete && (
             <span className="ml-1 inline-block shrink-0 animate-pulse align-middle text-xs">
               ▼

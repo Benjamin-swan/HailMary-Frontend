@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { trackEvent } from "@/shared/utils/analytics";
 
 export type SajuInfo = {
@@ -19,8 +19,11 @@ type Props = {
 
 export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려주기 →", characterId }: Props) {
   useEffect(() => {
+    const SENT_KEY = `hm_info_form_view_sent_${characterId ?? "unknown"}`;
+    if (sessionStorage.getItem(SENT_KEY)) return;
+    sessionStorage.setItem(SENT_KEY, "1");
     trackEvent("info_form_view", { character_id: characterId });
-  }, []);
+  }, [characterId]);
 
   const [name, setName] = useState("");
   const [birth, setBirth] = useState("");
@@ -29,9 +32,11 @@ export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려�
   const [unknownTime, setUnknownTime] = useState(false);
   const [gender, setGender] = useState<"female" | "male" | null>(null);
 
+  const birthError = useMemo(() => validateBirth(birth), [birth]);
   const isValid =
     name.trim().length > 0 &&
     /^\d{4}\.\d{2}\.\d{2}$/.test(birth) &&
+    birthError === null &&
     (unknownTime || /^\d{2}:\d{2}$/.test(time)) &&
     gender !== null;
 
@@ -71,23 +76,36 @@ export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려�
           </Field>
 
           <Field label="생년월일">
-            <div className="flex items-center gap-2">
+            <div className="space-y-2.5">
               <input type="text" value={birth} onChange={(e) => setBirth(formatBirth(e.target.value))}
                 placeholder="YYYY.MM.DD" maxLength={10} inputMode="numeric"
-                className="flex-1 bg-transparent py-2 text-[16px] font-medium outline-none placeholder:text-[#998f82]"
+                className="w-full bg-transparent py-2 text-[16px] font-medium outline-none placeholder:text-[#998f82]"
                 style={{ color: "#F5EDE0", borderBottom: "1px solid rgba(245,237,224,0.15)" }} />
-              <Chip selected={calendar === "solar"} onClick={() => setCalendar("solar")}>양력</Chip>
-              <Chip selected={calendar === "lunar"} onClick={() => setCalendar("lunar")}>음력</Chip>
+              <div className="flex gap-2">
+                <Chip selected={calendar === "solar"} onClick={() => setCalendar("solar")} wide>양력</Chip>
+                <Chip selected={calendar === "lunar"} onClick={() => setCalendar("lunar")} wide>음력</Chip>
+              </div>
+              {birthError && (
+                <p className="text-[12px]" style={{ color: "#E89A8A" }}>{birthError}</p>
+              )}
             </div>
           </Field>
 
           <Field label="태어난 시간">
-            <div className="flex items-center gap-2">
+            <div
+              className="flex items-center gap-3 py-2"
+              style={{ borderBottom: "1px solid rgba(245,237,224,0.15)" }}
+            >
               <input type="text" value={time} onChange={(e) => setTime(formatTime(e.target.value))}
                 placeholder="HH:MM" maxLength={5} inputMode="numeric" disabled={unknownTime}
-                className="flex-1 bg-transparent py-2 text-[16px] outline-none placeholder:text-[#998f82] disabled:opacity-40"
-                style={{ color: "#F5EDE0", borderBottom: "1px solid rgba(245,237,224,0.15)" }} />
-              <Chip selected={unknownTime} onClick={() => { setUnknownTime(!unknownTime); if (!unknownTime) setTime(""); }}>모름</Chip>
+                className="flex-1 bg-transparent text-[16px] outline-none placeholder:text-[#998f82] disabled:opacity-40"
+                style={{ color: "#F5EDE0" }} />
+              <Chip
+                selected={unknownTime}
+                onClick={() => { setUnknownTime(!unknownTime); if (!unknownTime) setTime(""); }}
+              >
+                시간 모름
+              </Chip>
             </div>
           </Field>
 
@@ -128,7 +146,7 @@ function Chip({ selected, onClick, children, wide = false }: {
 }) {
   return (
     <button type="button" onClick={onClick}
-      className={`rounded-lg tracking-[0.1em] transition-all ${wide ? "flex-1 py-2.5 text-[16px]" : "px-4 py-1.5 text-[14px]"}`}
+      className={`cursor-pointer whitespace-nowrap rounded-lg tracking-[0.1em] transition-all ${wide ? "flex-1 py-2.5 text-[16px]" : "px-4 py-1.5 text-[14px]"}`}
       style={{
         background: selected ? "#E6C58E" : "rgba(40,38,34,0.6)",
         color: selected ? "#412d04" : "#D0C5B6",
@@ -151,4 +169,20 @@ function formatTime(input: string): string {
   const digits = input.replace(/\D/g, "").slice(0, 4);
   if (digits.length <= 2) return digits;
   return `${digits.slice(0, 2)}:${digits.slice(2)}`;
+}
+
+function validateBirth(birth: string): string | null {
+  if (!/^\d{4}\.\d{2}\.\d{2}$/.test(birth)) return null; // 입력 미완료는 에러로 표시하지 않음
+  const [yStr, moStr, dStr] = birth.split(".");
+  const y = Number(yStr);
+  const mo = Number(moStr);
+  const d = Number(dStr);
+  const thisYear = new Date().getFullYear();
+  if (y < 1900 || y > thisYear) return `연도는 1900~${thisYear} 사이여야 해요`;
+  if (mo < 1 || mo > 12) return "월은 01~12 사이여야 해요";
+  const date = new Date(y, mo - 1, d);
+  if (date.getFullYear() !== y || date.getMonth() !== mo - 1 || date.getDate() !== d) {
+    return "존재하지 않는 날짜에요";
+  }
+  return null;
 }

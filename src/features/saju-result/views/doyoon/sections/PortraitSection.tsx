@@ -21,15 +21,16 @@ export default function PortraitSection({ displayName }: Props) {
 
       <div
         className="absolute bottom-[6%] left-1/2 z-10"
-        style={{ transform: "translateX(-50%)" }}
+        style={{ transform: "translateX(-50%)", width: "72%", maxWidth: "240px" }}
       >
         <SpeechBubble
           speaker="한도윤"
           widthPct={100}
+          block
           tail="up"
           radius={30}
           textSize={16}
-          paddingX={30}
+          paddingX={26}
           paddingY={15}
         >
           매력 지수 분석 결과입니다.

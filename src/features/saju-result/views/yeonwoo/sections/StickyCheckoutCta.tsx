@@ -1,26 +1,32 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { trackEvent } from "@/shared/utils/analytics";
 
 const TWELVE_HOURS_MS = 12 * 60 * 60 * 1000;
 
-function formatHMSD(totalMs: number): string {
+function formatHMS(totalMs: number): string {
   const ms = Math.max(0, totalMs);
-  const totalDecis = Math.floor(ms / 100);
-  const h = Math.floor(totalDecis / 36000);
-  const m = Math.floor((totalDecis % 36000) / 600);
-  const s = Math.floor((totalDecis % 600) / 10);
-  const d = totalDecis % 10;
+  const totalSec = Math.floor(ms / 1000);
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
   const pad = (n: number) => n.toString().padStart(2, "0");
-  return `${pad(h)}:${pad(m)}:${pad(s)}.${d}`;
+  return `${pad(h)}:${pad(m)}:${pad(s)}`;
 }
 
-export function StickyCheckoutCta() {
+type Props = {
+  visible?: boolean;
+};
+
+export function StickyCheckoutCta({ visible = true }: Props = {}) {
+  const router = useRouter();
   const [endAt, setEndAt] = useState<number>(() => Date.now() + TWELVE_HOURS_MS);
   const [now, setNow] = useState<number>(() => Date.now());
 
   useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 100);
+    const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, []);
 
@@ -39,6 +45,10 @@ export function StickyCheckoutCta() {
         maxWidth: "28rem",
         background:
           "linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 65%, rgba(0,0,0,0) 100%)",
+        opacity: visible ? 1 : 0,
+        pointerEvents: visible ? "auto" : "none",
+        transform: visible ? "translateY(0)" : "translateY(20px)",
+        transition: "opacity 0.3s ease, transform 0.3s ease",
       }}
     >
       <p
@@ -52,7 +62,7 @@ export function StickyCheckoutCta() {
           letterSpacing: "-0.64px",
         }}
       >
-        마지막 오픈 할인까지 {formatHMSD(remainingMs)}
+        마지막 오픈 할인까지 {formatHMS(remainingMs)}
       </p>
       <button
         type="button"
@@ -68,7 +78,8 @@ export function StickyCheckoutCta() {
           gap: "10px",
         }}
         onClick={() => {
-          alert("결제 페이지는 준비 중이에요.");
+          trackEvent("pay_cta_click", { character_id: "yeonwoo" });
+          router.push("/checkout/yeonwoo");
         }}
       >
         결제하고 연우의 정밀 리포트 읽기

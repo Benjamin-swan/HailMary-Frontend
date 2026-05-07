@@ -4,16 +4,20 @@ import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-export type LegalDoc = "terms" | "privacy";
+export type LegalDoc = "terms" | "privacy" | "data-usage" | "payment";
 
 const TITLE: Record<LegalDoc, string> = {
   terms: "이용약관",
   privacy: "개인정보처리방침",
+  "data-usage": "개인정보 이용 동의",
+  payment: "결제 진행 동의",
 };
 
 const SOURCE_PATH: Record<LegalDoc, string> = {
   terms: "/legal/terms.md",
   privacy: "/legal/privacy.md",
+  "data-usage": "/legal/data-usage.md",
+  payment: "/legal/payment.md",
 };
 
 interface Props {

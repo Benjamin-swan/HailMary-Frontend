@@ -217,6 +217,9 @@ export default function RomanceTimingSection({
   const lockedTotal = monthlyRomanceFlow?.lockedSlots?.totalCount ?? 10;
   const peakOffset = monthlyRomanceFlow?.lockedSlots?.peakOffsetFromVisible ?? 1;
   const visibleCount = visibleMonths.length;
+  // 연우와 동일하게: PEAK은 backend 값과 관계없이 visible 행 바로 다음(첫 locked 슬롯)에 고정.
+  const renderPeakInLocked = peakOffset > 0;
+  const lockedAfter = renderPeakInLocked ? lockedTotal - 1 : lockedTotal;
   const totalRows = visibleCount + lockedTotal;
 
   const handleLocked = () => {
@@ -286,15 +289,13 @@ export default function RomanceTimingSection({
             isLast={false}
           />
         ))}
-        {Array.from({ length: lockedTotal }).map((_, i) => {
-          const offset = i + 1;
-          const isPeak = offset === peakOffset;
+        {renderPeakInLocked && (
+          <PeakLockedRow isLast={visibleCount + 1 === totalRows} />
+        )}
+        {Array.from({ length: lockedAfter }).map((_, i) => {
+          const offset = (renderPeakInLocked ? 2 : 1) + i;
           const isLast = visibleCount + offset === totalRows;
-          return isPeak ? (
-            <PeakLockedRow key={`l-${i}`} isLast={isLast} />
-          ) : (
-            <NormalLockedRow key={`l-${i}`} isLast={isLast} />
-          );
+          return <NormalLockedRow key={`l-${i}`} isLast={isLast} />;
         })}
       </div>
 
