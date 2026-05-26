@@ -10,5 +10,9 @@ export function useKkebi() {
     router.push("/");
   }, [router]);
 
-  return { handleBack };
+  const handleStart = useCallback(() => {
+    router.push("/fortune/daily/input/");
+  }, [router]);
+
+  return { handleBack, handleStart };
 }

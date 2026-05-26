@@ -8,7 +8,7 @@ import { KkebiTitle } from "./components/KkebiTitle";
 import { OpeningSoonCta } from "./components/OpeningSoonCta";
 
 export function KkebiDailyScene() {
-  const { handleBack } = useKkebi();
+  const { handleBack, handleStart } = useKkebi();
   return (
     <div
       className="flex min-h-[100dvh] flex-1 flex-col"
@@ -22,6 +22,7 @@ export function KkebiDailyScene() {
           divider={KKEBI_STATIC.divider}
           label={KKEBI_STATIC.ctaLabel}
           microCopy={KKEBI_STATIC.microCopy}
+          onClick={handleStart}
         />
       </section>
     </div>

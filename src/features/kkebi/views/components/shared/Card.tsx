@@ -1,0 +1,47 @@
+export type CardProps = {
+  children: React.ReactNode;
+  className?: string;
+  innerOverflow?: "hidden" | "visible";
+};
+
+export default function Card({ children, className = "", innerOverflow = "hidden" }: CardProps) {
+  return (
+    <div
+      className={`kkebi-card${className ? " " + className : ""}`}
+      style={{
+        animation: "card-fade-in 0.4s ease-out",
+        aspectRatio: "9/16",
+        backgroundColor: "var(--v2-bg-card)",
+        backgroundImage: "url(/kkebi/cards/front.png)",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "100% 100%",
+        borderRadius: "20px",
+        boxShadow: `
+          0 4px 6px rgba(0, 0, 0, 0.3),
+          0 16px 48px rgba(0, 0, 0, 0.5),
+          0 0 24px rgba(232, 200, 125, 0.04)
+        `,
+        flexShrink: 0,
+        margin: "0 auto",
+        maxWidth: "380px",
+        overflow: "hidden",
+        position: "relative",
+        width: "min(380px, calc(100vw - 32px))",
+      }}
+    >
+      <div
+        style={{
+          bottom: "40px",
+          left: "28px",
+          overflow: innerOverflow,
+          position: "absolute",
+          right: "28px",
+          top: "40px",
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}

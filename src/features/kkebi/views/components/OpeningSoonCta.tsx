@@ -2,13 +2,16 @@ interface OpeningSoonCtaProps {
   divider: string;
   label: string;
   microCopy: string;
+  onClick?: () => void;
 }
 
 export function OpeningSoonCta({
   divider,
   label,
   microCopy,
+  onClick,
 }: OpeningSoonCtaProps) {
+  const disabled = !onClick;
   return (
     <div
       className="absolute inset-x-0 bottom-0 z-20 px-5 pb-8 pt-4"
@@ -23,15 +26,16 @@ export function OpeningSoonCta({
       </div>
       <button
         type="button"
-        disabled
-        aria-disabled="true"
+        disabled={disabled}
+        aria-disabled={disabled}
+        onClick={onClick}
         className="relative w-full overflow-hidden rounded-full px-6 py-4 text-[15px] font-semibold text-white"
         style={{
           background:
             "linear-gradient(90deg, var(--color-kkebi-cta-from) 0%, var(--color-kkebi-cta-mid) 50%, var(--color-kkebi-cta-to) 100%)",
           boxShadow:
             "0 8px 32px rgba(239,77,110,0.4), inset 0 0 0 1px rgba(255,255,255,0.1)",
-          cursor: "not-allowed",
+          cursor: disabled ? "not-allowed" : "pointer",
         }}
       >
         <span
