@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" className="h-full bg-white antialiased">
+    <html lang="ko" className="h-full antialiased" style={{ backgroundColor: "#F0EBE3" }}>
       <body className="mx-auto flex min-h-full max-w-md flex-col">
         <AmplitudeProvider />
         <QaAuthGuard>{children}</QaAuthGuard>
