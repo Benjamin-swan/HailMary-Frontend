@@ -38,9 +38,12 @@ export default function WuxingChartSection({ pillars, dayMaster, wuxing }: Props
 
   const safeRatio = (el: WuxingKey): number => {
     const v = Number(wuxing?.ratios?.[el]);
-    return Number.isFinite(v) && v >= 0 ? Math.min(v, 100) : 0;
+    return Number.isFinite(v) && v >= 0 ? v : 0;
   };
   const ratios = WUXING_ELEMENTS.map(safeRatio);
+  // 한국 사주는 대부분 단일 오행 비율이 50%를 넘지 않아, 상대 스케일링(가장 큰 값 = 100%)으로 시각화.
+  const maxRatio = Math.max(...ratios);
+  const denom = maxRatio > 0 ? maxRatio : 1;
 
   const overdoneEls = WUXING_ELEMENTS.filter(
     (el) => wuxing?.judgments?.[el] === "과다",
@@ -107,18 +110,38 @@ export default function WuxingChartSection({ pillars, dayMaster, wuxing }: Props
               <div
                 style={{
                   marginTop: "54px",
-                  fontFamily: '"NotoSerifTC", "ChosunNm", serif',
-                  fontWeight: 700,
-                  fontSize: "clamp(33px, 9.5vw, 43px)",
-                  lineHeight: 1.1,
-                  color: dayColor,
-                  letterSpacing: "0.02em",
-                  whiteSpace: "nowrap",
-                  textAlign: "center",
+                  display: "flex",
+                  alignItems: "baseline",
+                  gap: "6px",
+                  justifyContent: "center",
                 }}
               >
-                {dayStemHanja}
-                {dayElementHanja}
+                <span
+                  style={{
+                    fontFamily: '"NotoSerifTC", "ChosunNm", serif',
+                    fontWeight: 700,
+                    fontSize: "clamp(33px, 9.5vw, 43px)",
+                    lineHeight: 1.1,
+                    color: dayColor,
+                    letterSpacing: "0.02em",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {dayStemHanja}
+                  {dayElementHanja}
+                </span>
+                <span
+                  style={{
+                    fontSize: "16px",
+                    color: dayColor,
+                    opacity: 0.6,
+                    fontFamily: "Pretendard, sans-serif",
+                    fontWeight: 700,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  ({dayMaster.stem}{dayEl})
+                </span>
               </div>
 
               <div
@@ -140,7 +163,7 @@ export default function WuxingChartSection({ pillars, dayMaster, wuxing }: Props
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontSize: "14px",
+                fontSize: "16px",
                 fontFamily: "Pretendard, sans-serif",
                 fontWeight: 600,
                 color: "#AD7D38",
@@ -234,7 +257,8 @@ export default function WuxingChartSection({ pillars, dayMaster, wuxing }: Props
                 {WUXING_ELEMENTS.map((el, i) => {
                   const ratio = ratios[i];
                   const color = DOYOON_WUXING_HUES[el];
-                  const barH = (ratio / 100) * BAR_AREA_H;
+                  const rawH = Math.round((ratio / denom) * BAR_AREA_H);
+                  const barH = ratio > 0 ? Math.max(rawH, 4) : 0;
 
                   return (
                     <div
@@ -264,7 +288,7 @@ export default function WuxingChartSection({ pillars, dayMaster, wuxing }: Props
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          fontSize: "14px",
+                          fontSize: "16px",
                           fontFamily: "Pretendard, sans-serif",
                           fontWeight: 500,
                           color,

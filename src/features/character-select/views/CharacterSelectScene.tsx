@@ -17,7 +17,7 @@ export function CharacterSelectScene() {
   } = useCharacterSelect();
 
   return (
-    <div className="relative flex flex-1 flex-col">
+    <div className="relative flex flex-1 flex-col" style={{ fontFamily: "var(--font-pretendard)" }}>
       <div className="absolute inset-0 z-30">
         <AnimatePresence mode="wait">
           {phase === "selecting" ? (
@@ -91,7 +91,7 @@ export function CharacterSelectScene() {
                     textShadow: "0 2px 18px rgba(0,0,0,0.95), 0 0 25px rgba(255,200,100,0.35)" }}>
                   桃 花 線
                 </p>
-                <p style={{ fontSize: "16px", color: "rgba(255,255,255,0.75)", letterSpacing: "8px",
+                <p className="font-bold" style={{ fontSize: "16px", color: "rgba(255,255,255,0.75)", letterSpacing: "6px",
                   textShadow: "0 1px 12px rgba(0,0,0,0.95)" }}>
                   상 담 사 를 &nbsp; 선 택 하 세 요
                 </p>
@@ -102,27 +102,27 @@ export function CharacterSelectScene() {
                 style={{ zIndex: 20, top: "88px", left: "32px",
                   opacity: hovered === "left" && !selected ? 1 : 0,
                   transform: hovered === "left" && !selected ? "translateX(0)" : "translateX(-20px)" }}>
-                <h2 className="font-black"
-                  style={{ fontSize: "34px", letterSpacing: "8px", marginBottom: "10px", color: "#ffd4a8",
-                    textShadow: "0 0 30px rgba(255,150,50,0.8), 2px 2px 12px rgba(0,0,0,0.95)" }}>
+                <h2 className="font-extrabold"
+                  style={{ fontSize: "34px", letterSpacing: "8px", marginBottom: "4px", color: "#ffd4a8",
+                    textShadow: "0 0 20px rgba(255,150,50,0.8), 2px 2px 12px rgba(0,0,0,0.95)" }}>
                   강 연 우
                 </h2>
-                <p style={{ fontSize: "13px", letterSpacing: "3px", color: "#eec89a", opacity: 0.85, textShadow: "1px 1px 8px rgba(0,0,0,0.95)" }}>
+                <p style={{ fontSize: "15px", letterSpacing: "3px", color: "rgba(255,255,255,0.9)", opacity: 0.85, textShadow: "1px 1px 8px rgba(0,0,0,0.7)" }}>
                   전통 &middot; 직관 &middot; 영적 해석
                 </p>
               </div>
 
               {/* Name: 도윤 */}
               <div className="char-name-transition pointer-events-none absolute"
-                style={{ zIndex: 20, bottom: "100px", right: "32px", textAlign: "right",
+                style={{ zIndex: 20, bottom: "112px", right: "32px", textAlign: "right",
                   opacity: hovered === "right" && !selected ? 1 : 0,
                   transform: hovered === "right" && !selected ? "translateX(0)" : "translateX(20px)" }}>
-                <h2 className="font-black"
-                  style={{ fontSize: "34px", letterSpacing: "8px", marginBottom: "10px", color: "#fff5d6",
-                    textShadow: "0 0 30px rgba(255,230,150,0.8), 2px 2px 12px rgba(0,0,0,0.95)" }}>
+                <h2 className="font-extrabold"
+                  style={{ fontSize: "34px", letterSpacing: "8px", marginBottom: "4px", color: "#fff5d6",
+                    textShadow: "0 0 20px rgba(255,230,150,0.8), 2px 2px 12px rgba(0,0,0,0.95)" }}>
                   한 도 윤
                 </h2>
-                <p style={{ fontSize: "13px", letterSpacing: "3px", color: "#e8d8a8", opacity: 0.85, textShadow: "1px 1px 8px rgba(0,0,0,0.95)" }}>
+                <p style={{ fontSize: "15px", letterSpacing: "3px", color: "#e8d8a8", opacity: 0.85, textShadow: "1px 1px 8px rgba(0,0,0,0.95)" }}>
                   현대 &middot; 분석 &middot; 데이터 해석
                 </p>
               </div>
@@ -136,10 +136,10 @@ export function CharacterSelectScene() {
                     <button className="char-select-btn absolute cursor-pointer"
                       onClick={(e) => { e.stopPropagation(); handleSelect("left"); }}
                       onTouchStart={(e) => { e.stopPropagation(); handleSelect("left"); }}
-                      style={{ zIndex: 20, top: "185px", left: "32px", padding: "12px 36px", borderRadius: "8px",
-                        border: "1.5px solid rgba(255,180,100,0.65)", background: "rgba(0,0,0,0.5)",
-                        backdropFilter: "blur(10px)", fontSize: "14px", letterSpacing: "5px", color: "#ffd4a8",
-                        fontWeight: 500, opacity: hovered === "left" ? 1 : 0,
+                      style={{ zIndex: 20, top: "185px", left: "32px", padding: "10px 32px", borderRadius: "8px",
+                        border: "2px solid rgba(255,180,100,0.65)", background: "rgba(0,0,0,0.5)",
+                        backdropFilter: "blur(10px)", fontSize: "16px", letterSpacing: "5px", color: "#ffd4a8",
+                        fontWeight: 600, opacity: hovered === "left" ? 1 : 0,
                         pointerEvents: hovered === "left" ? "auto" : "none",
                         transform: hovered === "left" ? "translateY(0)" : "translateY(10px)" }}
                       onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,150,50,0.3)"; e.currentTarget.style.boxShadow = "0 0 25px rgba(255,150,50,0.35)"; }}
@@ -153,10 +153,10 @@ export function CharacterSelectScene() {
                     <button className="char-select-btn absolute cursor-pointer"
                       onClick={(e) => { e.stopPropagation(); handleSelect("right"); }}
                       onTouchStart={(e) => { e.stopPropagation(); handleSelect("right"); }}
-                      style={{ zIndex: 20, bottom: "40px", right: "32px", padding: "12px 36px", borderRadius: "8px",
-                        border: "1.5px solid rgba(255,220,140,0.65)", background: "rgba(0,0,0,0.5)",
-                        backdropFilter: "blur(10px)", fontSize: "14px", letterSpacing: "5px", color: "#fff5d6",
-                        fontWeight: 500, opacity: hovered === "right" ? 1 : 0,
+                      style={{ zIndex: 20, bottom: "40px", right: "32px", padding: "10px 32px", borderRadius: "8px",
+                        border: "2px solid rgba(255,220,140,0.65)", background: "rgba(0,0,0,0.5)",
+                        backdropFilter: "blur(10px)", fontSize: "16px", letterSpacing: "5px", color: "#fff5d6",
+                        fontWeight: 600, opacity: hovered === "right" ? 1 : 0,
                         pointerEvents: hovered === "right" ? "auto" : "none",
                         transform: hovered === "right" ? "translateY(0)" : "translateY(10px)" }}
                       onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,210,130,0.3)"; e.currentTarget.style.boxShadow = "0 0 25px rgba(255,210,130,0.35)"; }}
@@ -170,7 +170,7 @@ export function CharacterSelectScene() {
               {/* Selected message */}
               <div className="pointer-events-none absolute w-full text-center"
                 style={{ bottom: "70px", zIndex: 25, opacity: selected ? 1 : 0, transition: "opacity 0.7s ease 0.3s" }}>
-                <h3 className="font-bold text-white"
+                <h3 className="font-semibold text-white"
                   style={{ fontSize: "28px", letterSpacing: "8px", marginBottom: "12px",
                     textShadow: "0 2px 25px rgba(0,0,0,0.9), 0 0 18px rgba(255,220,150,0.4)" }}>
                   {selected === "left" ? "강 연 우" : selected === "right" ? "한 도 윤" : ""}
@@ -205,17 +205,17 @@ export function CharacterSelectScene() {
                 <div className="absolute inset-0 z-10 flex flex-col justify-end px-6 pb-8">
                   <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.3, duration: 0.6 }}>
-                    <h2 className="mb-1 font-black"
+                    <h2 className="mb-1 font-extrabold"
                       style={{ fontSize: "36px", letterSpacing: "10px", color: selectedInfo.nameColor,
                         textShadow: `0 0 30px ${selectedInfo.accentColor}, 2px 2px 12px rgba(0,0,0,0.95)` }}>
                       {selectedInfo.fullName}
                     </h2>
                     <p className="mb-2"
-                      style={{ fontSize: "15px", letterSpacing: "4px", color: selectedInfo.nameColor,
+                      style={{ fontSize: "16px", letterSpacing: "4px", color: selectedInfo.nameColor,
                         opacity: 0.9, textShadow: "1px 1px 8px rgba(0,0,0,0.95)" }}>
                       {selectedInfo.title}
                     </p>
-                    <p style={{ fontSize: "12px", letterSpacing: "2px", color: "rgba(255,255,255,0.5)",
+                    <p style={{ fontSize: "14px", letterSpacing: "2px", color: "rgba(255,255,255,0.7)",
                       textShadow: "1px 1px 6px rgba(0,0,0,0.95)" }}>
                       {selectedInfo.subtitle}
                     </p>
@@ -236,7 +236,7 @@ export function CharacterSelectScene() {
                     transition={{ delay: 0.7, duration: 0.5 }}>
                     <button
                       className="flex-1 cursor-pointer rounded-lg py-3.5 text-sm font-medium tracking-widest transition-all duration-300"
-                      style={{ border: "1.5px solid rgba(255,255,255,0.2)", background: "rgba(0,0,0,0.5)",
+                      style={{ border: "2px solid rgba(255,255,255,0.2)", background: "rgba(0,0,0,0.5)",
                         backdropFilter: "blur(10px)", color: "rgba(255,255,255,0.6)", letterSpacing: "4px" }}
                       onClick={handleCancel}
                       onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.1)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.4)"; e.currentTarget.style.color = "rgba(255,255,255,0.9)"; }}

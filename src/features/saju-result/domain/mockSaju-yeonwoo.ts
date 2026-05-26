@@ -124,13 +124,13 @@ export const MOCK_SAJU: MockSaju = {
     ],
   },
   charm: {
-    typeKey: "mystery",
+    typeKey: "im",
     manifestationKey: "latent",
     variantTags: ["hwagae_present"],
     charmStrength: 52,
     charmPercentile: 45,
     showPercent: true,
-    label: "mystery",
+    label: "im",
     dohwa: {
       present: false,
       pillar: null,
@@ -142,7 +142,7 @@ export const MOCK_SAJU: MockSaju = {
     tenGodPatternKey: "stubborn_rivalry",
   },
   spouseAvoid: {
-    slotId: "neutral",
+    slotId: "f-neutral",
     avoidElement: null,
     avoidYinYang: null,
   },

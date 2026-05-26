@@ -126,13 +126,13 @@ export const MOCK_SAJU_DOYOON: SajuResultData = {
     ],
   },
   charm: {
-    typeKey: "charisma",
+    typeKey: "im",
     manifestationKey: "stable",
     variantTags: ["dohwa_active", "dohwa_pillar_day", "yongsin_aligned"],
     charmStrength: 68,
     charmPercentile: 70,
     showPercent: true,
-    label: "charisma",
+    label: "im",
     dohwa: {
       present: true,
       pillar: "day",
@@ -144,7 +144,7 @@ export const MOCK_SAJU_DOYOON: SajuResultData = {
     tenGodPatternKey: "officer_pressure",
   },
   spouseAvoid: {
-    slotId: "neutral",
+    slotId: "f-neutral",
     avoidElement: null,
     avoidYinYang: null,
   },

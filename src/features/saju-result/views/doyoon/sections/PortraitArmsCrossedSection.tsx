@@ -25,7 +25,7 @@ export default function PortraitArmsCrossedSection() {
           tailPosition={85}
           tailOffsetPx={-10}
           radius={40}
-          textSize={14}
+          textSize={16}
           paddingX={20}
           paddingY={15}
         >
@@ -48,7 +48,7 @@ export default function PortraitArmsCrossedSection() {
           tailPosition={15}
           tailOffsetPx={10}
           radius={40}
-          textSize={14}
+          textSize={16}
           paddingX={20}
           paddingY={15}
         >

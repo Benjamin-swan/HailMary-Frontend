@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "@/styles/globals.css";
 import AmplitudeProvider from "./AmplitudeProvider";
+import QaAuthGuard from "@/shared/components/QaAuthGuard";
 
 export const metadata: Metadata = {
   title: "도화선",
@@ -20,10 +21,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" className="h-full bg-white antialiased">
+    <html lang="ko" className="h-full antialiased" style={{ backgroundColor: "#F0EBE3" }}>
       <body className="mx-auto flex min-h-full max-w-md flex-col">
         <AmplitudeProvider />
-        {children}
+        <QaAuthGuard>{children}</QaAuthGuard>
       </body>
     </html>
   );

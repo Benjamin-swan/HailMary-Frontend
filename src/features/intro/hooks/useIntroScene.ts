@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { MouseEvent, RefObject } from "react";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/shared/utils/analytics";
+import { usePreloadImages } from "@/shared/hooks/usePreloadImages";
 import {
   STEPS,
   CHAR_DELAY,
@@ -16,6 +17,7 @@ export function useIntroScene() {
   const router = useRouter();
   const [started] = useState(true);
   const [muted, setMuted] = useState(true);
+  const [userMuted, setUserMuted] = useState(false);
   const [showSoundHint, setShowSoundHint] = useState(true);
   const [stepIndex, setStepIndex] = useState(0);
   const [lineIndex, setLineIndex] = useState(0);
@@ -62,6 +64,21 @@ export function useIntroScene() {
       audio.src = "";
     };
   }, []);
+
+  // 모든 step의 배경/플래시 이미지를 마운트 시 한 번에 프리로드.
+  // fade-to-black 전환 중 다음 step 이미지가 디코딩되며 발생하던 flicker(이전 컷이
+  // 0.1초 잠깐 보였다 사라지는 현상) 방지용. 브라우저 캐시에 적재되어 이후 전환은 즉시.
+  const introImages = useMemo(() => {
+    const list: string[] = [];
+    for (const s of STEPS) {
+      if ("bg" in s) list.push((s as { bg: string }).bg);
+      if (s.type === "flash-sequence") {
+        for (const item of s.images) list.push(item.src);
+      }
+    }
+    return list;
+  }, []);
+  usePreloadImages(introImages);
 
   const hasDialogue =
     step.type === "dialogue" ||
@@ -210,15 +227,17 @@ export function useIntroScene() {
     if (muted) {
       audio.muted = false;
       if (stepIndex < 7) audio.play().catch(() => {});
+      setUserMuted(false);
     } else {
       audio.muted = true;
+      setUserMuted(true);
     }
     setMuted(!muted);
   };
 
   const handleTap = () => {
     if (crossFading) return;
-    if (muted) enableSound();
+    if (muted && !userMuted) enableSound();
 
     // phone animating 중 탭 → 알림 한 개씩 노출
     if (step.type === "phone" && phonePhase === "animating") {

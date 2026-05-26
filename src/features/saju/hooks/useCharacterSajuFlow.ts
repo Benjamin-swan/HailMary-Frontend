@@ -76,9 +76,12 @@ export function useCharacterSajuFlow(config: CharacterSajuFlowConfig) {
         time: info.time,
         calendar: info.calendar,
         gender: info.gender,
+        character_id: storageKeyPrefix === "yeonwoo" || storageKeyPrefix === "doyoon"
+          ? storageKeyPrefix
+          : undefined,
       });
     },
-    [infoKey, saju],
+    [infoKey, saju, storageKeyPrefix],
   );
 
   const finalizeSurvey = useCallback(
@@ -98,5 +101,5 @@ export function useCharacterSajuFlow(config: CharacterSajuFlowConfig) {
     [surveyKey],
   );
 
-  return { userName, userGender, userBirthYear, userBirthMonth, userCalendar, hasSubmittedInfo, surveyAnswers, setSurveyAnswers, submitInfo, finalizeSurvey };
+  return { userName, userGender, userBirthYear, userBirthMonth, userCalendar, hasSubmittedInfo, surveyAnswers, setSurveyAnswers, submitInfo, finalizeSurvey, sajuStatus: saju.status };
 }

@@ -97,16 +97,18 @@ const THEME_TOKENS = {
 const DOHWA_HUE_DARK = "#E6A88E";
 const DOHWA_HUE_BEIGE = "#E94E3F";
 
+// 일간 10종 LOVE_TYPE 라벨 (yeonwoo_p1_chapter_opening.py:LOVE_TYPE_BY_ILGAN과 동기화).
 const CHARM_TYPE_KO: Record<CharmTypeKey, string> = {
-  active: "능동형",
-  passive: "수용형",
-  expressive: "표현형",
-  mystery: "신비형",
-  charisma: "카리스마형",
-  dignified: "품격형",
-  free: "자유형",
-  withdrawn: "내향형",
-  balanced: "균형형",
+  gap: "직진 단단형",
+  eul: "깊이 감김형",
+  byeong: "빛으로 끌어당김형",
+  jeong: "은근한 정성형",
+  mu: "묵직한 안정형",
+  gi: "다정한 챙김형",
+  gyeong: "단호한 결단형",
+  shin: "단정한 자존형",
+  im: "깊고 잔잔한 결",
+  gye: "스며드는 섬세형",
 };
 
 const MANIFESTATION_KO: Record<CharmManifestationKey, string> = {
@@ -150,14 +152,14 @@ function CardShell({
       <div className="px-4 pt-5 pb-6">
         <div className="flex items-center justify-between mb-3">
           <p
-            className="text-[12px] tracking-[0.35em]"
+            className="text-[14px] tracking-[0.2em] font-medium"
             style={{ color: labelColor }}
           >
             {label}
           </p>
           {badge && (
             <span
-              className="text-[10px] tracking-wider px-2.5 py-1 rounded-full"
+              className="text-[13px] tracking-wider px-2.5 py-1 rounded-full"
               style={{ border: `1px solid ${borderColor}`, color: borderColor }}
             >
               {badge}
@@ -192,18 +194,14 @@ function CharmTypeCard({
   return (
     <CardShell
       label="매력 유형"
-      badge="무료"
       borderColor={tokens.typeBorderColor}
       bgColor={tokens.typeBg}
       glowColor={tokens.typeGlow}
       labelColor={tokens.labelColor}
     >
       <p
-        className="text-xl font-black tracking-[0.15em] mb-2"
-        style={{
-          color: tokens.typeNameColor,
-          textShadow: tokens.typeNameShadow,
-        }}
+        className="text-base font-extrabold tracking-[0.15em] mb-2"
+        style={{ color: tokens.typeNameColor }}
       >
         {typeKo}
       </p>
@@ -235,27 +233,19 @@ function DohwaCard({
   return (
     <CardShell
       label="도화살"
-      badge="무료"
       borderColor={hasDohwa ? dohwaHue : tokens.typeBorderColor}
       bgColor={hasDohwa ? `${dohwaHue}14` : `${tokens.typeBorderColor}0f`}
       glowColor={hasDohwa ? `${dohwaHue}33` : "transparent"}
       labelColor={tokens.labelColor}
     >
-      <div className="flex items-center gap-2 mb-2">
-        <p
-          className="text-base font-black tracking-[0.1em]"
-          style={{
-            color: hasDohwa ? dohwaHue : tokens.typeBorderColor,
-            textShadow: hasDohwa ? `0 0 10px ${dohwaHue}80` : "none",
-            fontFamily: '"NotoSerifTC", "ChosunNm", serif',
-            fontWeight: 700,
-          }}
-        >
-          {hasDohwa
-            ? `도화(桃花殺) ${charm.dohwa.hanja ?? "있음"}`
-            : "도화살 없음"}
-        </p>
-      </div>
+      <p
+        className="text-base font-extrabold tracking-[0.15em] mb-2"
+        style={{ color: hasDohwa ? dohwaHue : tokens.typeBorderColor }}
+      >
+        {hasDohwa
+          ? `도화(桃花殺) ${charm.dohwa.hanja ?? "있음"}`
+          : "도화살 없음"}
+      </p>
       <p
         className="text-[12px] leading-relaxed"
         style={{ color: tokens.bodyColor }}
@@ -277,27 +267,19 @@ function StrengthCard({
   const pct = charm.charmStrength;
   const steps = 10;
   const filled = Math.round((pct / 100) * steps);
-  const hue =
-    pct >= 78
-      ? "#E6A88E"
-      : pct >= 52
-        ? "#E6C58E"
-        : pct >= 28
-          ? "#9CC8B0"
-          : "#6B8BB5";
+  const hue = "#D2A965";
 
   return (
     <CardShell
       label="매력 강도"
-      badge="무료"
       borderColor={hue}
       bgColor={`${hue}14`}
       glowColor={`${hue}33`}
       labelColor={tokens.labelColor}
     >
       <p
-        className="text-lg font-black tracking-[0.15em] mb-3"
-        style={{ color: hue, textShadow: `0 0 10px ${hue}66` }}
+        className="text-base font-extrabold tracking-[0.15em] mb-3"
+        style={{ color: hue }}
       >
         {label}
       </p>
@@ -314,14 +296,14 @@ function StrengthCard({
 
       {charm.showPercent ? (
         <p
-          className="text-[11px] tracking-widest"
+          className="text-[13px] tracking-widest"
           style={{ color: tokens.percentLabelColor }}
         >
           {charm.charmStrength}/100 · 상위 {100 - charm.charmPercentile}%
         </p>
       ) : (
         <p
-          className="text-[11px] tracking-widest"
+          className="text-[13px] tracking-widest"
           style={{ color: tokens.percentLabelColor }}
         >
           {label}
@@ -349,18 +331,14 @@ function ManifestationCard({
   return (
     <CardShell
       label="매력 발현"
-      badge="무료"
       borderColor={tokens.manifestBorderColor}
       bgColor={tokens.manifestBg}
       glowColor={tokens.manifestGlow}
       labelColor={tokens.labelColor}
     >
       <p
-        className="text-base font-black tracking-[0.1em] mb-2"
-        style={{
-          color: tokens.manifestNameColor,
-          textShadow: tokens.manifestNameShadow,
-        }}
+        className="text-base font-extrabold tracking-[0.15em] mb-2"
+        style={{ color: tokens.manifestNameColor }}
       >
         {manifestKo} 빛남
       </p>

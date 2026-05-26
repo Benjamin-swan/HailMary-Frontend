@@ -18,6 +18,9 @@
 .DS_Store
 *.pem
 
+# 작업 자산 (큰 zip 등 — 코드 아닌 백업)
+public/images/spouse/*.zip
+
 # debug
 npm-debug.log*
 yarn-debug.log*
@@ -33,3 +36,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# spouse 이미지 정리 시 백업용 — 푸시 X
+/public/images/spouse/_archive/
+docs/

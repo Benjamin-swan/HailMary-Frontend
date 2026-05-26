@@ -12,7 +12,7 @@ type Props = {
 export default function CharacterIntroSection({ displayName }: Props) {
   return (
     <div className="w-full" style={{ background: SURFACE_BEIGE }}>
-      <div className="w-full px-6 pt-[30px] pb-6" style={{ textAlign: "center" }}>
+      <div className="w-full px-6 pt-[130px] pb-[54px]" style={{ textAlign: "center" }}>
         <p
           style={{
             fontFamily: "Pretendard, sans-serif",

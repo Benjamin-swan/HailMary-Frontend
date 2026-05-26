@@ -15,8 +15,11 @@ export default function SurveyFreeText({ step, onNext, buttonLabel = "도윤에�
   const [text, setText] = useState("");
 
   useEffect(() => {
+    const SENT_KEY = `hm_survey_step_view_sent_${characterId ?? "unknown"}_3`;
+    if (sessionStorage.getItem(SENT_KEY)) return;
+    sessionStorage.setItem(SENT_KEY, "1");
     trackEvent("survey_step_view", { character_id: characterId, step: 3 });
-  }, []);
+  }, [characterId]);
 
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -25,16 +28,10 @@ export default function SurveyFreeText({ step, onNext, buttonLabel = "도윤에�
       character_id: characterId,
       has_text: trimmed.length > 0,
       text_length: trimmed.length,
-      text_content: trimmed,
     });
     onNext(trimmed);
   };
 
-  const handleSkip = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    trackEvent("survey_freetext_skip", { character_id: characterId });
-    onNext("");
-  };
 
   return (
     <div
@@ -51,10 +48,7 @@ export default function SurveyFreeText({ step, onNext, buttonLabel = "도윤에�
 
       <div className="relative flex flex-1 flex-col px-6 pb-8 pt-14">
         <div>
-          <p className="text-[10px] tracking-[0.4em]" style={{ color: "#E6C58E" }}>
-            CELESTIAL ARCHIVE
-          </p>
-          <p className="mt-2 text-[10px] tracking-[0.3em]" style={{ color: "#998f82" }}>
+          <p className="mt-2 text-[14px] tracking-[0.1em]" style={{ color: "#998f82" }}>
             {step.pageLabel}
           </p>
           <h2
@@ -64,11 +58,11 @@ export default function SurveyFreeText({ step, onNext, buttonLabel = "도윤에�
             {step.title}
           </h2>
           <div className="mt-3 flex items-baseline justify-between">
-            <p className="text-[11px] tracking-[0.2em]" style={{ color: "#998f82" }}>
+            <p className="text-[14px] tracking-[0.2em]" style={{ color: "#998f82" }}>
               {step.subtitle}
             </p>
             <p
-              className="text-[11px] tracking-widest tabular-nums"
+              className="text-[14px] tracking-widest tabular-nums"
               style={{ color: text.length >= step.maxLength ? "#E6C58E" : "rgba(208,197,182,0.6)" }}
             >
               {text.length} / {step.maxLength}
@@ -95,7 +89,7 @@ export default function SurveyFreeText({ step, onNext, buttonLabel = "도윤에�
 
         <button
           onClick={handleNext}
-          className="mt-8 w-full rounded-2xl py-3.5 text-[13px] font-bold tracking-[0.3em] transition-all"
+          className="mt-8 w-full rounded-lg py-3.5 text-[16px] font-bold tracking-[0.1em] transition-all"
           style={{
             background: "linear-gradient(135deg, #FFE2B3, #E6C58E)",
             color: "#412d04",
@@ -103,13 +97,6 @@ export default function SurveyFreeText({ step, onNext, buttonLabel = "도윤에�
           }}
         >
           {buttonLabel}
-        </button>
-        <button
-          onClick={handleSkip}
-          className="mt-2 w-full py-2 text-[12px] tracking-[0.25em]"
-          style={{ color: "rgba(208,197,182,0.55)" }}
-        >
-          건너뛰기
         </button>
       </div>
     </div>

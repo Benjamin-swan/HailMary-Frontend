@@ -10,11 +10,14 @@ export function useLanding(): LandingState & { handleStart: () => void } {
   const [fading, setFading] = useState(false);
 
   useEffect(() => {
+    const SENT_KEY = "hm_landing_enter_sent";
+    if (sessionStorage.getItem(SENT_KEY)) return;
+    sessionStorage.setItem(SENT_KEY, "1");
     trackEvent("landing_enter");
   }, []);
 
   const handleStart = () => {
-    trackEvent("intro_step_complete", { step: 1 });
+    trackEvent("intro_start_clicked", { step: 1 });
     setFading(true);
     setTimeout(() => router.push("/intro"), 900);
   };
