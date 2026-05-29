@@ -40,4 +40,3 @@ next-env.d.ts
 # spouse 이미지 정리 시 백업용 — 푸시 X
 /public/images/spouse/_archive/
 docs/
-package-lock.json
