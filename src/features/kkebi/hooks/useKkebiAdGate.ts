@@ -8,6 +8,7 @@ import {
   getTodayCycleId,
   setCookie,
 } from "../domain/cookieSession";
+import { trackDaily } from "../domain/dailyAnalytics";
 
 const AD_LINK = "https://example.com"; // TODO: 실제 광고 링크
 
@@ -26,12 +27,18 @@ export function useKkebiAdGate() {
     }
   }, [router]);
 
+  // 광고 게이트 노출 — 사이클당 1회 가드
+  useEffect(() => {
+    const key = `hm_daily_ad_view_${getTodayCycleId()}`;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+    trackDaily("daily_ad_view");
+  }, []);
+
   function handleAdClick() {
     const cycleId = getTodayCycleId();
     window.open(AD_LINK, "_blank");
-    if (typeof console !== "undefined") {
-      console.log("[DA] ad_click", { cycle_id: cycleId });
-    }
+    trackDaily("daily_ad_click");
     setCookie(COOKIE_KEYS.LAST_CYCLE_ID, cycleId);
     router.push("/fortune/daily/loading/");
   }

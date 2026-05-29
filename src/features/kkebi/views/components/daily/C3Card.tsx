@@ -4,12 +4,18 @@ import { useState } from "react";
 import Card from "../shared/Card";
 import AreaTabs from "./AreaTabs";
 import AreaContent from "./AreaContent";
+import { trackDaily } from "../../../domain/dailyAnalytics";
 import type { AreaKey, SajuResult } from "../../../domain/types";
 
 type C3CardProps = { data: SajuResult };
 
 export default function C3Card({ data }: C3CardProps) {
   const [activeArea, setActiveArea] = useState<AreaKey>("love");
+
+  const handleAreaChange = (area: AreaKey) => {
+    if (area !== activeArea) trackDaily("daily_area_tab_click", { area });
+    setActiveArea(area);
+  };
 
   return (
     <Card>
@@ -29,7 +35,7 @@ export default function C3Card({ data }: C3CardProps) {
           >
             오늘의 5영역 풀이
           </p>
-          <AreaTabs activeArea={activeArea} onChange={setActiveArea} />
+          <AreaTabs activeArea={activeArea} onChange={handleAreaChange} />
         </div>
 
         <div
