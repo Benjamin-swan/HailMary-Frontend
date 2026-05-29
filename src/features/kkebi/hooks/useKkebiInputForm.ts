@@ -13,6 +13,7 @@ import {
   getDaysInMonth,
   lunarToSolarPlaceholder,
 } from "../domain/sajuRules";
+import { trackDaily } from "../domain/dailyAnalytics";
 import type { Gender } from "../domain/types";
 
 type MoodKey = "M1" | "M2" | "M3";
@@ -31,6 +32,14 @@ export function useKkebiInputForm() {
   const [isReady, setIsReady] = useState(false);
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setIsReady(true); }, []);
+
+  // 입력 폼 노출 — 사이클당 1회 가드
+  useEffect(() => {
+    const key = `hm_daily_input_view_${getTodayCycleId()}`;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+    trackDaily("daily_input_view");
+  }, []);
 
   // mount 직후 한 번만 mood + 인사 1개 랜덤 (useState lazy init — 첫 렌더 1회만 실행).
   const [init] = useState(() => {
@@ -89,9 +98,9 @@ export function useKkebiInputForm() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!name.trim()) { showValidationBubble("name"); return; }
-    if (!year || !month || !day) { showValidationBubble("birth"); return; }
-    if (!gender) { showValidationBubble("gender"); return; }
+    if (!name.trim()) { trackDaily("daily_input_invalid", { reason: "name" }); showValidationBubble("name"); return; }
+    if (!year || !month || !day) { trackDaily("daily_input_invalid", { reason: "birth" }); showValidationBubble("birth"); return; }
+    if (!gender) { trackDaily("daily_input_invalid", { reason: "gender" }); showValidationBubble("gender"); return; }
 
     const rawDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     const solarDate = isLunar ? lunarToSolarPlaceholder(rawDate) : rawDate;
@@ -103,6 +112,14 @@ export function useKkebiInputForm() {
     setCookie(COOKIE_KEYS.BIRTH_HOUR, hour);
     setCookie(COOKIE_KEYS.GENDER, gender);
     setCookie(COOKIE_KEYS.LAST_CYCLE_ID, getTodayCycleId());
+
+    trackDaily("daily_input_submit", {
+      birth_year: Number(year),
+      birth_month: Number(month),
+      calendar: isLunar ? "lunar" : "solar",
+      gender,
+      has_birth_time: hour !== "unknown",
+    });
 
     router.push("/fortune/daily/ad/");
   }

@@ -7,6 +7,7 @@ import {
   getCookie,
   getTodayCycleId,
 } from "../domain/cookieSession";
+import { trackDaily } from "../domain/dailyAnalytics";
 import { mockSajuResult } from "../domain/mockData";
 
 export function useKkebiResult() {
@@ -38,6 +39,13 @@ export function useKkebiResult() {
     if (name) setUserName(name);
     setIsReady(true);
     /* eslint-enable react-hooks/set-state-in-effect */
+
+    // 무료 일일사주 결과 도달 — 사이클당 1회 가드
+    const reachKey = `hm_daily_result_reach_${getTodayCycleId()}`;
+    if (!sessionStorage.getItem(reachKey)) {
+      sessionStorage.setItem(reachKey, "1");
+      trackDaily("daily_result_reach");
+    }
   }, [router]);
 
   return {
