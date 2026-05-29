@@ -5,7 +5,7 @@ import Card from "../shared/Card";
 import KkebiSlot from "../kkebi/KkebiSlot";
 import KkebiSpeechBubble from "../kkebi/KkebiSpeechBubble";
 import { ShareCard } from "./ShareCard";
-import { getTodayCycleId } from "../../../domain/cookieSession";
+import { trackDaily } from "../../../domain/dailyAnalytics";
 import { scoreToMood } from "../../../domain/sajuRules";
 import type { SajuResult } from "../../../domain/types";
 
@@ -45,9 +45,7 @@ export default function C5Card({ data, userName }: C5CardProps) {
 
   const handleFeedback = (type: FeedbackType) => {
     setFeedback(type);
-    if (typeof console !== "undefined") {
-      console.log("[DA] feedback", { type, cycle_id: getTodayCycleId() });
-    }
+    trackDaily("daily_feedback", { type });
   };
 
   const handleShare = async () => {
@@ -65,31 +63,42 @@ export default function C5Card({ data, userName }: C5CardProps) {
       });
 
       canvas.toBlob(async (blob) => {
-        if (!blob) return;
+        if (!blob) {
+          trackDaily("daily_share_click", { result: "fail" });
+          return;
+        }
 
         const file = new File([blob], `도화선-운세-${dateStr}.png`, { type: "image/png" });
 
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            files: [file],
-            title: `${displayName}님의 오늘 운세 — ${data.total.score}점`,
-            text: `"${data.total.summary}" — 도화선사주`,
-          });
-        } else if (navigator.share) {
-          await navigator.share({
-            title: `${displayName}님의 오늘 운세`,
-            url: window.location.href,
-          });
-        } else {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `도화선-운세-${dateStr}.png`;
-          a.click();
-          URL.revokeObjectURL(url);
+        try {
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: `${displayName}님의 오늘 운세 — ${data.total.score}점`,
+              text: `"${data.total.summary}" — 도화선사주`,
+            });
+          } else if (navigator.share) {
+            await navigator.share({
+              title: `${displayName}님의 오늘 운세`,
+              url: window.location.href,
+            });
+          } else {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `도화선-운세-${dateStr}.png`;
+            a.click();
+            URL.revokeObjectURL(url);
+          }
+          trackDaily("daily_share_click", { result: "success" });
+        } catch (err) {
+          // navigator.share를 사용자가 취소(AbortError)한 경우도 fail로 집계
+          trackDaily("daily_share_click", { result: "fail" });
+          if (typeof console !== "undefined") console.error("공유 실패:", err);
         }
       }, "image/png");
     } catch (err) {
+      trackDaily("daily_share_click", { result: "fail" });
       if (typeof console !== "undefined") {
         console.error("공유 실패:", err);
       }
@@ -166,6 +175,7 @@ export default function C5Card({ data, userName }: C5CardProps) {
                 href="https://www.dohwaseonsaju.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackDaily("daily_crosssell_click")}
                 style={{
                   background: "none",
                   border: "1px solid var(--v2-gold-border)",
