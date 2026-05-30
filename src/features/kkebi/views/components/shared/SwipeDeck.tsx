@@ -6,9 +6,10 @@ type SwipeDeckProps = {
   children: React.ReactNode;
   onCardChange?: (index: number) => void;
   locked?: boolean;
+  currentIndex?: number;
 };
 
-export default function SwipeDeck({ children, onCardChange, locked = false }: SwipeDeckProps) {
+export default function SwipeDeck({ children, onCardChange, locked = false, currentIndex }: SwipeDeckProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const onChangeRef = useRef(onCardChange);
@@ -17,6 +18,14 @@ export default function SwipeDeck({ children, onCardChange, locked = false }: Sw
 
   useEffect(() => { onChangeRef.current = onCardChange; });
   useEffect(() => { lockedRef.current = locked; }, [locked]);
+
+  // 외부(화살표 버튼)에서 currentIndex 변경 시 해당 카드로 smooth scroll
+  useEffect(() => {
+    if (currentIndex === undefined) return;
+    const container = containerRef.current;
+    if (!container) return;
+    container.scrollTo({ left: currentIndex * container.clientWidth, behavior: "smooth" });
+  }, [currentIndex]);
 
   const childArray = Children.toArray(children);
   useEffect(() => {
