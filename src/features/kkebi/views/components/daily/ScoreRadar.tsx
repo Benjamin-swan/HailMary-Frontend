@@ -96,13 +96,6 @@ export default function ScoreRadar({ areas }: ScoreRadarProps) {
           strokeLinejoin="round"
           filter="url(#score-glow)"
         />
-        {ORDER.map((key, i) => {
-          const [x, y] = point(i, scoreToRadius(areas[key].score));
-          return (
-            <circle key={`dot-${i}`} cx={x} cy={y} r={6}
-              fill={NEON_ORANGE} stroke={NEON_RED} strokeWidth={2} />
-          );
-        })}
       </svg>
     </div>
   );
