@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Card from "../shared/Card";
 import AreaTabs from "./AreaTabs";
 import AreaContent from "./AreaContent";
@@ -11,6 +11,12 @@ type C3CardProps = { data: SajuResult };
 
 export default function C3Card({ data }: C3CardProps) {
   const [activeArea, setActiveArea] = useState<AreaKey>("love");
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // 탭 전환 시 풀이 영역을 맨 위로 리셋 (직전 탭 스크롤 위치가 남는 문제 방지)
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0 });
+  }, [activeArea]);
 
   const handleAreaChange = (area: AreaKey) => {
     if (area !== activeArea) trackDaily("daily_area_tab_click", { area });
@@ -39,6 +45,7 @@ export default function C3Card({ data }: C3CardProps) {
         </div>
 
         <div
+          ref={scrollRef}
           style={{
             flex: 1,
             overflowX: "hidden",

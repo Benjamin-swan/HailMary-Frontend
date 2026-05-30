@@ -10,7 +10,9 @@ export default function Card({ children, className = "", innerOverflow = "hidden
       className={`kkebi-card${className ? " " + className : ""}`}
       style={{
         animation: "card-fade-in 0.4s ease-out",
+        // 폭 380 기준 9:16 높이(~676px)에 위아래 45px씩(총 90px) 더해 세로를 키움.
         aspectRatio: "9/16",
+        minHeight: "calc(min(380px, calc(100vw - 32px)) * 16 / 9 + 90px)",
         backgroundColor: "var(--v2-bg-card)",
         backgroundImage: "url(/kkebi/cards/front.png)",
         backgroundPosition: "center",

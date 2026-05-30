@@ -18,9 +18,12 @@ function formatHMS(totalMs: number): string {
 
 type Props = {
   visible?: boolean;
+  // HM-FE-91: true일 때 CTA 비활성("6월 초 오픈 예정") + onClick 차단.
+  // 6월 초 유료 결제 라이브 시 disabled={false} 한 줄 토글로 복원.
+  disabled?: boolean;
 };
 
-export function StickyCheckoutCta({ visible = true }: Props = {}) {
+export function StickyCheckoutCta({ visible = true, disabled = false }: Props = {}) {
   const router = useRouter();
   const [endAt, setEndAt] = useState<number>(() => Date.now() + TWELVE_HOURS_MS);
   const [now, setNow] = useState<number>(() => Date.now());
@@ -62,7 +65,7 @@ export function StickyCheckoutCta({ visible = true }: Props = {}) {
           letterSpacing: "-0.64px",
         }}
       >
-        마지막 오픈 할인까지 {formatHMS(remainingMs)}
+        {disabled ? "정밀 리포트는 곧 만나요" : `마지막 오픈 할인까지 ${formatHMS(remainingMs)}`}
       </p>
       <button
         type="button"
@@ -76,13 +79,20 @@ export function StickyCheckoutCta({ visible = true }: Props = {}) {
           fontSize: "16px",
           fontWeight: 700,
           gap: "10px",
+          opacity: disabled ? 0.55 : 1,
+          cursor: disabled ? "not-allowed" : "pointer",
         }}
         onClick={() => {
+          if (disabled) {
+            trackEvent("pay_cta_blocked", { character_id: "yeonwoo" });
+            return;
+          }
           trackEvent("pay_cta_click", { character_id: "yeonwoo" });
           router.push("/checkout/yeonwoo");
         }}
+        aria-disabled={disabled}
       >
-        결제하고 연우의 정밀 리포트 읽기
+        {disabled ? "6월 초 오픈 예정" : "결제하고 연우의 정밀 리포트 읽기"}
       </button>
     </div>
   );
