@@ -18,10 +18,11 @@ import type { Gender } from "../domain/types";
 
 type MoodKey = "M1" | "M2" | "M3";
 
+// HM-FE-92: "응답 안 함"(X) 옵션 제거 — FortuneTeller가 gender=other를 처리 못해 mock 폴백 발생하던 버그 회피.
+// BE는 여전히 X(other) 허용하지만 사용자 진입 경로 봉인.
 export const GENDER_OPTIONS: Array<{ label: string; value: Gender }> = [
   { label: "남", value: "M" },
   { label: "여", value: "F" },
-  { label: "응답 안 함", value: "X" },
 ];
 
 export function useKkebiInputForm() {
