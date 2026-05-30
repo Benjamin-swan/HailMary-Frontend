@@ -18,8 +18,8 @@ const KKEBI_PENTAGON_SRC = "/kkebi/images/kkebi-pentagon.svg";
 // 그래프투명최종본 SVG의 viewBox = 0 0 365 360 (거의 정사각).
 const IMG = 365;           // 이미지 한 변 (svg viewBox 기준)
 // 이미지 속 펜타곤의 중심·반지름 (PNG 1247 기준 좌표를 365 기준으로 비례 환산).
-const CX = 231;            // 펜타곤 중심 x (790/1247 × 365)
-const CY = 220;            // 펜타곤 중심 y (760/1247 × 360)
+const CX = 226;            // 펜타곤 중심 x — 미세조정(-5, 왼쪽)
+const CY = 225;            // 펜타곤 중심 y — 미세조정(+5, 아래)
 const R = 123;             // 펜타곤 외곽 반지름 (420/1247 × 365)
 const SCORE_MIN = 30;
 const SCORE_MAX = 100;
