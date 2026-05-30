@@ -11,8 +11,8 @@ type ShareCardProps = {
 
 // 메인 ScoreRadar와 동일한 펜타곤 좌표 (SVG로 교체, viewBox 365×360 기준)
 const IMG = 365;
-const CX = 226;
-const CY = 225;
+const CX = 227;
+const CY = 221;
 const R = 123;
 const SCORE_MIN = 30;
 const SCORE_MAX = 100;
