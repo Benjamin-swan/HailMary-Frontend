@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { api } from "@/shared/utils/api";
 import {
   COOKIE_KEYS,
   getCookie,
@@ -9,6 +10,7 @@ import {
 } from "../domain/cookieSession";
 import { trackDaily } from "../domain/dailyAnalytics";
 import { mockSajuResult } from "../domain/mockData";
+import type { SajuResult } from "../domain/types";
 
 export function useKkebiResult() {
   const router = useRouter();
@@ -16,12 +18,15 @@ export function useKkebiResult() {
   const [currentCard, setCurrentCard] = useState(0);
   const [c1Flipped, setC1Flipped] = useState(false);
   const [userName, setUserName] = useState(mockSajuResult.user.name);
+  // BE 합성 결과. 로드 전·실패 시 mock으로 폴백해 화면이 깨지지 않게 한다.
+  const [data, setData] = useState<SajuResult>(mockSajuResult);
 
   useEffect(() => {
     const uid       = getCookie(COOKIE_KEYS.UID);
     const name      = getCookie(COOKIE_KEYS.NAME);
     const birth     = getCookie(COOKIE_KEYS.BIRTH_SOLAR);
     const gender    = getCookie(COOKIE_KEYS.GENDER);
+    const hourRaw   = getCookie(COOKIE_KEYS.BIRTH_HOUR);
     const lastCycle = getCookie(COOKIE_KEYS.LAST_CYCLE_ID);
 
     if (!uid || !name || !birth || !gender) {
@@ -37,7 +42,6 @@ export function useKkebiResult() {
     // 마운트 시 1회 세션 검증 + 표시 데이터 세팅. cascade 의도 X.
     /* eslint-disable react-hooks/set-state-in-effect */
     if (name) setUserName(name);
-    setIsReady(true);
     /* eslint-enable react-hooks/set-state-in-effect */
 
     // 무료 일일사주 결과 도달 — 사이클당 1회 가드
@@ -46,6 +50,30 @@ export function useKkebiResult() {
       sessionStorage.setItem(reachKey, "1");
       trackDaily("daily_result_reach");
     }
+
+    // BE /api/kkebi/fortune 호출
+    const hour =
+      hourRaw === undefined || hourRaw === "unknown" ? null : Number(hourRaw);
+    let cancelled = false;
+    void (async () => {
+      try {
+        const result = await api.post<SajuResult>("/api/kkebi/fortune", {
+          name,
+          birth,
+          hour,
+          gender,
+        });
+        if (!cancelled) setData(result);
+      } catch {
+        // 폴백: mock 유지 (개발 중 화면 깨짐 방지)
+      } finally {
+        if (!cancelled) setIsReady(true);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [router]);
 
   return {
@@ -55,6 +83,6 @@ export function useKkebiResult() {
     c1Flipped,
     setC1Flipped,
     userName,
-    data: mockSajuResult,
+    data,
   };
 }

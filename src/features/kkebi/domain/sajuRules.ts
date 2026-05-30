@@ -1,9 +1,10 @@
 import type { KkebiMood } from "./types";
 
+// BE kkebi_mood.py 와 동일 임계. 점수는 70~99에 20/50/30 분포로 설계됨.
 export function scoreToMood(score: number): KkebiMood {
-  if (score >= 86) return "high";
-  if (score >= 61) return "mid-high";
-  if (score >= 31) return "mid";
+  if (score >= 90) return "high";
+  if (score >= 80) return "mid-high";
+  if (score >= 70) return "mid";
   return "low";
 }
 
