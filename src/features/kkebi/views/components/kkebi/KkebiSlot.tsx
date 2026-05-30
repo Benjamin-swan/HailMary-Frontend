@@ -6,7 +6,7 @@ import KkebiSpeechBubble from "./KkebiSpeechBubble";
 
 export type KkebiSlotProps = {
   mood?: KkebiMood | "M1" | "M2" | "M3";
-  pose?: "greeting" | "corner" | "loading" | "main"
+  pose?: "greeting" | "corner" | "loading" | "main" | "main-kkebi"
        | "love" | "work" | "money" | "health" | "study"
        | "feedback" | "crosssell" | "ad";
   size?: "sm" | "md" | "lg" | "xl";
@@ -36,6 +36,7 @@ function getImageSrc(
     };
     return `${IMAGE_BASE}/${moodMap[String(mood)] ?? "corner-m1"}.png`;
   }
+  if (pose === "main-kkebi") return `${IMAGE_BASE}/main-kkebi.png`;
   if (pose === "ad")       return `${IMAGE_BASE}/ad-m1.png`;
   if (pose === "loading")  return `${IMAGE_BASE}/loading-default.png`;
   if (pose === "feedback") return `${IMAGE_BASE}/feedback-default.png`;
