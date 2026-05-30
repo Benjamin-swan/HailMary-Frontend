@@ -9,18 +9,18 @@ type ScoreRadarProps = {
 const NEON_ORANGE = "#ff9a3c";
 const NEON_RED = "#ff4d5e";
 
-// 깨비가 펜타곤을 안은 통짜 디자이너 이미지 (배경)
-const KKEBI_PENTAGON_SRC = "/kkebi/images/kkebi-pentagon.png";
+// 깨비가 펜타곤을 안은 통짜 디자이너 이미지 (배경, SVG로 교체 — 벡터)
+const KKEBI_PENTAGON_SRC = "/kkebi/images/kkebi-pentagon.svg";
 
 // ── 정합 핵심 ───────────────────────────────────────────────
 // 배경 이미지와 SVG가 "동일 종횡비 박스"를 공유하면, 같이 스케일되어
 // 어떤 화면에서도 안 틀어진다. viewBox를 이미지 픽셀 크기와 1:1로 맞춘다.
-// (원본 그래프 투명 최종본.png ≈ 정사각 1247x1247)
-const IMG = 1247;          // 이미지 한 변 px (정사각)
-// 이미지 속 펜타곤의 중심·반지름 (이 이미지 좌표 기준 — 스크린샷 보며 미세조정)
-const CX = 790;            // 펜타곤 중심 x
-const CY = 760;            // 펜타곤 중심 y
-const R = 420;             // 펜타곤 외곽 반지름(꼭짓점까지)
+// 그래프투명최종본 SVG의 viewBox = 0 0 365 360 (거의 정사각).
+const IMG = 365;           // 이미지 한 변 (svg viewBox 기준)
+// 이미지 속 펜타곤의 중심·반지름 (PNG 1247 기준 좌표를 365 기준으로 비례 환산).
+const CX = 231;            // 펜타곤 중심 x (790/1247 × 365)
+const CY = 220;            // 펜타곤 중심 y (760/1247 × 360)
+const R = 123;             // 펜타곤 외곽 반지름 (420/1247 × 365)
 const SCORE_MIN = 30;
 const SCORE_MAX = 100;
 // ────────────────────────────────────────────────────────────

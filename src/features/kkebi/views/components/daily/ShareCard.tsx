@@ -9,14 +9,14 @@ type ShareCardProps = {
   dateStr: string;
 };
 
-// 메인 ScoreRadar와 동일한 펜타곤 좌표 (통짜 이미지 기준)
-const IMG = 1247;
-const CX = 790;
-const CY = 760;
-const R = 420;
+// 메인 ScoreRadar와 동일한 펜타곤 좌표 (SVG로 교체, viewBox 365×360 기준)
+const IMG = 365;
+const CX = 231;
+const CY = 220;
+const R = 123;
 const SCORE_MIN = 30;
 const SCORE_MAX = 100;
-const KKEBI_PENTAGON_SRC = "/kkebi/images/kkebi-pentagon.png";
+const KKEBI_PENTAGON_SRC = "/kkebi/images/kkebi-pentagon.svg";
 const NEON_ORANGE = "#ff9a3c";
 const NEON_RED = "#ff4d5e";
 
