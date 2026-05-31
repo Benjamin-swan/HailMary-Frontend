@@ -145,12 +145,13 @@ export default function SwipeDeck({
           <div
             key={i}
             style={{
-              alignItems: "center",
+              // 상단 정렬 — 카드를 위로 올려 모바일 윗공간(가독성 좋은 영역) 활용
+              alignItems: "flex-start",
               boxSizing: "border-box",
               display: "flex",
               flexShrink: 0,
               justifyContent: "center",
-              padding: "24px 8px",
+              padding: "32px 8px",
               width: slideWidthStyle,
             }}
           >

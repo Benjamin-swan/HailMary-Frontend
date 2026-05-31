@@ -37,10 +37,10 @@ export function KkebiAdView() {
             }}
           />
 
-          {/* 2. 깨비 — 버튼 위에 overlap */}
+          {/* 2. 깨비 — 버튼 위에 살짝 걸치게 (앞발만 버튼 위, 글자 안 가리게) */}
           <div
             style={{
-              marginBottom: -80,
+              marginBottom: -65,
               pointerEvents: "none",
               position: "relative",
               zIndex: 2,
