@@ -38,9 +38,29 @@ export default function C1Card({ data, userName, onFlip }: C1CardProps) {
         backgroundSize: "100% 100%",
         backgroundColor: "var(--v2-bg-card)",
         height: "100%",
+        position: "relative",
         width: "100%",
       }}
-    />
+    >
+      {/* 카드 안 하단 오버레이 — 모바일에서도 카드 안에 안전하게 표시 */}
+      {isReady && !isFlipped && (
+        <p style={{
+          bottom: "70px",
+          color: "var(--v2-gold)",
+          fontFamily: "var(--font-title)",
+          fontSize: "var(--text-sm)",
+          left: 0,
+          letterSpacing: "0.1em",
+          margin: 0,
+          opacity: 0.85,
+          position: "absolute",
+          right: 0,
+          textAlign: "center",
+        }}>
+          탭하여 오늘의 운세 확인
+        </p>
+      )}
+    </div>
   );
 
   const cardFront = (
@@ -63,7 +83,7 @@ export default function C1Card({ data, userName, onFlip }: C1CardProps) {
         right: "28px",
         top: "40px",
       }}>
-        <div style={{ height: "100%", overflowY: "auto", scrollbarWidth: "none" as const }}>
+        <div style={{ height: "100%", overflowY: "auto", scrollbarWidth: "none" as const, touchAction: "pan-y" }}>
           <div style={{
             alignItems: "center",
             display: "flex",
@@ -175,7 +195,7 @@ export default function C1Card({ data, userName, onFlip }: C1CardProps) {
             cursor: isReady && !isFlipped ? "pointer" : "default",
             margin: "0 auto",
             maxWidth: "380px",
-            width: "min(380px, calc(100vw - 32px))",
+            width: "min(380px, calc(100vw - 72px))",
           }}
         >
           <FlipCard isFlipped={isFlipped} back={cardBack} front={cardFront} />
@@ -191,21 +211,12 @@ export default function C1Card({ data, userName, onFlip }: C1CardProps) {
               display: "flex",
               flexDirection: "column",
               gap: 8,
+              transform: "translateY(-15px)",
             }}
           >
             <div style={{ animation: "tapBounce 1.6s ease-in-out infinite", fontSize: 28 }}>
               ✦
             </div>
-            <p style={{
-              color: "var(--v2-gold)",
-              fontFamily: "var(--font-title)",
-              fontSize: "var(--text-sm)",
-              letterSpacing: "0.1em",
-              margin: 0,
-              opacity: 0.85,
-            }}>
-              탭하여 오늘의 운세 확인
-            </p>
           </div>
         )}
       </div>

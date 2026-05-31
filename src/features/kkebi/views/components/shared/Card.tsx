@@ -11,8 +11,9 @@ export default function Card({ children, className = "", innerOverflow = "hidden
       style={{
         animation: "card-fade-in 0.4s ease-out",
         // 폭 380 기준 9:16 높이(~676px)에 위아래 45px씩(총 90px) 더해 세로를 키움.
+        // 모바일은 100vw-72(양옆 36px)로 줄여 캐러셀 옆 카드 peek 간격 확보.
         aspectRatio: "9/16",
-        minHeight: "calc(min(380px, calc(100vw - 32px)) * 16 / 9 + 90px)",
+        minHeight: "calc(min(380px, calc(100vw - 72px)) * 16 / 9 + 90px)",
         backgroundColor: "var(--v2-bg-card)",
         backgroundImage: "url(/kkebi/cards/front.png)",
         backgroundPosition: "center",
@@ -29,7 +30,7 @@ export default function Card({ children, className = "", innerOverflow = "hidden
         maxWidth: "380px",
         overflow: "hidden",
         position: "relative",
-        width: "min(380px, calc(100vw - 32px))",
+        width: "min(380px, calc(100vw - 72px))",
       }}
     >
       <div

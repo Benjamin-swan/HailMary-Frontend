@@ -142,7 +142,8 @@ export function KkebiResultView() {
           width: "100%",
         }}
       >
-        <CardIndicator total={5} current={r.currentCard} />
+        {/* C1 카드 뒤집기 전에는 인디케이터 숨김 — 탭 후에만 표시 */}
+        {r.c1Flipped && <CardIndicator total={5} current={r.currentCard} />}
       </div>
     </PageContainer>
   );
