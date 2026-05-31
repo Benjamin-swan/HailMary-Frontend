@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { COOKIE_KEYS, getCookie } from "../domain/cookieSession";
 
-const LOADING_DURATION_MS = 2500;
+const LOADING_DURATION_MS = 0;
 
 export function useKkebiLoading() {
   const router = useRouter();

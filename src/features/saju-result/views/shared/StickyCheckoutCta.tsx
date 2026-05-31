@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { trackEvent } from "@/shared/utils/analytics";
 
 const PRIMARY_COLOR = "#D73F59";
 const TEXT_COLOR = "#ECECEC";
@@ -20,12 +21,19 @@ type Props = {
   ctaLabel: string;
   visible?: boolean;
   onCheckout?: () => void;
+  // HM-FE-91: true일 때 CTA 비활성("6월 초 오픈 예정" 문구) + onClick 차단.
+  // 6월 초 유료 결제 라이브 시 disabled={false} 한 줄 토글로 복원.
+  disabled?: boolean;
+  // 비활성 이벤트 트래킹용. disabled=true일 때 클릭 시 pay_cta_blocked 발화.
+  characterId?: string;
 };
 
 export default function StickyCheckoutCta({
   ctaLabel,
   visible = true,
   onCheckout,
+  disabled = false,
+  characterId,
 }: Props) {
   const [endAt, setEndAt] = useState<number>(() => Date.now() + TWELVE_HOURS_MS);
   const [now, setNow] = useState<number>(() => Date.now());
@@ -66,7 +74,7 @@ export default function StickyCheckoutCta({
           letterSpacing: "-0.02em",
         }}
       >
-        마지막 오픈 할인까지 {formatHMS(remainingMs)}
+        {disabled ? "정밀 리포트는 곧 만나요" : `마지막 오픈 할인까지 ${formatHMS(remainingMs)}`}
       </p>
       <button
         type="button"
@@ -80,17 +88,24 @@ export default function StickyCheckoutCta({
           fontSize: "16px",
           fontWeight: 700,
           letterSpacing: "-0.02em",
-          boxShadow: "0 6px 18px rgba(233,78,63,0.28)",
+          boxShadow: disabled ? "none" : "0 6px 18px rgba(233,78,63,0.28)",
+          opacity: disabled ? 0.55 : 1,
+          cursor: disabled ? "not-allowed" : "pointer",
         }}
         onClick={() => {
+          if (disabled) {
+            trackEvent("pay_cta_blocked", { character_id: characterId ?? "unknown" });
+            return;
+          }
           if (onCheckout) {
             onCheckout();
           } else {
             alert("결제 페이지는 준비 중이에요.");
           }
         }}
+        aria-disabled={disabled}
       >
-        {ctaLabel}
+        {disabled ? "6월 초 오픈 예정" : ctaLabel}
       </button>
     </div>
   );

@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import { FlipCard } from "../shared/FlipCard";
 import ScoreRadar from "./ScoreRadar";
-import KkebiSlot from "../kkebi/KkebiSlot";
-import { scoreToMood } from "../../../domain/sajuRules";
 import type { SajuResult } from "../../../domain/types";
 
 type C1CardProps = {
@@ -18,7 +16,6 @@ export default function C1Card({ data, userName, onFlip }: C1CardProps) {
   const [isReady, setIsReady] = useState(false);
 
   const name = userName ?? data.user.name;
-  const mood = scoreToMood(data.total.score);
   const scoreColor = data.total.score <= 30 ? "var(--v2-gold)" : "var(--v2-gold-bright)";
 
   useEffect(() => {
@@ -41,9 +38,29 @@ export default function C1Card({ data, userName, onFlip }: C1CardProps) {
         backgroundSize: "100% 100%",
         backgroundColor: "var(--v2-bg-card)",
         height: "100%",
+        position: "relative",
         width: "100%",
       }}
-    />
+    >
+      {/* 카드 안 하단 오버레이 — 모바일에서도 카드 안에 안전하게 표시 */}
+      {isReady && !isFlipped && (
+        <p style={{
+          bottom: "70px",
+          color: "var(--v2-gold)",
+          fontFamily: "var(--font-title)",
+          fontSize: "var(--text-sm)",
+          left: 0,
+          letterSpacing: "0.1em",
+          margin: 0,
+          opacity: 0.85,
+          position: "absolute",
+          right: 0,
+          textAlign: "center",
+        }}>
+          탭하여 오늘의 운세 확인
+        </p>
+      )}
+    </div>
   );
 
   const cardFront = (
@@ -66,7 +83,7 @@ export default function C1Card({ data, userName, onFlip }: C1CardProps) {
         right: "28px",
         top: "40px",
       }}>
-        <div style={{ height: "100%", overflowY: "auto", scrollbarWidth: "none" as const }}>
+        <div style={{ height: "100%", overflowY: "auto", scrollbarWidth: "none" as const, touchAction: "pan-y" }}>
           <div style={{
             alignItems: "center",
             display: "flex",
@@ -98,14 +115,25 @@ export default function C1Card({ data, userName, onFlip }: C1CardProps) {
               {name}님 오늘의 운세는?
             </p>
 
-            <KkebiSlot
-              pose="main"
-              size="xl"
-              mood={mood}
-              bubbleText={data.total.summary}
-              bubblePosition="top"
-            />
+            {/* 헤드라인 말풍선 박스 */}
+            <div style={{
+              background: "var(--v2-bg-overlay)",
+              border: "1px solid var(--v2-gold-border)",
+              borderRadius: "12px",
+              color: "var(--v2-text-primary)",
+              fontFamily: "var(--font-body)",
+              fontSize: "var(--text-sm)",
+              lineHeight: "var(--lh-normal)",
+              margin: "8px auto 0",
+              maxWidth: "300px",
+              padding: "10px 18px",
+              textAlign: "center",
+              wordBreak: "keep-all",
+            }}>
+              {data.total.summary}
+            </div>
 
+            {/* 네온 펜타곤 점수표 (SVG — 플랫폼 무관 정합) */}
             <div style={{ width: "100%" }}>
               <ScoreRadar areas={data.areas} />
             </div>
@@ -167,7 +195,7 @@ export default function C1Card({ data, userName, onFlip }: C1CardProps) {
             cursor: isReady && !isFlipped ? "pointer" : "default",
             margin: "0 auto",
             maxWidth: "380px",
-            width: "min(380px, calc(100vw - 32px))",
+            width: "min(380px, calc(100vw - 72px))",
           }}
         >
           <FlipCard isFlipped={isFlipped} back={cardBack} front={cardFront} />
@@ -183,21 +211,12 @@ export default function C1Card({ data, userName, onFlip }: C1CardProps) {
               display: "flex",
               flexDirection: "column",
               gap: 8,
+              transform: "translateY(-15px)",
             }}
           >
             <div style={{ animation: "tapBounce 1.6s ease-in-out infinite", fontSize: 28 }}>
               ✦
             </div>
-            <p style={{
-              color: "var(--v2-gold)",
-              fontFamily: "var(--font-title)",
-              fontSize: "var(--text-sm)",
-              letterSpacing: "0.1em",
-              margin: 0,
-              opacity: 0.85,
-            }}>
-              탭하여 오늘의 운세 확인
-            </p>
           </div>
         )}
       </div>

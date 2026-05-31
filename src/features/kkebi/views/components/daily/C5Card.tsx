@@ -62,41 +62,47 @@ export default function C5Card({ data, userName }: C5CardProps) {
         useCORS: true,
       });
 
-      canvas.toBlob(async (blob) => {
-        if (!blob) {
-          trackDaily("daily_share_click", { result: "fail" });
-          return;
-        }
+      // toBlob을 Promise로 wrap해서 외부 try-finally가 share 완료까지 대기
+      const blob = await new Promise<Blob | null>((resolve) => {
+        canvas.toBlob(resolve, "image/png");
+      });
 
-        const file = new File([blob], `도화선-운세-${dateStr}.png`, { type: "image/png" });
+      if (!blob) {
+        trackDaily("daily_share_click", { result: "fail" });
+        return;
+      }
 
-        try {
-          if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              files: [file],
-              title: `${displayName}님의 오늘 운세 — ${data.total.score}점`,
-              text: `"${data.total.summary}" — 도화선사주`,
-            });
-          } else if (navigator.share) {
-            await navigator.share({
-              title: `${displayName}님의 오늘 운세`,
-              url: window.location.href,
-            });
-          } else {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `도화선-운세-${dateStr}.png`;
-            a.click();
-            URL.revokeObjectURL(url);
-          }
-          trackDaily("daily_share_click", { result: "success" });
-        } catch (err) {
-          // navigator.share를 사용자가 취소(AbortError)한 경우도 fail로 집계
-          trackDaily("daily_share_click", { result: "fail" });
-          if (typeof console !== "undefined") console.error("공유 실패:", err);
+      const file = new File([blob], `도화선-운세-${dateStr}.png`, { type: "image/png" });
+
+      try {
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: `${displayName}님의 오늘 운세 — ${data.total.score}점`,
+            text: `"${data.total.summary}" — 도화선사주`,
+          });
+        } else if (navigator.share) {
+          await navigator.share({
+            title: `${displayName}님의 오늘 운세`,
+            url: window.location.href,
+          });
+        } else {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `도화선-운세-${dateStr}.png`;
+          a.click();
+          URL.revokeObjectURL(url);
         }
-      }, "image/png");
+        trackDaily("daily_share_click", { result: "success" });
+      } catch (err) {
+        // AbortError(사용자 취소)는 정상 케이스 → silent
+        const isAbort = err instanceof DOMException && err.name === "AbortError";
+        trackDaily("daily_share_click", { result: isAbort ? "cancel" : "fail" });
+        if (!isAbort && typeof console !== "undefined") {
+          console.error("공유 실패:", err);
+        }
+      }
     } catch (err) {
       trackDaily("daily_share_click", { result: "fail" });
       if (typeof console !== "undefined") {
@@ -118,7 +124,7 @@ export default function C5Card({ data, userName }: C5CardProps) {
       />
 
       <Card>
-        <div style={{ height: "100%", overflowX: "hidden", overflowY: "auto", scrollbarWidth: "none" }}>
+        <div style={{ height: "100%", overflowX: "hidden", overflowY: "auto", scrollbarWidth: "none", touchAction: "pan-y" }}>
           <div
             style={{
               alignItems: "center",

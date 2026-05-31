@@ -2,7 +2,7 @@
 
 export const KKEBI_STATIC = {
   videoSrc: "/kkebi-treasure-box.mp4",
-  titleImage: "/kkebi-title-text.png",
+  titleImage: "/kkebi-title-text-transparent.png",
   ctaLabel: "시작하기",
   microCopy: "오늘 너의 하루를 깨비가 봐줄게",
   divider: "매일 1분, 깨비의 한 줄 운세",

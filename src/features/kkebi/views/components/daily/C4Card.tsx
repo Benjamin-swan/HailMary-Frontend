@@ -30,8 +30,8 @@ function LuckyIcon({ type, label }: { type: string; label: string }) {
     <img
       src={LUCKY_ICONS[type]}
       alt={label}
-      width={60}
-      height={60}
+      width={42}
+      height={42}
       style={{ objectFit: "contain" }}
       onError={(e) => {
         const target = e.currentTarget as HTMLImageElement;
@@ -52,8 +52,8 @@ const BOX_STYLE: React.CSSProperties = {
   borderRadius: "12px",
   display: "flex",
   flexDirection: "column",
-  gap: 8,
-  padding: "16px 12px",
+  gap: 5,
+  padding: "10px 12px",
 };
 
 export default function C4Card({ data }: C4CardProps) {
@@ -61,14 +61,14 @@ export default function C4Card({ data }: C4CardProps) {
 
   return (
     <Card>
-      <div style={{ height: "100%", overflowX: "hidden", overflowY: "auto", scrollbarWidth: "none" }}>
+      <div style={{ height: "100%", overflowX: "hidden", overflowY: "auto", scrollbarWidth: "none", touchAction: "pan-y" }}>
         <div
           style={{
             alignItems: "center",
             display: "flex",
             flexDirection: "column",
-            gap: "20px",
-            padding: "24px 0",
+            gap: "14px",
+            padding: "16px 0",
           }}
         >
           <p
@@ -88,7 +88,7 @@ export default function C4Card({ data }: C4CardProps) {
 
           <KkebiSlot
             pose="main"
-            size="xl"
+            size="lg"
             mood={mood}
             bubbleText="오늘 이거 챙겨봐."
             bubblePosition="top"
@@ -97,7 +97,7 @@ export default function C4Card({ data }: C4CardProps) {
           <div
             style={{
               display: "grid",
-              gap: "12px",
+              gap: "10px",
               gridTemplateColumns: "1fr 1fr",
               width: "100%",
             }}
@@ -107,8 +107,8 @@ export default function C4Card({ data }: C4CardProps) {
               <span style={{ alignItems: "center", color: "var(--v2-text-secondary)", display: "flex", fontSize: "var(--text-sm)", letterSpacing: "var(--ls-wide)", minHeight: "20px" }}>
                 행운의 색
               </span>
-              <div style={{ alignItems: "center", display: "flex", flexDirection: "column", gap: 6, marginTop: "auto" }}>
-                <div style={{ background: data.lucky.color.hex, borderRadius: "50%", height: "36px", width: "36px" }} />
+              <div style={{ alignItems: "center", display: "flex", flexDirection: "column", gap: 6 }}>
+                <div style={{ background: data.lucky.color.hex, borderRadius: "50%", height: "30px", width: "30px" }} />
                 <span style={{ color: "var(--v2-text-primary)", fontSize: "14px", fontWeight: 500 }}>
                   {data.lucky.color.name}
                 </span>
@@ -120,7 +120,7 @@ export default function C4Card({ data }: C4CardProps) {
               <span style={{ alignItems: "center", color: "var(--v2-text-secondary)", display: "flex", fontSize: "var(--text-sm)", letterSpacing: "var(--ls-wide)", minHeight: "20px" }}>
                 행운의 숫자
               </span>
-              <span style={{ color: "var(--v2-gold-bright)", fontFamily: "var(--font-title)", fontSize: "40px", fontWeight: 800, lineHeight: 1.1, marginTop: "auto" }}>
+              <span style={{ color: "var(--v2-gold-bright)", fontFamily: "var(--font-title)", fontSize: "32px", fontWeight: 800, lineHeight: 1.1 }}>
                 {data.lucky.number}
               </span>
             </div>
@@ -130,7 +130,7 @@ export default function C4Card({ data }: C4CardProps) {
               <span style={{ alignItems: "center", color: "var(--v2-text-secondary)", display: "flex", fontSize: "var(--text-sm)", letterSpacing: "var(--ls-wide)", minHeight: "20px" }}>
                 행운의 방향
               </span>
-              <span style={{ color: "var(--v2-text-primary)", fontFamily: "var(--font-title)", fontSize: "22px", fontWeight: 700, marginTop: "auto" }}>
+              <span style={{ color: "var(--v2-text-primary)", fontFamily: "var(--font-title)", fontSize: "18px", fontWeight: 700 }}>
                 {DIRECTION_MAP[data.lucky.direction] ?? data.lucky.direction}
               </span>
             </div>
@@ -140,7 +140,7 @@ export default function C4Card({ data }: C4CardProps) {
               <span style={{ alignItems: "center", color: "var(--v2-text-secondary)", display: "flex", fontSize: "var(--text-sm)", letterSpacing: "var(--ls-wide)", minHeight: "20px" }}>
                 행운의 음식
               </span>
-              <span style={{ color: "var(--v2-text-primary)", fontFamily: "var(--font-title)", fontSize: "22px", fontWeight: 700, marginTop: "auto" }}>
+              <span style={{ color: "var(--v2-text-primary)", fontFamily: "var(--font-title)", fontSize: "18px", fontWeight: 700 }}>
                 {data.lucky.food.name}
               </span>
             </div>

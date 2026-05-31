@@ -9,8 +9,7 @@ import {
   setCookie,
 } from "../domain/cookieSession";
 import { trackDaily } from "../domain/dailyAnalytics";
-
-const AD_LINK = "https://example.com"; // TODO: 실제 광고 링크
+import { pickRandomActiveAd } from "../domain/kkebiAds";
 
 export function useKkebiAdGate() {
   const router = useRouter();
@@ -37,8 +36,14 @@ export function useKkebiAdGate() {
 
   function handleAdClick() {
     const cycleId = getTodayCycleId();
-    window.open(AD_LINK, "_blank");
-    trackDaily("daily_ad_click");
+    // 활성 광고(종료일 전날까지) 중 랜덤 1개. 만료/없음이면 광고 없이 진행.
+    const ad = pickRandomActiveAd(cycleId);
+    if (ad) {
+      window.open(ad.url, "_blank");
+      trackDaily("daily_ad_click", { ad_id: ad.id });
+    } else {
+      trackDaily("daily_ad_click", { ad_id: "none" });
+    }
     setCookie(COOKIE_KEYS.LAST_CYCLE_ID, cycleId);
     router.push("/fortune/daily/loading/");
   }

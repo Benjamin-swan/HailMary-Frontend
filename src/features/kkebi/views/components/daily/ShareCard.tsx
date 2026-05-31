@@ -1,8 +1,7 @@
 "use client";
 
 import { forwardRef } from "react";
-import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer } from "recharts";
-import type { SajuResult } from "../../../domain/types";
+import type { SajuResult, AreaKey } from "../../../domain/types";
 
 type ShareCardProps = {
   data: SajuResult;
@@ -10,15 +9,38 @@ type ShareCardProps = {
   dateStr: string;
 };
 
+// 메인 ScoreRadar와 동일한 펜타곤 좌표 (SVG로 교체, viewBox 365×360 기준)
+const IMG = 365;
+const CX = 227;
+const CY = 221;
+const R = 123;
+const SCORE_MIN = 30;
+const SCORE_MAX = 100;
+const KKEBI_PENTAGON_SRC = "/kkebi/images/kkebi-pentagon.svg";
+const NEON_ORANGE = "#ff9a3c";
+const NEON_RED = "#ff4d5e";
+
+const ORDER: AreaKey[] = ["love", "work", "money", "health", "study"];
+
+function angle(i: number): number {
+  return (-90 + i * (360 / 5)) * (Math.PI / 180);
+}
+function point(i: number, r: number): [number, number] {
+  const a = angle(i);
+  return [CX + r * Math.cos(a), CY + r * Math.sin(a)];
+}
+function scoreToRadius(score: number): number {
+  const c = Math.max(SCORE_MIN, Math.min(SCORE_MAX, score));
+  return ((c - SCORE_MIN) / (SCORE_MAX - SCORE_MIN)) * R;
+}
+
 export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
   ({ data, userName, dateStr }, ref) => {
-    const radarData = [
-      { area: "戀", score: data.areas.love.score },
-      { area: "事", score: data.areas.work.score },
-      { area: "財", score: data.areas.money.score },
-      { area: "健", score: data.areas.health.score },
-      { area: "學", score: data.areas.study.score },
-    ];
+    const scorePath =
+      ORDER.map((key, i) => {
+        const [x, y] = point(i, scoreToRadius(data.areas[key].score));
+        return `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ") + " Z";
 
     return (
       <div
@@ -33,11 +55,11 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center",
-          gap: 12,
+          justifyContent: "flex-start",
+          gap: 20,
           height: "675px",
           left: "-9999px",
-          padding: "48px 32px",
+          padding: "44px 32px",
           position: "fixed",
           top: 0,
           width: "380px",
@@ -64,11 +86,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           }}>
             {userName}님의 오늘 운세
           </p>
-          <p style={{
-            color: "#a89070",
-            fontSize: 12,
-            margin: 0,
-          }}>
+          <p style={{ color: "#a89070", fontSize: 12, margin: 0 }}>
             {dateStr}
           </p>
         </div>
@@ -76,7 +94,7 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
         <p style={{
           color: "#f0d060",
           fontFamily: "serif",
-          fontSize: 64,
+          fontSize: 44,
           fontWeight: 800,
           lineHeight: 1,
           margin: 0,
@@ -84,38 +102,68 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           {data.total.score}점
         </p>
 
-        <div style={{ height: "160px", width: "180px" }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <RadarChart data={radarData} margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
-              <PolarGrid stroke="rgba(232,200,125,0.2)" />
-              <PolarAngleAxis
-                dataKey="area"
-                tick={{ fill: "#e8c87d", fontSize: 12 }}
-              />
-              <Radar
-                dataKey="score"
-                stroke="#e85d52"
-                fill="#e85d52"
-                fillOpacity={0.3}
-                strokeWidth={1.5}
-              />
-            </RadarChart>
-          </ResponsiveContainer>
+        {/* 깨비 + 네온 펜타곤 통짜 이미지 + 점수 면적 (메인과 동일 룩) */}
+        <div style={{ position: "relative", width: "250px", height: "250px", marginBottom: "-5px" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={KKEBI_PENTAGON_SRC}
+            alt="깨비"
+            crossOrigin="anonymous"
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain" }}
+          />
+          <svg
+            viewBox={`0 0 ${IMG} ${IMG}`}
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
+            aria-hidden
+          >
+            <defs>
+              <linearGradient id="share-stroke" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={NEON_ORANGE} />
+                <stop offset="100%" stopColor={NEON_RED} />
+              </linearGradient>
+              <radialGradient id="share-fill" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor={NEON_RED} stopOpacity={0.12} />
+                <stop offset="70%" stopColor={NEON_ORANGE} stopOpacity={0.36} />
+                <stop offset="100%" stopColor={NEON_ORANGE} stopOpacity={0.58} />
+              </radialGradient>
+            </defs>
+            <path
+              d={scorePath}
+              fill="url(#share-fill)"
+              stroke="url(#share-stroke)"
+              strokeWidth={4}
+              strokeLinejoin="round"
+            />
+          </svg>
         </div>
 
-        <p style={{
-          borderBottom: "1px solid rgba(232,200,125,0.2)",
-          borderTop: "1px solid rgba(232,200,125,0.2)",
-          color: "#f0e6d3",
-          fontSize: 14,
-          lineHeight: 1.6,
-          margin: 0,
-          padding: "8px 16px",
-          textAlign: "center",
+        <div style={{
+          alignItems: "center",
+          display: "flex",
+          flexDirection: "column",
+          margin: "0 0 30px 0",
           width: "100%",
         }}>
-          &ldquo;{data.total.summary}&rdquo;
-        </p>
+          {/* 짧고 굵은 골든 그라데이션 라인 */}
+          <div style={{
+            background: "linear-gradient(90deg, #b8924d 0%, #f0d060 50%, #b8924d 100%)",
+            borderRadius: "2px",
+            height: "3px",
+            width: "50px",
+          }} />
+          {/* 인용구 — 원래 스타일 sans-serif cream */}
+          <div style={{ padding: "6px 16px 0", textAlign: "center" }}>
+            <span style={{
+              color: "#f0e6d3",
+              fontSize: 16,
+              fontWeight: 700,
+              lineHeight: 1.6,
+              wordBreak: "keep-all",
+            }}>
+              &ldquo;{data.total.summary}&rdquo;
+            </span>
+          </div>
+        </div>
 
         <p style={{
           color: "#a89070",

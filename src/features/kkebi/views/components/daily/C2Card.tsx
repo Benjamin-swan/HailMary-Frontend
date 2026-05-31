@@ -41,7 +41,7 @@ export default function C2Card({ data }: C2CardProps) {
 
   return (
     <Card>
-      <div style={{ height: "100%", overflowX: "hidden", overflowY: "auto", scrollbarWidth: "none" }}>
+      <div style={{ height: "100%", overflowX: "hidden", overflowY: "auto", scrollbarWidth: "none", touchAction: "pan-y" }}>
         <div
           style={{
             alignItems: "center",
@@ -82,7 +82,8 @@ export default function C2Card({ data }: C2CardProps) {
                   tickLine={false}
                   padding={{ left: 20, right: 20 }}
                 />
-                <YAxis domain={[0, 100]} hide />
+                {/* 점수는 70~99에만 분포 → 하한 30으로 "꽉참↔편차" 균형. ScoreRadar와 동일. */}
+                <YAxis domain={[30, 100]} hide />
                 <Tooltip
                   contentStyle={{
                     background: BG_CARD,

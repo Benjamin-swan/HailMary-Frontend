@@ -22,6 +22,7 @@ export function KkebiAdView() {
             gap: 0,
             height: "100%",
             justifyContent: "center",
+            position: "relative",
             transform: "translateY(-15px)",
           }}
         >
@@ -37,10 +38,10 @@ export function KkebiAdView() {
             }}
           />
 
-          {/* 2. 깨비 — 버튼 위에 overlap */}
+          {/* 2. 깨비 — 버튼 위에 살짝 걸치게 (앞발만 버튼 위, 글자 안 가리게) */}
           <div
             style={{
-              marginBottom: -80,
+              marginBottom: -65,
               pointerEvents: "none",
               position: "relative",
               zIndex: 2,
@@ -85,6 +86,29 @@ export function KkebiAdView() {
             }}
           >
             광고를 보면 깨비가 오늘 운세를 알려줘요
+          </p>
+
+          {/* 5. 쿠팡 파트너스 대가성 표기 (공정위 의무) — 카드 하단 고정, 2문단 */}
+          <p
+            style={{
+              bottom: 30,
+              color: "var(--v2-text-muted)",
+              fontFamily: "var(--font-body)",
+              fontSize: "11px",
+              left: 0,
+              lineHeight: 1.5,
+              margin: 0,
+              opacity: 0.7,
+              padding: "0 16px",
+              position: "absolute",
+              right: 0,
+              textAlign: "center",
+              wordBreak: "keep-all",
+            }}
+          >
+            이 광고는 쿠팡 파트너스 활동으로,
+            <br />
+            일정액의 수수료를 제공받습니다.
           </p>
         </div>
       </Card>

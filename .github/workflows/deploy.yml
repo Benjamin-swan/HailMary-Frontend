@@ -30,6 +30,9 @@ jobs:
         env:
           NEXT_PUBLIC_AMPLITUDE_API_KEY: ${{ secrets.NEXT_PUBLIC_AMPLITUDE_API_KEY }}
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          # 이미지 최적화 콘텐츠 해시 캐시 (HM-FE-104) — self-hosted EC2 영구 경로.
+          # 작업 디렉터리(_work) 밖이라 checkout/빌드와 무관하게 persist → 안 바뀐 이미지 sharp 스킵.
+          IMAGE_CACHE_DIR: /home/ec2-user/.kkebi-image-cache
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4

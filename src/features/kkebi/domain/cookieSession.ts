@@ -26,6 +26,20 @@ export function clearCookie(key: CookieKey): void {
   Cookies.remove(key);
 }
 
+/** 사용자 식별 uid 생성. secure context면 crypto.randomUUID,
+ *  아니면(로컬 IP http·구형 웹뷰) Math.random 기반 fallback. */
+export function newUid(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  // RFC4122 v4 유사 — 식별용이라 충분.
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 /** KST 기준 오늘 cycleId (YYYYMMDD) — 1일 1회 게이트 키. */
 export function getTodayCycleId(): string {
   const kst = new Date(Date.now() + 9 * 60 * 60 * 1000);
