@@ -124,7 +124,7 @@ export default function C5Card({ data, userName }: C5CardProps) {
       />
 
       <Card>
-        <div style={{ height: "100%", overflowX: "hidden", overflowY: "auto", scrollbarWidth: "none" }}>
+        <div style={{ height: "100%", overflowX: "hidden", overflowY: "auto", scrollbarWidth: "none", touchAction: "pan-y" }}>
           <div
             style={{
               alignItems: "center",
