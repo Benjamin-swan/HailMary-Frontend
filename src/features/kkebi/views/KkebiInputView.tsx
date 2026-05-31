@@ -41,6 +41,15 @@ export function KkebiInputView() {
     marginBottom: "8px",
   };
 
+  // select 전용 — 클릭 가능 힌트로 우측 chevron(▾) 표시. appearance:none이라 직접 그림.
+  const selectChevron: React.CSSProperties = {
+    backgroundImage:
+      "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23c9a86a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E\")",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "right 10px center",
+    paddingRight: "30px",
+  };
+
   return (
     <PageContainer>
       <Card>
@@ -125,7 +134,7 @@ export function KkebiInputView() {
                   onChange={(e) => f.setYear(e.target.value)}
                   onFocus={() => f.setFocusedField("year")}
                   onBlur={() => f.setFocusedField(null)}
-                  style={{ ...fieldStyle("year"), flex: 2 }}
+                  style={{ ...fieldStyle("year"), ...selectChevron, flex: 2 }}
                 >
                   <option value="">년</option>
                   {f.yearOptions.map((y) => (
@@ -138,7 +147,7 @@ export function KkebiInputView() {
                   onChange={(e) => f.setMonth(e.target.value)}
                   onFocus={() => f.setFocusedField("month")}
                   onBlur={() => f.setFocusedField(null)}
-                  style={{ ...fieldStyle("month"), flex: 1 }}
+                  style={{ ...fieldStyle("month"), ...selectChevron, flex: 1 }}
                 >
                   <option value="">월</option>
                   {f.monthOptions.map((m) => (
@@ -151,7 +160,7 @@ export function KkebiInputView() {
                   onChange={(e) => f.setDay(e.target.value)}
                   onFocus={() => f.setFocusedField("day")}
                   onBlur={() => f.setFocusedField(null)}
-                  style={{ ...fieldStyle("day"), flex: 1 }}
+                  style={{ ...fieldStyle("day"), ...selectChevron, flex: 1 }}
                 >
                   <option value="">일</option>
                   {f.dayOptions.map((d) => (
@@ -170,7 +179,7 @@ export function KkebiInputView() {
                 onChange={(e) => f.setHour(e.target.value)}
                 onFocus={() => f.setFocusedField("hour")}
                 onBlur={() => f.setFocusedField(null)}
-                style={fieldStyle("hour")}
+                style={{ ...fieldStyle("hour"), ...selectChevron }}
               >
                 <option value="unknown">모름</option>
                 {ZODIAC_HOURS.map((z) => (
