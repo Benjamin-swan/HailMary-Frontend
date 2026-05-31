@@ -7,6 +7,7 @@ import {
   COOKIE_KEYS,
   getCookie,
   getTodayCycleId,
+  newUid,
   setCookie,
 } from "../domain/cookieSession";
 import {
@@ -105,7 +106,7 @@ export function useKkebiInputForm() {
 
     const rawDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     const solarDate = isLunar ? lunarToSolarPlaceholder(rawDate) : rawDate;
-    const uid = getCookie(COOKIE_KEYS.UID) ?? crypto.randomUUID();
+    const uid = getCookie(COOKIE_KEYS.UID) ?? newUid();
 
     setCookie(COOKIE_KEYS.UID, uid);
     setCookie(COOKIE_KEYS.NAME, name.trim());
