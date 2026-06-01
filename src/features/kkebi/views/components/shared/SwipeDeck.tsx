@@ -145,10 +145,10 @@ export default function SwipeDeck({
           <div
             key={i}
             style={{
-              // 상단 정렬 — 카드를 위로 올려 모바일 윗공간(가독성 좋은 영역) 활용.
-              // HM-FE-108: 단, C1(index 0)은 내용이 짧아 PC에서 너무 위로 붙으므로
-              // PC(≥768px)에서만 세로 중앙. 모바일 전체·PC의 C2~C5는 상단정렬 유지.
-              alignItems: i === 0 && isDesktop ? "center" : "flex-start",
+              // 모바일은 상단 정렬(윗공간 활용), PC(≥768px)는 전 카드 세로 중앙.
+              // HM-FE-119: 기존 C1만 중앙(HM-FE-108)이었으나 QHD 등 큰 화면에서
+              // C2~C5가 위로 쏠려 어색 → PC는 전 카드 중앙으로 통일. 모바일 불변.
+              alignItems: isDesktop ? "center" : "flex-start",
               boxSizing: "border-box",
               display: "flex",
               flexShrink: 0,

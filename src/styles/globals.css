@@ -215,6 +215,18 @@ body:has([data-kkebi-scene]) {
 }
 .kkebi-card::-webkit-scrollbar { display: none; }
 
+/* HM-FE-120: QHD 반응형 — FHD(≤1920)는 인라인 380px 그대로 보존,
+   1920px 초과 구간에서만 카드 폭을 420px로 키운다. 인라인 스타일을
+   덮어쓰기 위해 !important. aspectRatio(9/16)가 있어 높이는 비례 자동.
+   minHeight는 Card.tsx가 380 기준 계산이라 420 기준으로 맞춤(+90 여백 동일). */
+@media (min-width: 1921px) {
+  .kkebi-card {
+    width: 420px !important;
+    max-width: 420px !important;
+    min-height: calc(420px * 16 / 9 + 90px) !important;
+  }
+}
+
 @keyframes kkebi-pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.7; transform: scale(0.95); }
