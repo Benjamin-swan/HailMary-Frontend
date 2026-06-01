@@ -110,8 +110,20 @@ export default function C5Card({ data, userName }: C5CardProps) {
 
       const file = new File([blob], `도화선-운세-${dateStr}.png`, { type: "image/png" });
 
+      // HM-FE-114: 윈도우는 OS share 시트 대신 바로 다운로드.
+      // 맥·모바일은 기존 navigator.share 그대로 유지.
+      const isWindows = /windows/i.test(navigator.userAgent);
+
       try {
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        if (isWindows) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `도화선-운세-${dateStr}.png`;
+          a.click();
+          URL.revokeObjectURL(url);
+          trackDaily("daily_share_click", { result: "download_win" });
+        } else if (navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({
             files: [file],
             title: `${displayName}님의 오늘 운세 — ${data.total.score}점`,
@@ -130,7 +142,6 @@ export default function C5Card({ data, userName }: C5CardProps) {
         if (isAbort) {
           trackDaily("daily_share_click", { result: "cancel" });
         } else {
-          // share 도중 실패 → 저장 폴백으로 한 번 더 시도
           openImageForSave(blob);
           trackDaily("daily_share_click", { result: "fallback_save" });
           if (typeof console !== "undefined") console.error("공유 실패, 저장 폴백:", err);
