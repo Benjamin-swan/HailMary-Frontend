@@ -152,7 +152,8 @@ export default function YeonwooResultScene() {
         <RomanceTimingSection flow={data.monthlyRomanceFlow} />
         <RealReviewsSection />
       </div>
-      <StickyCheckoutCta visible={showCta} disabled={false} />
+      {/* HM-FE-109: 깨비 prod 배포 동안 유료 결제 미완성 → CTA 재봉인. 완성 시 disabled={false} */}
+      <StickyCheckoutCta visible={showCta} disabled={true} />
     </>
   );
 }
