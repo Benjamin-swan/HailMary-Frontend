@@ -16,7 +16,9 @@ const CY = 221;
 const R = 123;
 const SCORE_MIN = 30;
 const SCORE_MAX = 100;
-const KKEBI_PENTAGON_SRC = "/kkebi/images/kkebi-pentagon.svg";
+// HM-FE-105: 공유 카드 캡처 전용은 PNG. html2canvas가 iOS Safari에서 외부 SVG의
+// intrinsic size를 잘못 읽어 깨비가 확대·잘리는 버그 회피. 화면 표시(ScoreRadar)는 SVG 유지.
+const KKEBI_PENTAGON_SRC = "/kkebi/images/kkebi-pentagon-share.png";
 const NEON_ORANGE = "#ff9a3c";
 const NEON_RED = "#ff4d5e";
 
@@ -108,7 +110,6 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           <img
             src={KKEBI_PENTAGON_SRC}
             alt="깨비"
-            crossOrigin="anonymous"
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain" }}
           />
           <svg
