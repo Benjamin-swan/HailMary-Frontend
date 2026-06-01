@@ -1,7 +1,7 @@
 // throw 기반 인터페이스(ApiError + Promise<T>)를 유지하는 얇은 어댑터.
 // 실제 fetch + timeout + Authorization 헤더는 모두 @/lib/api로 위임.
 // 메모리 feedback_frontend_dual_api_wrapper: 공통 헤더 추가 시 lib/api 한 곳만 수정.
-import { api as libApi, qaToken as libQaToken, type ApiErrorCode } from "@/lib/api";
+import { api as libApi, qaToken as libQaToken, type ApiErrorCode, type ApiRequestOptions } from "@/lib/api";
 
 // qaToken은 lib/api의 단일 진실원을 re-export (만료 가드 포함).
 export const qaToken = libQaToken;
@@ -36,14 +36,14 @@ function toApiError(code: ApiErrorCode, status: number | undefined, detail: unkn
 }
 
 export const api = {
-  get: async <T>(path: string): Promise<T> => {
-    const result = await libApi.get<T>(path);
+  get: async <T>(path: string, opts?: ApiRequestOptions): Promise<T> => {
+    const result = await libApi.get<T>(path, opts);
     if (result.ok) return result.data;
     throw toApiError(result.error, result.status, result.detail);
   },
 
-  post: async <T>(path: string, body: unknown): Promise<T> => {
-    const result = await libApi.post<T>(path, body);
+  post: async <T>(path: string, body: unknown, opts?: ApiRequestOptions): Promise<T> => {
+    const result = await libApi.post<T>(path, body, opts);
     if (result.ok) return result.data;
     throw toApiError(result.error, result.status, result.detail);
   },

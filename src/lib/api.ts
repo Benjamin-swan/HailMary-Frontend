@@ -79,9 +79,12 @@ function buildHeaders(extra?: HeadersInit): HeadersInit {
 async function request<T>(
   path: string,
   init?: RequestInit,
+  // HM-FE-107: 호출별 타임아웃 오버라이드(기본 90s). 깨비 fortune 등 AI 미사용
+  // 호출은 짧게 줘서 무응답 시 빠르게 폴백되게 한다.
+  timeoutMs: number = TIMEOUT_MS,
 ): Promise<ApiResult<T>> {
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
 
   try {
     const res = await fetch(`${env.API_URL}${path}`, {
@@ -114,12 +117,19 @@ async function request<T>(
   }
 }
 
+export type ApiRequestOptions = { timeoutMs?: number };
+
 export const api = {
-  get: <T>(path: string) => request<T>(path),
-  post: <T>(path: string, body: unknown) =>
-    request<T>(path, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    }),
+  get: <T>(path: string, opts?: ApiRequestOptions) =>
+    request<T>(path, undefined, opts?.timeoutMs),
+  post: <T>(path: string, body: unknown, opts?: ApiRequestOptions) =>
+    request<T>(
+      path,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      },
+      opts?.timeoutMs,
+    ),
 };

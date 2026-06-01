@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useKkebiResult } from "../hooks/useKkebiResult";
 import { trackDaily } from "../domain/dailyAnalytics";
 import PageContainer from "./components/shared/PageContainer";
+import KkebiLoadingContent from "./components/KkebiLoadingContent";
 import SwipeDeck from "./components/shared/SwipeDeck";
 import CardIndicator from "./components/shared/CardIndicator";
 import C1Card from "./components/daily/C1Card";
@@ -53,7 +54,10 @@ export function KkebiResultView() {
   const handlePrev = () => { if (canPrev) r.setCurrentCard(r.currentCard - 1); };
   const handleNext = () => { if (canNext) r.setCurrentCard(r.currentCard + 1); };
 
-  if (!r.isReady) return null;
+  // HM-FE-107: fortune 응답 대기 중 검은 화면 대신 로딩 UI 노출 (깨비 + 안내문구).
+  // 라우팅 로직 없는 순수 UI(KkebiLoadingContent) 사용 — KkebiLoadingView를 쓰면
+  // useKkebiLoading이 result로 재라우팅해 루프 위험.
+  if (!r.isReady) return <KkebiLoadingContent />;
 
   return (
     <PageContainer fullWidth>
