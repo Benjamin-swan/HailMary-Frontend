@@ -69,12 +69,9 @@ export default function C2Card({ data }: C2CardProps) {
           <div style={{ width: "100%" }}>
             <ResponsiveContainer width="100%" height={200}>
               <AreaChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="c2-area-fill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%"  stopColor={CORAL} stopOpacity={0.3} />
-                    <stop offset="95%" stopColor={CORAL} stopOpacity={0} />
-                  </linearGradient>
-                </defs>
+                {/* HM-FE-118: 그라데이션(url(#id)) fill은 QHD+브라우저 줌(서브픽셀
+                    컨테이너) 환경에서 recharts 좌표 계산이 어긋나 빨간 사각형으로
+                    깨짐. 단색 반투명 fill로 교체해 url() 참조·좌표 의존 제거. */}
                 <XAxis
                   dataKey="name"
                   tick={{ fill: TEXT_SEC, fontSize: 12 }}
@@ -100,7 +97,8 @@ export default function C2Card({ data }: C2CardProps) {
                   dataKey="score"
                   stroke={CORAL}
                   strokeWidth={2}
-                  fill="url(#c2-area-fill)"
+                  fill={CORAL}
+                  fillOpacity={0.18}
                   dot={{ fill: GOLD, r: 5, strokeWidth: 0 }}
                   activeDot={{ fill: CORAL_SOFT, r: 7, strokeWidth: 0 }}
                 />
