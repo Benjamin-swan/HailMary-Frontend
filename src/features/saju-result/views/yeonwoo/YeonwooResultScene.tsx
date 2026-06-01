@@ -153,7 +153,7 @@ export default function YeonwooResultScene() {
         <RealReviewsSection />
       </div>
       {/* HM-FE-112: prod 배포 위해 CTA 재봉인(유료 결제 미완성). staging 테스트 시 disabled={false} 토글 */}
-      <StickyCheckoutCta visible={showCta} disabled={true} />
+      <StickyCheckoutCta visible={showCta} disabled={false} />
     </>
   );
 }
