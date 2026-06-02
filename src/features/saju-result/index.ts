@@ -33,9 +33,12 @@ export type {
   PaidChapters,
   CharacterKey,
 } from "./domain/paidReport";
-export { usePaidReport } from "./hooks/usePaidReport";
+export { usePaidReport, usePaidReportByShareCode } from "./hooks/usePaidReport";
 export type { PaidReportFetchState } from "./hooks/usePaidReport";
-export { usePaidResultPolling } from "./hooks/usePaidResultPolling";
+export {
+  usePaidResultPolling,
+  usePaidResultPollingByShareCode,
+} from "./hooks/usePaidResultPolling";
 export { default as YeonwooPaidScene } from "./views/yeonwoo/paid/YeonwooPaidScene";
 export { default as DoyoonPaidScene } from "./views/doyoon/paid/DoyoonPaidScene";
 export { default as PaidResultLoading } from "./views/yeonwoo/paid/PaidResultLoading";
