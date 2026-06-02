@@ -19,6 +19,13 @@
     },
     "ohang_excess": "hwa",
     "ohang_lack": "to",
+    "ohang_judgments": {
+      "mok": "발달",
+      "hwa": "과다",
+      "to": "결핍",
+      "geum": "결핍",
+      "su": "발달"
+    },
     "ilgan": "병화",
     "ilgan_card": {
       "name_kor": "병화",

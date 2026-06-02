@@ -31,6 +31,7 @@ const MOCK_P0: PaidChapterP0Doyoon = {
   ohang_strength: { mok: 50, hwa: 38, to: 15, geum: 48, su: 88 },
   ohang_excess: "su",
   ohang_lack: "to",
+  ohang_judgments: { mok: "발달", hwa: "발달", to: "결핍", geum: "발달", su: "과다" },
   ilgan: "임수(壬水)",
   user_name: "홍길동",
   ilgan_card: {

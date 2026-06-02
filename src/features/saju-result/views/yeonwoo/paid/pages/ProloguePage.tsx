@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type {
   IlganCard,
+  OhangJudgment,
   OhangKey,
   OhangStrength,
   PaidChapterP0,
@@ -30,6 +31,7 @@ const MOCK_P0: PaidChapterP0 = {
   ohang_strength: { mok: 50, hwa: 38, to: 15, geum: 48, su: 88 },
   ohang_excess: "su",
   ohang_lack: "to",
+  ohang_judgments: { mok: "과다", hwa: "과다", to: "적정", geum: "과다", su: "과다" },
   ilgan: "임수(壬水)",
   ilgan_card: {
     name_kor: "임수",
@@ -60,6 +62,20 @@ const OHANG_LABELS: Record<OhangKey, { hanja: string; hangul: string }> = {
 
 const OHANG_ORDER: OhangKey[] = ["mok", "hwa", "to", "geum", "su"];
 
+// 강약 판정별 막대 색/라벨 색. 과다=강조(빨강), 발달=옅은 금, 적정=중립, 결핍=흐림.
+const JUDGMENT_FILL: Record<OhangJudgment, string> = {
+  과다: "#E24B4A",
+  발달: "#C8A870",
+  적정: "#888",
+  결핍: "#555",
+};
+const JUDGMENT_TAG_COLOR: Record<OhangJudgment, string> = {
+  과다: "#E24B4A",
+  발달: "#C8A870",
+  적정: "#888",
+  결핍: "#777",
+};
+
 export default function ProloguePage({ data }: ProloguePageProps) {
   const p0 = data ?? MOCK_P0;
 
@@ -80,6 +96,7 @@ export default function ProloguePage({ data }: ProloguePageProps) {
       <SajuPillarsSection pillars={p0.saju_pillars} />
       <OhangStrengthSection
         strength={p0.ohang_strength}
+        judgments={p0.ohang_judgments}
         excess={p0.ohang_excess}
         lack={p0.ohang_lack}
       />
@@ -163,10 +180,12 @@ function SajuPillarsSection({ pillars }: { pillars: SajuPillarsP0 }) {
 
 function OhangStrengthSection({
   strength,
+  judgments,
   excess,
   lack,
 }: {
   strength: OhangStrength;
+  judgments: Record<OhangKey, OhangJudgment>;
   excess: OhangKey;
   lack: OhangKey;
 }) {
@@ -176,18 +195,13 @@ function OhangStrengthSection({
       <div className="flex flex-col gap-2 my-2.5">
         {OHANG_ORDER.map((key) => {
           const value = clamp01(strength[key]);
-          const isExcess = key === excess;
-          const isLack = key === lack;
-          const tag = isExcess
-            ? "과다"
-            : isLack
-              ? "부족"
-              : value < 40
-                ? "낮음"
-                : "보통";
-          const fillColor = isExcess ? "#E24B4A" : isLack ? "#555" : "#888";
-          const tagColor = isExcess ? "#E24B4A" : "#888";
-          const tagWeight = isExcess || isLack ? 600 : 400;
+          // 막대 라벨은 오행별 강약 판정(백엔드, 무료 결과와 동일 기준).
+          // 과거: "제일 강한 1개만 과다, 나머지 낮음" 휴리스틱 → QA 5건 불일치 → 폐기.
+          const judgment = judgments[key] ?? "적정";
+          const tag = judgment;
+          const fillColor = JUDGMENT_FILL[judgment];
+          const tagColor = JUDGMENT_TAG_COLOR[judgment];
+          const tagWeight = judgment === "과다" || judgment === "결핍" ? 600 : 400;
           return (
             <div key={key} className="flex items-center gap-2 text-[13px]">
               <span
