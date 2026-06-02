@@ -123,7 +123,7 @@ const MOCK_CHARM_COPIES: CharmCopyPool = {
     gi: [""],
     gyeong: [""],
     shin: [""],
-    im: ["깊고 잔잔한 결이 깊이로 발현됩니다."],
+    im: ["깊고 잔잔한 포용형이 깊이로 발현됩니다."],
     gye: [""],
   },
   manifestation: {

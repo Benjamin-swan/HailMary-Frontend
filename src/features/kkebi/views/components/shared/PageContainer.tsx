@@ -1,3 +1,5 @@
+import InAppBrowserBanner from "../InAppBrowserBanner";
+
 type PageContainerProps = {
   children: React.ReactNode;
   fullWidth?: boolean;
@@ -15,6 +17,8 @@ export default function PageContainer({ children, fullWidth = false }: PageConta
         width: "100%",
       }}
     >
+      {/* HM-FE-106: 인앱브라우저(카카오/네이버 등)에서만 외부 브라우저 유도 배너 노출 */}
+      <InAppBrowserBanner />
       <video
         autoPlay
         muted

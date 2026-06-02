@@ -14,6 +14,8 @@ type C1CardProps = {
 export default function C1Card({ data, userName, onFlip }: C1CardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  // HM-FE-108: PC(≥768px)에서 뒤집힌 점수 카드만 40px 위로. 모바일은 불변.
+  const [isDesktop, setIsDesktop] = useState(false);
 
   const name = userName ?? data.user.name;
   const scoreColor = data.total.score <= 30 ? "var(--v2-gold)" : "var(--v2-gold-bright)";
@@ -21,6 +23,14 @@ export default function C1Card({ data, userName, onFlip }: C1CardProps) {
   useEffect(() => {
     const timer = setTimeout(() => setIsReady(true), 300);
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
   }, []);
 
   const handleFlip = () => {
@@ -182,7 +192,15 @@ export default function C1Card({ data, userName, onFlip }: C1CardProps) {
         }
       `}</style>
 
-      <div style={{ alignItems: "center", display: "flex", flexDirection: "column", gap: 20 }}>
+      <div style={{
+        alignItems: "center",
+        display: "flex",
+        flexDirection: "column",
+        gap: 20,
+        // HM-FE-108: PC에서 뒤집힌 점수 카드만 30px 위로(앞면·모바일 불변).
+        transform: isFlipped && isDesktop ? "translateY(-30px)" : undefined,
+        transition: "transform 0.3s ease-out",
+      }}>
         <div
           className="kkebi-card"
           onClick={handleFlip}

@@ -152,8 +152,8 @@ export default function YeonwooResultScene() {
         <RomanceTimingSection flow={data.monthlyRomanceFlow} />
         <RealReviewsSection />
       </div>
-      {/* HM-FE-91: 유료 결제 6월 초 오픈 예정 — disabled={false}로 토글하면 복원 */}
-      <StickyCheckoutCta visible={showCta} disabled={true} />
+      {/* HM-FE-112: prod 배포 위해 CTA 재봉인(유료 결제 미완성). staging 테스트 시 disabled={false} 토글 */}
+      <StickyCheckoutCta visible={showCta} disabled={false} />
     </>
   );
 }

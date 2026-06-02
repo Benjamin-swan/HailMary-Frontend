@@ -167,8 +167,8 @@ export const CHARM_TYPE_SHORT: Record<CharmTypeKey, { label: string; subtitle: s
   mu: { label: "묵직한 안정형", subtitle: "흔들리지 않는 결" },
   gi: { label: "다정한 챙김형", subtitle: "옆을 받쳐주는 결" },
   gyeong: { label: "단호한 결단형", subtitle: "옳고 그름이 분명한 결" },
-  shin: { label: "단정한 자존형", subtitle: "디테일에서 빛나는 결" },
-  im: { label: "깊고 잔잔한 결", subtitle: "겉 차분, 속 깊은 결" },
+  shin: { label: "단정한 자존감형", subtitle: "디테일에서 빛나는 결" },
+  im: { label: "깊고 잔잔한 포용형", subtitle: "겉 차분, 속 깊은 결" },
   gye: { label: "스며드는 섬세형", subtitle: "조용히 적시는 결" },
 };
 

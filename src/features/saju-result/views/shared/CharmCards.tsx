@@ -106,8 +106,8 @@ const CHARM_TYPE_KO: Record<CharmTypeKey, string> = {
   mu: "묵직한 안정형",
   gi: "다정한 챙김형",
   gyeong: "단호한 결단형",
-  shin: "단정한 자존형",
-  im: "깊고 잔잔한 결",
+  shin: "단정한 자존감형",
+  im: "깊고 잔잔한 포용형",
   gye: "스며드는 섬세형",
 };
 

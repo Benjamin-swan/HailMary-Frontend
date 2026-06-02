@@ -48,6 +48,42 @@ export default function C5Card({ data, userName }: C5CardProps) {
     trackDaily("daily_feedback", { type });
   };
 
+  // HM-FE-111: navigator.share 불가 환경(iOS Chrome 등) 폴백.
+  // 새 탭에 이미지 + "길게 눌러 저장" 안내를 띄운다. 새 탭은 별도 문서라
+  // globals.css(body user-select:none) 영향 없음 + touch-callout 명시 허용.
+  const openImageForSave = (blob: Blob) => {
+    const url = URL.createObjectURL(blob);
+    const tab = window.open("", "_blank");
+
+    if (!tab) {
+      // 팝업 차단 등 — 최종 폴백: 같은 창 이동(최소한 이미지는 보여줌)
+      window.location.href = url;
+      return;
+    }
+
+    tab.document.write(`<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>오늘의 운세 저장</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#1a0f2e; color:#f0e6d3; font-family:-apple-system,system-ui,sans-serif;
+         min-height:100vh; display:flex; flex-direction:column; align-items:center;
+         padding:20px 16px; gap:16px; }
+  p { font-size:15px; line-height:1.5; text-align:center; opacity:0.9; }
+  .hint { color:#e8c87d; font-weight:700; }
+  img { max-width:100%; width:380px; border-radius:16px;
+        -webkit-touch-callout:default; -webkit-user-select:auto; user-select:auto; }
+</style></head>
+<body>
+  <p class="hint">이미지를 길게 눌러<br/>사진에 저장하세요</p>
+  <img src="${url}" alt="오늘의 운세" />
+  <p style="font-size:12px;opacity:0.55;">도화선사주 · dohwaseonsaju.com</p>
+</body></html>`);
+    tab.document.close();
+    // object URL은 새 탭이 참조하므로 즉시 revoke 금지(탭 닫힐 때 OS가 회수).
+  };
+
   const handleShare = async () => {
     if (!shareCardRef.current || isCapturing) return;
     setIsCapturing(true);
@@ -74,33 +110,41 @@ export default function C5Card({ data, userName }: C5CardProps) {
 
       const file = new File([blob], `도화선-운세-${dateStr}.png`, { type: "image/png" });
 
+      // HM-FE-114: 윈도우는 OS share 시트 대신 바로 다운로드.
+      // 맥·모바일은 기존 navigator.share 그대로 유지.
+      const isWindows = /windows/i.test(navigator.userAgent);
+
       try {
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            files: [file],
-            title: `${displayName}님의 오늘 운세 — ${data.total.score}점`,
-            text: `"${data.total.summary}" — 도화선사주`,
-          });
-        } else if (navigator.share) {
-          await navigator.share({
-            title: `${displayName}님의 오늘 운세`,
-            url: window.location.href,
-          });
-        } else {
+        if (isWindows) {
           const url = URL.createObjectURL(blob);
           const a = document.createElement("a");
           a.href = url;
           a.download = `도화선-운세-${dateStr}.png`;
           a.click();
           URL.revokeObjectURL(url);
+          trackDaily("daily_share_click", { result: "download_win" });
+        } else if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: `${displayName}님의 오늘 운세 — ${data.total.score}점`,
+            text: `"${data.total.summary}" — 도화선사주`,
+          });
+          trackDaily("daily_share_click", { result: "success" });
+        } else {
+          // navigator.share(files) 미지원 — iOS Chrome 등. 자동 다운로드가
+          // OS 차원에서 막혀(WebKit #167341) 새 탭에 이미지+저장안내로 폴백.
+          openImageForSave(blob);
+          trackDaily("daily_share_click", { result: "fallback_save" });
         }
-        trackDaily("daily_share_click", { result: "success" });
       } catch (err) {
         // AbortError(사용자 취소)는 정상 케이스 → silent
         const isAbort = err instanceof DOMException && err.name === "AbortError";
-        trackDaily("daily_share_click", { result: isAbort ? "cancel" : "fail" });
-        if (!isAbort && typeof console !== "undefined") {
-          console.error("공유 실패:", err);
+        if (isAbort) {
+          trackDaily("daily_share_click", { result: "cancel" });
+        } else {
+          openImageForSave(blob);
+          trackDaily("daily_share_click", { result: "fallback_save" });
+          if (typeof console !== "undefined") console.error("공유 실패, 저장 폴백:", err);
         }
       }
     } catch (err) {

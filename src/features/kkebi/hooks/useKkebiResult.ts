@@ -57,12 +57,13 @@ export function useKkebiResult() {
     let cancelled = false;
     void (async () => {
       try {
-        const result = await api.post<SajuResult>("/api/kkebi/fortune", {
-          name,
-          birth,
-          hour,
-          gender,
-        });
+        // HM-FE-107: 깨비 fortune은 AI 미사용(FortuneTeller 계산 + 템플릿)이라
+        // 정상 1초 이내. 공통 90s 대신 12s로 단축 → 무응답 시 빠르게 mock 폴백.
+        const result = await api.post<SajuResult>(
+          "/api/kkebi/fortune",
+          { name, birth, hour, gender },
+          { timeoutMs: 12000 },
+        );
         if (!cancelled) setData(result);
       } catch {
         // 폴백: mock 유지 (개발 중 화면 깨짐 방지)

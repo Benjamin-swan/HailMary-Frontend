@@ -224,11 +224,11 @@ export default function DoyoonResultScene() {
           versionBadgeLabel="한도윤 버전"
         />
       </div>
-      {/* HM-FE-91: 유료 결제 6월 초 오픈 예정 — disabled={false}로 토글하면 복원 */}
+      {/* HM-FE-112: prod 배포 위해 CTA 재봉인(유료 결제 미완성). staging 테스트 시 disabled={false} 토글 */}
       <StickyCheckoutCta
         ctaLabel="결제하고 도윤의 정밀 리포트 읽기"
         visible={showCta}
-        disabled={true}
+        disabled={false}
         characterId="doyoon"
         onCheckout={() => {
           trackEvent("pay_cta_click", { character_id: "doyoon" });
