@@ -27,6 +27,9 @@ export function CheckoutView({ character }: CheckoutViewProps) {
     coupon,
     setCoupon,
     handleCouponBlur,
+    couponApplied,
+    couponMessage,
+    couponChecking,
     agreeDataUsage,
     handleAgreeDataUsage,
     agreePayment,
@@ -70,13 +73,16 @@ export function CheckoutView({ character }: CheckoutViewProps) {
 
         <hr className="border-white/[0.06]" />
 
-        <PriceSummary product={product} />
+        <PriceSummary product={product} freeWithCoupon={couponApplied} />
 
         <CouponField
           value={coupon}
           onChange={setCoupon}
           onBlur={handleCouponBlur}
           onApply={applyCoupon}
+          applied={couponApplied}
+          message={couponMessage}
+          checking={couponChecking}
         />
 
         {/* PayApp 결제: 인페이지 위젯 없음. 결제수단·약관은 PayApp 페이지가 처리.
@@ -86,6 +92,8 @@ export function CheckoutView({ character }: CheckoutViewProps) {
           onSubmit={handleSubmit}
           loading={isProcessing}
           disabled={false}
+          label={couponApplied ? "무료로 받기" : "결제하기"}
+          loadingLabel={couponApplied ? "처리 중…" : undefined}
         />
 
         {/* ⚠️ staging/local 전용 — 운영 도메인에서는 노출 X (isDevBypassEnabled). */}
