@@ -39,6 +39,7 @@ export default function QaTestPage() {
         <InfoForm
           characterId="yeonwoo"
           buttonLabel="다음 →"
+          initialValues={flow.savedInfo ?? undefined}
           onSubmit={(info) => {
             flow.submitInfo(info);
             setStage("step1");
@@ -51,6 +52,8 @@ export default function QaTestPage() {
           step={1}
           config={SURVEY_STEPS[1]}
           characterId="yeonwoo"
+          initialSelected={flow.surveyAnswers.step1}
+          onBack={() => setStage("info")}
           onAnswer={(answers) => {
             flow.setSurveyAnswers((prev) => ({ ...prev, step1: answers }));
             setStage("step2");
@@ -63,6 +66,8 @@ export default function QaTestPage() {
           step={2}
           config={SURVEY_STEPS[2]}
           characterId="yeonwoo"
+          initialSelected={flow.surveyAnswers.step2}
+          onBack={() => setStage("step1")}
           onAnswer={(answers) => {
             flow.setSurveyAnswers((prev) => ({ ...prev, step2: answers }));
             setStage("step3");
@@ -76,6 +81,8 @@ export default function QaTestPage() {
           config={SURVEY_STEPS[3]}
           characterId="yeonwoo"
           buttonLabel="결과 보기 →"
+          initialText={flow.surveyAnswers.step3}
+          onBack={() => setStage("step2")}
           onAnswer={(text) => {
             flow.finalizeSurvey({ ...flow.surveyAnswers, step3: text });
             setStage("submitting");

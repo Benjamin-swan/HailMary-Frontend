@@ -120,24 +120,30 @@ export default function SajuLoadingView({ character }: Props) {
         </div>
       ))}
 
-      {/* Layer 1: 하단 가독성용 그라디언트 베일 */}
+      {/* Layer 1: 하단 가독성용 그라디언트 베일
+          모바일은 자막 박스가 투명이라, 사진은 살리되 글자는 읽히도록 스크림을 좀 더 강하게/높게. */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background:
-            "linear-gradient(to top, rgba(18,20,20,0.92) 0%, rgba(18,20,20,0.55) 35%, rgba(18,20,20,0) 70%)",
+          background: isMobilePortrait
+            ? "linear-gradient(to top, rgba(18,20,20,0.96) 0%, rgba(18,20,20,0.82) 26%, rgba(18,20,20,0.35) 55%, rgba(18,20,20,0) 82%)"
+            : "linear-gradient(to top, rgba(18,20,20,0.92) 0%, rgba(18,20,20,0.55) 35%, rgba(18,20,20,0) 70%)",
         }}
       />
 
-      {/* 하단 글래스 패널 */}
+      {/* 하단 패널
+          데스크탑: 기존 글래스 박스 그대로.
+          모바일: 투명 + 높이 자동 → 세로 사진을 가리지 않고, 긴 자막도 버튼을 밀어내지 않음. */}
       <div
-        className="absolute bottom-0 left-0 w-full z-20 backdrop-blur-xl"
+        className="absolute bottom-0 left-0 w-full z-20"
         style={{
-          height: isMobilePortrait ? "calc(min(28vh, 180px) + 80px)" : "min(28vh, 180px)",
-          minHeight: isMobilePortrait ? "240px" : "160px",
-          background: "rgba(0,0,0,0.28)",
-          borderTop: "1px solid rgba(255,140,66,0.5)",
-          boxShadow: "0 -10px 20px rgba(255,140,66,0.15)",
+          height: isMobilePortrait ? "auto" : "min(28vh, 180px)",
+          minHeight: isMobilePortrait ? undefined : "160px",
+          background: isMobilePortrait ? "transparent" : "rgba(0,0,0,0.28)",
+          backdropFilter: isMobilePortrait ? "none" : "blur(24px)",
+          WebkitBackdropFilter: isMobilePortrait ? "none" : "blur(24px)",
+          borderTop: isMobilePortrait ? "none" : "1px solid rgba(255,140,66,0.5)",
+          boxShadow: isMobilePortrait ? "none" : "0 -10px 20px rgba(255,140,66,0.15)",
         }}
       >
         {/* 프로그레스 레일 */}
@@ -172,28 +178,33 @@ export default function SajuLoadingView({ character }: Props) {
         {/* 패널 내부 — 컨텐츠 하단 정렬 */}
         <div
           className="relative w-full h-full flex flex-col items-center justify-end px-4 sm:px-6 text-center"
-          style={{ paddingBottom: isMobilePortrait ? "calc(1rem + 15px)" : "1rem" }}
+          style={{
+            paddingTop: isMobilePortrait ? "0.75rem" : undefined,
+            paddingBottom: isMobilePortrait ? "2.5rem" : "1rem",
+            textShadow: isMobilePortrait ? "0 1px 6px rgba(0,0,0,0.85)" : undefined,
+          }}
         >
-          {/* Filigree 4 모서리 */}
-          {[
-            "top-3 left-3 border-t-2 border-l-2",
-            "top-3 right-3 border-t-2 border-r-2",
-            "bottom-3 left-3 border-b-2 border-l-2",
-            "bottom-3 right-3 border-b-2 border-r-2",
-          ].map((cls) => (
-            <div
-              key={cls}
-              className={`absolute w-5 h-5 sm:w-6 sm:h-6 ${cls}`}
-              style={{ borderColor: COLOR.outlineVariant }}
-            />
-          ))}
+          {/* Filigree 4 모서리 (데스크탑만 — 모바일은 투명 박스라 생략) */}
+          {!isMobilePortrait &&
+            [
+              "top-3 left-3 border-t-2 border-l-2",
+              "top-3 right-3 border-t-2 border-r-2",
+              "bottom-3 left-3 border-b-2 border-l-2",
+              "bottom-3 right-3 border-b-2 border-r-2",
+            ].map((cls) => (
+              <div
+                key={cls}
+                className={`absolute w-5 h-5 sm:w-6 sm:h-6 ${cls}`}
+                style={{ borderColor: COLOR.outlineVariant }}
+              />
+            ))}
 
           {/* LOADING... → "결과 보기 →" 토글 */}
           <div
             className="flex items-center justify-center"
             style={{
               height: "44px",
-              marginBottom: isMobilePortrait ? "calc(0.625rem + 15px)" : "0.625rem",
+              marginBottom: isMobilePortrait ? "0.75rem" : "0.625rem",
             }}
           >
             {done ? (
@@ -204,7 +215,7 @@ export default function SajuLoadingView({ character }: Props) {
                 }}
                 className={`${epilogue.className} uppercase animate-[fadeIn_0.4s_ease-out] cursor-pointer inline-flex items-center justify-center`}
                 style={{
-                  fontSize: "16px",
+                  fontSize: isMobilePortrait ? "14px" : "16px",
                   lineHeight: 1,
                   letterSpacing: "-0.02em",
                   fontWeight: 800,
@@ -212,7 +223,7 @@ export default function SajuLoadingView({ character }: Props) {
                   background: "transparent",
                   border: `1px solid ${COLOR.goldPulse}`,
                   borderRadius: "8px",
-                  padding: "0.65rem 1.25rem 0.55rem",
+                  padding: isMobilePortrait ? "0.5rem 1rem 0.45rem" : "0.65rem 1.25rem 0.55rem",
                   filter: "drop-shadow(0 0 8px rgba(255,140,66,0.4))",
                   transition: "background 0.2s ease",
                 }}
@@ -246,7 +257,7 @@ export default function SajuLoadingView({ character }: Props) {
           <div
             className="flex flex-col items-center gap-1 w-full mt-1"
             style={{
-              padding: isMobilePortrait ? "calc(0.75rem * 2.5) 0" : "0.75rem 0",
+              padding: isMobilePortrait ? "0.875rem 0" : "0.75rem 0",
               borderTop: "1px solid rgba(164,140,127,0.3)",
               borderBottom: "1px solid rgba(164,140,127,0.3)",
             }}

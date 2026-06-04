@@ -16,6 +16,7 @@ export function useCharacterSajuFlow(config: CharacterSajuFlowConfig) {
   const requestIdKey = `${storageKeyPrefix}SajuRequestId`;
   const surveyKey = `${storageKeyPrefix}Survey`;
 
+  const [savedInfo, setSavedInfo] = useState<SajuInfo | null>(null);
   const [userName, setUserName] = useState<string>("");
   const [userGender, setUserGender] = useState<string>("");
   const [userBirthYear, setUserBirthYear] = useState<string>("");
@@ -34,6 +35,7 @@ export function useCharacterSajuFlow(config: CharacterSajuFlowConfig) {
       const raw = localStorage.getItem(infoKey);
       if (!raw) return;
       const info = JSON.parse(raw) as { name?: string; gender?: string; birth?: string; calendar?: string };
+      setSavedInfo(info as SajuInfo);
       if (info?.name) setUserName(info.name);
       if (info?.gender) setUserGender(info.gender);
       if (info?.birth) setUserBirthYear(info.birth.slice(0, 4));
@@ -65,6 +67,7 @@ export function useCharacterSajuFlow(config: CharacterSajuFlowConfig) {
       try {
         localStorage.setItem(infoKey, JSON.stringify(info));
       } catch {}
+      setSavedInfo(info);
       setUserGender(info.gender);
       setUserBirthYear(info.birth.slice(0, 4));
       setUserBirthMonth(info.birth.slice(5, 7));
@@ -101,5 +104,5 @@ export function useCharacterSajuFlow(config: CharacterSajuFlowConfig) {
     [surveyKey],
   );
 
-  return { userName, userGender, userBirthYear, userBirthMonth, userCalendar, hasSubmittedInfo, surveyAnswers, setSurveyAnswers, submitInfo, finalizeSurvey, sajuStatus: saju.status };
+  return { savedInfo, userName, userGender, userBirthYear, userBirthMonth, userCalendar, hasSubmittedInfo, surveyAnswers, setSurveyAnswers, submitInfo, finalizeSurvey, sajuStatus: saju.status };
 }
