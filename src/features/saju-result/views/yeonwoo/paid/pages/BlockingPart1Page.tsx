@@ -174,7 +174,7 @@ function OpeningCut({
     <div className="relative w-full -mx-1 pt-[20px] pb-[60px] bg-[#0a0a09]">
       <div
         className="relative w-full overflow-hidden rounded-[60px] bg-[#0a0a09]"
-        style={{ aspectRatio: `${IMG_W} / ${IMG_H + extra}` }}
+        style={{ aspectRatio: `${IMG_W} / ${IMG_H + extra}`, containerType: "inline-size" }}
       >
         {/* 사진은 하단 정렬 + 원본 비율 유지 */}
         <div
@@ -200,6 +200,7 @@ function OpeningCut({
             paddingX={28}
             radius={40}
             tailPosition="bottom"
+            fluidBaseWidth={430}
           >
             {text}
           </SpeechBubble>
