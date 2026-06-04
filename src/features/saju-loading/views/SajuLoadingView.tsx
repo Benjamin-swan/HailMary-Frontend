@@ -5,7 +5,7 @@ import { Epilogue } from "next/font/google";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { trackEvent } from "@/shared/utils/analytics";
-import { shuffleLoadingTmis } from "../domain/tmis";
+import { LOADING_TMIS, LOADING_TMIS_MOBILE, shuffleLoadingTmis } from "../domain/tmis";
 import type { LoadingCharacter } from "../domain/types";
 import TipLine from "./components/TipLine";
 
@@ -31,11 +31,14 @@ type Props = {
 
 export default function SajuLoadingView({ character }: Props) {
   const router = useRouter();
-  const tmis = useMemo(() => shuffleLoadingTmis(), []);
+  const [isMobilePortrait, setIsMobilePortrait] = useState(false);
+  const tmis = useMemo(
+    () => shuffleLoadingTmis(isMobilePortrait ? LOADING_TMIS_MOBILE : LOADING_TMIS),
+    [isMobilePortrait],
+  );
   const [slotIdx, setSlotIdx] = useState(0);
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
-  const [isMobilePortrait, setIsMobilePortrait] = useState(false);
 
   useEffect(() => {
     const mq = window.matchMedia("(orientation: portrait) and (max-width: 768px)");
@@ -90,36 +93,18 @@ export default function SajuLoadingView({ character }: Props) {
       className="fixed inset-0 z-[100] overflow-hidden"
       style={{ background: COLOR.surface, fontFamily: "var(--font-pretendard)" }}
     >
-      {/* Layer 0: 배경 사진 스택
-          모바일 portrait: 패널 위 영역만 차지하는 컨테이너를 90도 회전.
-          → 이미지 영역과 패널 영역이 완전히 분리됨.
-          → 시계방향 90도 회전 시 컨테이너 left = 화면 하단(패널 방향).
-          → object-position: left center → 이미지가 패널 위에 딱 붙음.
-          데스크탑/landscape: 풀스크린 object-cover. */}
+      {/* Layer 0: 배경 사진 스택 (크로스페이드)
+          모바일 portrait: 세로 전용 이미지(LOADING_TMIS_MOBILE)를 풀스크린 object-cover.
+          데스크탑/landscape: 기존 가로 이미지를 풀스크린 object-cover. */}
       {tmis.map((tmi, i) => (
         <div
           key={tmi.bg}
-          style={
-            isMobilePortrait
-              ? {
-                  // 회전 후 apparent size: 100vw × (100vh - 원래 패널 높이)
-                  // 패널이 50px 더 커져서 이미지 하단을 자연스럽게 가림
-                  position: "absolute",
-                  top: "calc((100vh - max(28vh, 160px)) / 2)",
-                  left: "50%",
-                  width: "calc(100vh - max(28vh, 160px))",
-                  height: "100vw",
-                  transform: "translate(-50%, -50%) rotate(90deg)",
-                  opacity: slotIdx === i ? 1 : 0,
-                  transition: `opacity ${CROSSFADE_MS}ms ease`,
-                }
-              : {
-                  position: "absolute",
-                  inset: 0,
-                  opacity: slotIdx === i ? 1 : 0,
-                  transition: `opacity ${CROSSFADE_MS}ms ease`,
-                }
-          }
+          style={{
+            position: "absolute",
+            inset: 0,
+            opacity: slotIdx === i ? 1 : 0,
+            transition: `opacity ${CROSSFADE_MS}ms ease`,
+          }}
         >
           <Image
             src={tmi.bg}
@@ -127,11 +112,9 @@ export default function SajuLoadingView({ character }: Props) {
             fill
             priority={i === 0}
             sizes="100vw"
-            className={isMobilePortrait ? "object-contain" : "object-cover"}
+            className="object-cover"
             style={{
-              // 시계방향 90도: 컨테이너 left(x=0) → 화면 하단
-              // left center → 이미지 하단이 패널에 딱 붙음
-              objectPosition: isMobilePortrait ? "left center" : "center calc(50% + 80px)",
+              objectPosition: isMobilePortrait ? "center" : "center calc(50% + 80px)",
             }}
           />
         </div>
