@@ -45,14 +45,17 @@ export default function LetterPage({ data }: { data?: PaidChapterP10 }) {
           <span
             aria-hidden
             className="absolute -top-3 -left-3 w-[60px] h-[60px] bg-no-repeat bg-contain pointer-events-none opacity-65 z-10"
-            style={{ backgroundImage: "url(/yeonwoo/thread/thread_corner.png)" }}
+            style={{
+              backgroundImage: "url(/yeonwoo/thread/thread_corner.png)",
+              transform: "rotate(-90deg)",
+            }}
           />
           <span
             aria-hidden
             className="absolute -bottom-3 -right-3 w-[60px] h-[60px] bg-no-repeat bg-contain pointer-events-none opacity-65 z-10"
             style={{
               backgroundImage: "url(/yeonwoo/thread/thread_corner.png)",
-              transform: "scale(-1,-1)",
+              transform: "scale(-1,-1) rotate(-90deg)",
             }}
           />
           <div className="flex justify-center">
