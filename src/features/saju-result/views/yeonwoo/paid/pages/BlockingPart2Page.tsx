@@ -183,10 +183,18 @@ export default function BlockingPart2Page({ data }: { data?: BlockingPart2Data }
 
 // ── 로컬 컴포넌트 (P-2/P-3과 동일 패턴) ──
 
+// 마지막 항목이 홀수 위치(=2열에서 혼자 남는 칸)일 때 그 칸만 가운데 정렬.
+// (착각 신호 3개처럼 홀수 개일 때 마지막 카드가 좌측에 붙지 않고 중앙에 옴)
+// 한 칼럼 폭 = (100% - gap)/2 = 50% - 3px (gap 6px 기준).
+const ODD_LAST_CENTER =
+  "[&>*:last-child:nth-child(odd)]:[grid-column:1/-1] " +
+  "[&>*:last-child:nth-child(odd)]:w-[calc(50%-3px)] " +
+  "[&>*:last-child:nth-child(odd)]:justify-self-center";
+
 function CardsGrid({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="my-[7px]"
+      className={`my-[7px] ${ODD_LAST_CENTER}`}
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
