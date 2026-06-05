@@ -179,23 +179,26 @@ function SuccessBody() {
     router.replace(`/saju/paid/${encodeURIComponent(paymentStatus.orderId)}/loading`);
   };
 
-  // 이메일 확인 모달 콜백 — 입력 이메일이 기존과 다르면 BE update, 같으면 즉시 인트로 진입
+  // 이메일 확인 모달 콜백 — 2026-06-05 확정-후-발송 설계:
+  // 결과지 메일은 이 "확정" 호출이 트리거 (변경 없어도 항상 호출 — 서버가
+  // email_confirmed_at 기록 + 확정 주소로 1통 발송). 확정 없이 이탈하면
+  // 서버 스위퍼가 grace 후 폴백 발송. 오타 주소 선발송/2통 문제 차단.
   const handleEmailConfirm = async (confirmedEmail: string) => {
     if (!paymentStatus) return;
-    if (confirmedEmail !== pendingEmail) {
-      try {
-        await api.post("/api/payments/update-email", {
-          orderId: paymentStatus.orderId,
-          newEmail: confirmedEmail,
-        });
+    try {
+      await api.post("/api/payments/update-email", {
+        orderId: paymentStatus.orderId,
+        newEmail: confirmedEmail,
+      });
+      if (confirmedEmail !== pendingEmail) {
         trackEvent("paid_email_updated", {
           order_id: paymentStatus.orderId,
           character_id: paymentStatus.character,
         });
-      } catch (err) {
-        // 실패해도 인트로 진입 차단은 X — 사용자 경험 우선. 로깅만.
-        console.error("[update-email] failed", err);
       }
+    } catch (err) {
+      // 실패해도 인트로 진입 차단은 X — 스위퍼가 폴백 발송. 로깅만.
+      console.error("[confirm-email] failed", err);
     }
     setEmailModalOpen(false);
     setScreen("intro_play");
