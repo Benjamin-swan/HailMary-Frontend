@@ -31,12 +31,14 @@ interface RedeemCouponResponse {
   orderId: string;
 }
 
-/** staging/local 환경 감지 — prod 도메인이 아니면 결제 패스 버튼 노출. */
+/** 결제 패스 버튼 노출 여부 — localhost 한정 allowlist.
+ *  prod 전환(2026-06-05): 기존 블록리스트(운영 도메인만 차단)는 staging·새 도메인에서
+ *  fail-open이라 폐기. 배포된 모든 도메인에서 숨기고 로컬 개발에서만 노출.
+ *  (BE /api/payments/dev/bypass 는 별도로 APP_ENV != "prod" 게이트 — prod에선 404.) */
 export function isDevBypassEnabled(): boolean {
   if (typeof window === "undefined") return false;
-  const host = window.location.host;
-  if (host === "dohwaseonsaju.com" || host === "www.dohwaseonsaju.com") return false;
-  return true;
+  const host = window.location.hostname;
+  return host === "localhost" || host === "127.0.0.1";
 }
 
 export interface UseCheckoutReturn {
