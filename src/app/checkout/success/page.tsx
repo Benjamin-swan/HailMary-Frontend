@@ -84,13 +84,27 @@ function SuccessBody() {
       const raw = sessionStorage.getItem("checkoutPending");
       if (raw) pending = JSON.parse(raw) as PendingCheckout;
     } catch {}
-
+    // 2026-06-05 prod 실결제 사고 hotfix: 카드사 인증 복귀가 새 브라우저 컨텍스트로
+    // 떨어지면 sessionStorage(탭 단위)가 유실됨. BE /api/payments/return이 PayApp
+    // var1(=주문번호)을 ?order_id= 로 전달하므로 URL 쿼리 우선, 그다음
+    // sessionStorage → localStorage 백업 순으로 복구.
     if (!pending?.orderId) {
+      try {
+        const raw = localStorage.getItem("checkoutPending");
+        if (raw) pending = JSON.parse(raw) as PendingCheckout;
+      } catch {}
+    }
+    let orderId = "";
+    try {
+      orderId = new URLSearchParams(window.location.search).get("order_id") ?? "";
+    } catch {}
+    if (!orderId) orderId = pending?.orderId ?? "";
+
+    if (!orderId) {
       setScreen("error");
       setErrorMsg("결제 세션 정보가 없어요. 처음부터 다시 시도해 주세요.");
       return;
     }
-    const orderId = pending.orderId;
 
     const startedAt = Date.now();
 
@@ -107,7 +121,9 @@ function SuccessBody() {
           // 결제 완료 직후 이메일 재확인 모달 노출 → 확정 후 intro_play 진입
           let initialEmail = "";
           try {
-            const raw = sessionStorage.getItem("checkoutPending");
+            const raw =
+              sessionStorage.getItem("checkoutPending") ??
+              localStorage.getItem("checkoutPending");
             if (raw) initialEmail = (JSON.parse(raw) as PendingCheckout)?.email ?? "";
           } catch {}
           setPendingEmail(initialEmail);
@@ -154,6 +170,7 @@ function SuccessBody() {
       character_id: paymentStatus.character,
     });
     try { sessionStorage.removeItem("checkoutPending"); } catch {}
+    try { localStorage.removeItem("checkoutPending"); } catch {}
     router.replace(`/saju/paid/${encodeURIComponent(paymentStatus.orderId)}/loading`);
   };
 

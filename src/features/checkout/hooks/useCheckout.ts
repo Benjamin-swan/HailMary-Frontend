@@ -79,6 +79,20 @@ function scrollToField(id: string): void {
   if (el instanceof HTMLElement) el.focus({ preventScroll: true });
 }
 
+// 2026-06-05 prod 실결제 사고: 카드사 인증 복귀가 새 브라우저 컨텍스트로 떨어지면
+// sessionStorage(탭 단위)가 유실돼 success 페이지가 "결제 세션 정보 없음"을 띄웠음.
+// → localStorage에도 백업 (1차 복구는 BE /api/payments/return의 ?order_id= 쿼리).
+function savePendingCheckout(payload: {
+  character: string;
+  orderId: string;
+  amount: number;
+  email: string;
+}): void {
+  const raw = JSON.stringify(payload);
+  try { sessionStorage.setItem("checkoutPending", raw); } catch {}
+  try { localStorage.setItem("checkoutPending", raw); } catch {}
+}
+
 export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
   const router = useRouter();
   const product = PRODUCTS[character];
@@ -252,17 +266,12 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
           customerEmail: email.trim(),
           code: coupon.trim(),
         });
-        try {
-          sessionStorage.setItem(
-            "checkoutPending",
-            JSON.stringify({
-              character,
-              orderId: res.orderId,
-              amount: 0,
-              email: email.trim(),
-            }),
-          );
-        } catch {}
+        savePendingCheckout({
+          character,
+          orderId: res.orderId,
+          amount: 0,
+          email: email.trim(),
+        });
         trackEvent("coupon_redeemed", {
           character_id: character,
           order_id: res.orderId,
@@ -296,17 +305,12 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
         },
       );
 
-      try {
-        sessionStorage.setItem(
-          "checkoutPending",
-          JSON.stringify({
-            character,
-            orderId: res.orderId,
-            amount: product.priceKrw,
-            email: email.trim(),
-          }),
-        );
-      } catch {}
+      savePendingCheckout({
+        character,
+        orderId: res.orderId,
+        amount: product.priceKrw,
+        email: email.trim(),
+      });
 
       window.location.href = res.payurl;
     } catch (err) {
@@ -352,17 +356,12 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
           customerEmail: email.trim(),
         },
       );
-      try {
-        sessionStorage.setItem(
-          "checkoutPending",
-          JSON.stringify({
-            character,
-            orderId: res.orderId,
-            amount: product.priceKrw,
-            email: email.trim(),
-          }),
-        );
-      } catch {}
+      savePendingCheckout({
+        character,
+        orderId: res.orderId,
+        amount: product.priceKrw,
+        email: email.trim(),
+      });
       trackEvent("payment_dev_bypass", { character_id: character, order_id: res.orderId });
       router.replace("/checkout/success");
     } catch (err) {
