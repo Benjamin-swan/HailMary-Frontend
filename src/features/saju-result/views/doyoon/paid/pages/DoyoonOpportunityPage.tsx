@@ -99,26 +99,55 @@ function ScrollFrameTimelineDoyoon({
     is_peak: boolean;
   }>;
 }) {
+  // 3-slice 두루마리: top cap + middle(세로 반복, 콘텐츠만큼 신축) + bottom roller.
+  // 합본(scroll_full)을 고정 aspectRatio로 깔던 방식은 모바일에서 본문이 길어지면
+  // 콘텐츠가 하단 롤러를 뚫고 넘쳐서 폐기 — 연우 TimingPage 3-slice 패턴 미러.
   return (
     <div
       role="figure"
       aria-label="12개월 인연 흐름 두루마리"
       className="my-3 mx-auto relative w-full"
-      style={{
-        background:
-          "url(/doyoon/dy_sub/scroll_full_dy.png) no-repeat center / 100% 100%",
-        aspectRatio: "724 / 2536",
-        padding: "53% 19% 46% 19%",
-        boxSizing: "border-box",
-        overflow: "hidden",
-        maxWidth: 430,
-      }}
+      style={{ maxWidth: 430 }}
     >
-      <div className="flex flex-col gap-1" style={{ height: "100%" }}>
-        {months.map((m, i) => (
-          <TimelineRowDoyoon key={i} {...m} />
-        ))}
+      {/* 상단 cap (말린 윗부분 + 한지) */}
+      <div
+        aria-hidden
+        className="w-full"
+        style={{
+          aspectRatio: "1448 / 1086",
+          background:
+            "url(/doyoon/dy_sub/scroll_top_dy.png) no-repeat center / 100% 100%",
+        }}
+      />
+      {/* 본문 — scroll_middle 세로 반복으로 콘텐츠 높이만큼 늘어남 (롤러 넘침 불가) */}
+      <div
+        className="relative"
+        style={{
+          background:
+            "url(/doyoon/dy_sub/scroll_middle_dy.png) repeat-y center top / 100% auto",
+          padding: "8px 19%",
+          marginTop: "-30%",
+          marginBottom: "-30%",
+          zIndex: 1,
+          minHeight: 80,
+        }}
+      >
+        <div className="flex flex-col gap-1">
+          {months.map((m, i) => (
+            <TimelineRowDoyoon key={i} {...m} />
+          ))}
+        </div>
       </div>
+      {/* 하단 cap (나무 롤러) */}
+      <div
+        aria-hidden
+        className="w-full"
+        style={{
+          aspectRatio: "1448 / 1086",
+          background:
+            "url(/doyoon/dy_sub/scroll_bottom_dy.png) no-repeat center / 100% 100%",
+        }}
+      />
     </div>
   );
 }
