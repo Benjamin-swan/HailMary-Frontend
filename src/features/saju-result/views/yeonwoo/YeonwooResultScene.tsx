@@ -152,8 +152,8 @@ export default function YeonwooResultScene() {
         <RomanceTimingSection flow={data.monthlyRomanceFlow} />
         <RealReviewsSection />
       </div>
-      {/* HM-FE-112: prod 배포 위해 CTA 재봉인(유료 결제 미완성). staging 테스트 시 disabled={false} 토글 */}
-      <StickyCheckoutCta visible={showCta} disabled={false} />
+      {/* 🚨 2026-06-05 비상 재봉인: prod 실결제 success "결제 세션 정보 없음" 오류 — 원인 수정 전까지 결제 진입 차단 */}
+      <StickyCheckoutCta visible={showCta} disabled={true} />
     </>
   );
 }
