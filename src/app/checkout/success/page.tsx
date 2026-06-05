@@ -65,15 +65,22 @@ function SuccessBody() {
     viewSentRef.current = true;
     let character: string | null = null;
     let orderId: string | null = null;
+    let amount: number | null = null;
     try {
-      const raw = sessionStorage.getItem("checkoutPending");
+      // sessionStorage(탭 단위) 유실 대비 localStorage 백업까지 확인 (2026-06-05 hotfix와 동일).
+      const raw =
+        sessionStorage.getItem("checkoutPending") ??
+        localStorage.getItem("checkoutPending");
       if (raw) {
         const p = JSON.parse(raw) as PendingCheckout;
         character = p?.character ?? null;
         orderId = p?.orderId ?? null;
+        amount = p?.amount ?? null;
       }
     } catch {}
-    trackEvent("checkout_success_view", { character_id: character, order_id: orderId });
+    // amount = 실제 청구 판매가(할인 적용가, product.priceKrw). 정가(originalPriceKrw)는 표시 전용.
+    // PayApp 확정금액·결제수단의 단일 진실원은 BE payment_completed.
+    trackEvent("checkout_success_view", { character_id: character, order_id: orderId, amount });
   }, []);
 
   // 폴링 루프
@@ -170,9 +177,19 @@ function SuccessBody() {
   const handleIntroCta = () => {
     if (redirectSentRef.current || !paymentStatus) return;
     redirectSentRef.current = true;
+    // checkoutPending 제거(아래) 전에 amount 복원. 발화 시점엔 아직 살아있음.
+    let amount: number | null = null;
+    try {
+      const raw =
+        sessionStorage.getItem("checkoutPending") ??
+        localStorage.getItem("checkoutPending");
+      if (raw) amount = (JSON.parse(raw) as PendingCheckout)?.amount ?? null;
+    } catch {}
+    // amount = 실제 청구 판매가(할인 적용가). PayApp 확정금액은 BE payment_completed 기준.
     trackEvent("paid_result_redirect", {
       order_id: paymentStatus.orderId,
       character_id: paymentStatus.character,
+      amount,
     });
     try { sessionStorage.removeItem("checkoutPending"); } catch {}
     try { localStorage.removeItem("checkoutPending"); } catch {}
