@@ -224,11 +224,11 @@ export default function DoyoonResultScene() {
           versionBadgeLabel="한도윤 버전"
         />
       </div>
-      {/* 🚨 2026-06-05 비상 재봉인: prod 실결제 success "결제 세션 정보 없음" 오류 — 원인 수정 전까지 결제 진입 차단 */}
+      {/* 2026-06-05 세션 유실 hotfix(?order_id= 3중 복구) prod 검증 후 CTA 재개방 */}
       <StickyCheckoutCta
         ctaLabel="결제하고 도윤의 정밀 리포트 읽기"
         visible={showCta}
-        disabled={true}
+        disabled={false}
         characterId="doyoon"
         onCheckout={() => {
           trackEvent("pay_cta_click", { character_id: "doyoon" });
