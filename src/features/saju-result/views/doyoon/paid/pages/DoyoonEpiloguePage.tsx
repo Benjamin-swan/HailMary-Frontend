@@ -19,10 +19,10 @@ interface DoyoonEpiloguePageProps {
 }
 
 const MOCK_CLOSING = (name: string) =>
-  `다 읽으셨나요? 데이터가 할 수 있는 말은 여기까지입니다.\n` +
-  `이제부터는 ${name}님의 선택이라는 변수가 결과값을 결정하겠죠.\n` +
-  `데이터상으로 ${name}님의 조합은 오차 범위를 감안해도 기대값이 굉장히 높게 측정됩니다.\n` +
-  `스스로를 의심하지 마세요. ${name}님은 이미 가장 완벽한 답안지를 갖고 계시니까요.`;
+  `다 읽으셨나요? 제가 정리해 드릴 수 있는 이야기는 여기까지예요.\n` +
+  `여기서부터는 ${name}님이 어떤 선택을 하시느냐에 달려 있습니다.\n` +
+  `제가 본 ${name}님의 흐름은, 잘 풀릴 가능성이 충분히 보이는 쪽이에요.\n` +
+  `스스로를 의심하지 마세요. ${name}님은 이미 좋은 답을 안에 갖고 계시니까요.`;
 
 // URL에서 orderId 추출 (PaidLoadingClient / EpiloguePage 동일 패턴)
 function extractOrderIdFromUrl(): string {

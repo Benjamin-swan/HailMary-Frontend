@@ -13,27 +13,27 @@ interface DoyoonOpportunityPageProps {
 const MOCK_P8: PaidChapterP8Doyoon = {
   user_name: "홍길동",
   months: [
-    { label: "5월 (이번달)", hearts: 2, pct: 35, state: "시작", desc: "이번 달부터 흐름 진입 구간이에요. 큰 변동은 없지만 변수가 움직이기 시작해요.", is_peak: false },
-    { label: "6월", hearts: 3, pct: 50, state: "진입", desc: "접촉 확률이 빠르게 차오르는 구간이에요. 신호 인지율 높이세요.", is_peak: false },
-    { label: "7월", hearts: 4, pct: 65, state: "상승", desc: "신규 접촉 확률 상승. 반복 접촉이 인연으로 발전하는 사례가 많아요.", is_peak: false },
-    { label: "8월", hearts: 5, pct: 78, state: "피크", desc: "피크 구간. 적극적 감정 표현 효율이 평균 대비 2.3배예요.", is_peak: true },
-    { label: "9월", hearts: 4, pct: 70, state: "심화", desc: "관계 심화 국면. 상대 페이스 존중이 효율적이에요.", is_peak: false },
-    { label: "10월", hearts: 3, pct: 55, state: "안정", desc: "안정 전환. 현 상태 유지 전략이 가장 효과적이에요.", is_peak: false },
-    { label: "11월", hearts: 2, pct: 42, state: "정체", desc: "변수 최소화 구간. 조급한 밀어붙임은 역효과예요.", is_peak: false },
-    { label: "12월", hearts: 3, pct: 55, state: "상승", desc: "신규 환경 진입 권장. 동선 변화로 접촉 변수 재가동돼요.", is_peak: false },
-    { label: "'27. 1월", hearts: 5, pct: 82, state: "2차 피크", desc: "연도 전환과 함께 2차 피크. 표현 명확성이 결정적 변수예요.", is_peak: true },
-    { label: "'27. 2월", hearts: 4, pct: 68, state: "심화", desc: "관계 안정 단계. 약속 이행 일관성이 신뢰 변수로 가장 크게 작동해요.", is_peak: false },
-    { label: "'27. 3월", hearts: 2, pct: 38, state: "정체", desc: "변수 정리 구간. 다음 사이클 진입을 위한 충전 시기예요.", is_peak: false },
-    { label: "'27. 4월", hearts: 4, pct: 65, state: "1년차 마무리", desc: "1년 사이클 마무리. 명확한 표현이 다음 흐름 변수를 결정해요.", is_peak: false },
+    { label: "5월 (이번달)", hearts: 2, pct: 35, state: "시작", desc: "이번 달부터 흐름이 슬슬 움직이기 시작해요. 큰 변화는 없지만 분위기가 조금씩 달라져요.", is_peak: false },
+    { label: "6월", hearts: 3, pct: 50, state: "진입", desc: "인연의 흐름이 빠르게 차오르는 시기예요. 다가오는 신호를 놓치지 않도록 마음을 열어두세요.", is_peak: false },
+    { label: "7월", hearts: 4, pct: 65, state: "상승", desc: "새 인연을 만날 가능성이 차오르는 때예요. 자주 마주치는 사람이 인연으로 이어지는 경우가 많아요.", is_peak: false },
+    { label: "8월", hearts: 5, pct: 78, state: "피크", desc: "한 해 중 흐름이 가장 도드라지는 때예요. 이 시기엔 마음을 솔직하게 표현할수록 잘 통해요.", is_peak: true },
+    { label: "9월", hearts: 4, pct: 70, state: "심화", desc: "관계가 한 걸음 더 깊어지는 때예요. 상대의 속도를 존중하며 가는 게 좋아요.", is_peak: false },
+    { label: "10월", hearts: 3, pct: 55, state: "안정", desc: "관계가 차분하게 자리를 잡는 때예요. 지금 흐름을 그대로 이어가는 게 가장 좋아요.", is_peak: false },
+    { label: "11월", hearts: 2, pct: 42, state: "정체", desc: "잠시 흐름이 잔잔해지는 때예요. 조급하게 밀어붙이면 오히려 어긋나기 쉬워요.", is_peak: false },
+    { label: "12월", hearts: 3, pct: 55, state: "상승", desc: "새로운 환경에 발을 들이기 좋은 때예요. 동선을 조금 바꾸면 새 인연의 계기가 다시 생겨요.", is_peak: false },
+    { label: "'27. 1월", hearts: 5, pct: 82, state: "2차 피크", desc: "해가 바뀌며 흐름이 다시 한 번 도드라지는 때예요. 마음을 분명하게 표현하는 게 중요해요.", is_peak: true },
+    { label: "'27. 2월", hearts: 4, pct: 68, state: "심화", desc: "관계가 차분히 안정되는 때예요. 약속을 한결같이 지키는 모습이 신뢰를 가장 크게 키워요.", is_peak: false },
+    { label: "'27. 3월", hearts: 2, pct: 38, state: "정체", desc: "마음을 차분히 정리하기 좋은 때예요. 다음 흐름으로 들어서기 위한 충전 시기로 보세요.", is_peak: false },
+    { label: "'27. 4월", hearts: 4, pct: 65, state: "1년차 마무리", desc: "1년의 흐름이 마무리되는 때예요. 솔직한 표현이 다음 흐름을 여는 열쇠가 돼요.", is_peak: false },
   ],
   ai_intro:
-    "향후 12개월 접촉 확률 분포 정리해드릴게요. 이번 달부터 1년이에요.\n\n" +
-    "연간 평균 대비 피크 구간이 두 곳이에요. 8월과 '27. 1월. 이 두 달은 신규 인연 접촉 확률이 평균 대비 2.3배까지 올라가요. " +
-    "그 사이 구간은 변수 정리·매력 변수 보완에 효율적인 충전 구간이에요.\n\n" +
-    "임수(壬水) 일간 표본에서 흐름 거스르는 행동의 ROI(투입 대비 효과)가 가장 낮게 측정돼요. " +
-    "피크에 적극 움직이고, 정체기엔 변수 정리에 집중하시는 게 가장 효율적이에요. 데이터가 그렇게 가리키고 있어요.",
+    "앞으로 1년, 새 인연이 들어오기 좋은 시기를 달별로 정리해드릴게요. 이번 달부터 1년이에요.\n\n" +
+    "1년 중에서 인연의 흐름이 특히 도드라지는 시기가 두 번 있어요. 8월과 '27. 1월. 이 두 달은 새 인연을 만날 가능성이 한 해 중 가장 크게 올라가는 때예요. " +
+    "그 사이 시기는 마음을 차분히 정리하고 자신을 가다듬으며 다음을 준비하기 좋은 때고요.\n\n" +
+    "임수(壬水) 일간은 흐름을 억지로 거스를수록 오히려 지치기 쉬워요. " +
+    "좋은 시기엔 마음을 적극적으로 내고, 잔잔한 시기엔 자신을 차분히 가다듬는 게 가장 잘 맞아요.",
   sd_avatar_asset: "dy_04",
-  bubble: "이 시기에 접촉 확률이 가장 높게 잡혀요.",
+  bubble: "이 시기에 새 인연을 만날 가능성이 가장 크게 올라가요.",
 };
 
 
@@ -73,7 +73,7 @@ function SdSpotlightDy04({ asset }: { asset: string }) {
   return (
     <div className="flex justify-center my-3">
       <div
-        aria-label={`한도윤 — 12개월 확률 데이터 / ${asset}`}
+        aria-label={`한도윤 — 12개월 인연 흐름 / ${asset}`}
         style={{
           width: 260,
           height: 260,
@@ -102,7 +102,7 @@ function ScrollFrameTimelineDoyoon({
   return (
     <div
       role="figure"
-      aria-label="12개월 인연 접촉 확률 두루마리"
+      aria-label="12개월 인연 흐름 두루마리"
       className="my-3 mx-auto relative w-full"
       style={{
         background:
