@@ -280,8 +280,11 @@ function OhangListDoyoon({
   const Y_LABEL_W = 32;
 
   const ratios = OHANG_ORDER.map((k) => strength[k]);
-  // 막대 높이는 절대값(%) 기준 — Y축(0~100%)과 일치 (QA F-002: 상대 정규화 시 "막대 높은데 낮음" 모순).
-  const denom = 100;
+  // 막대 높이는 무료 WuxingChartSection과 동일한 상대 스케일링 — 최대 오행이 차트 끝까지 차오름.
+  // (구 F-002의 절대 denom=100은 과다여도 막대가 절반에 머물러 어색 → 2026-06-05 무료 기준 통일 결정.
+  //  데이터 자체는 무료와 동일한 vars_["OHANG_*"] ratios라 모양까지 무료와 일치.)
+  const maxRatio = Math.max(...ratios);
+  const denom = maxRatio > 0 ? maxRatio : 1;
   // 과다·부족 라벨은 단일 대표가 아니라 전체 judgments 기반 (QA F-001: 무료=전체 / 유료=1개 불일치).
   const excessEls = OHANG_ORDER.filter((k) => judgments[k] === "과다");
   const lackEls = OHANG_ORDER.filter((k) => judgments[k] === "결핍");
