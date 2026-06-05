@@ -34,6 +34,8 @@ interface PaymentStatusResponse {
   orderId: string;
   status: string;     // READY / DONE / CANCELED / ABORTED / WAITING_FOR_DEPOSIT / PARTIAL_CANCELED
   character: string;  // "yeonwoo" | "doyoon"
+  // 2026-06-05: storage 유실 시 이메일 모달 프리필용 — 서버 저장값이 정본
+  customerEmail?: string;
 }
 
 interface PendingCheckout {
@@ -119,13 +121,16 @@ function SuccessBody() {
         if (res.status === "DONE") {
           setPaymentStatus(res);
           // 결제 완료 직후 이메일 재확인 모달 노출 → 확정 후 intro_play 진입
-          let initialEmail = "";
-          try {
-            const raw =
-              sessionStorage.getItem("checkoutPending") ??
-              localStorage.getItem("checkoutPending");
-            if (raw) initialEmail = (JSON.parse(raw) as PendingCheckout)?.email ?? "";
-          } catch {}
+          // 서버 저장 이메일이 정본 (storage 유실 케이스에서도 프리필 보장).
+          let initialEmail = res.customerEmail ?? "";
+          if (!initialEmail) {
+            try {
+              const raw =
+                sessionStorage.getItem("checkoutPending") ??
+                localStorage.getItem("checkoutPending");
+              if (raw) initialEmail = (JSON.parse(raw) as PendingCheckout)?.email ?? "";
+            } catch {}
+          }
           setPendingEmail(initialEmail);
           setEmailModalOpen(true);
           return;
