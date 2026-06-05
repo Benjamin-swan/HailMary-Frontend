@@ -137,7 +137,7 @@ export default function DoyoonProloguePage({ data }: DoyoonProloguePageProps) {
           ilganHanjaProp={d.ilgan_card.name_han}
         />
         <DoyoonSBody>
-          오행 5개 변수의 강도예요. 평균 대비 +1.7배 이상은 과다, -0.6배 이하는 부족으로 분류해요.{" "}
+          오행 5개 변수의 강도예요. 다른 기운보다 뚜렷이 높으면 과다, 눈에 띄게 낮으면 부족으로 봐요.{" "}
           <DoyoonVarTag>
             {OHANG_LABELS[d.ohang_excess].hangul}({OHANG_LABELS[d.ohang_excess].hanja})
           </DoyoonVarTag>{" "}
@@ -255,9 +255,9 @@ function PillarBox({
       <span
         style={{
           fontFamily: '"JejuMyeongjo", "Pretendard", serif',
-          fontWeight: 400,
-          fontSize: 11,
-          color: "#9C8A6D",
+          fontWeight: 600,
+          fontSize: 13,
+          color: "#7A6B55",
         }}
       >
         {hangul}
