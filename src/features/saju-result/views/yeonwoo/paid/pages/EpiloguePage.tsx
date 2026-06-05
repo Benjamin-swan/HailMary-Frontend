@@ -58,17 +58,21 @@ export default function EpiloguePage() {
       <Sec>
         {/* SD yw_cg_c (sz-240) + thread_corner 외곽 wrapper (size-frame 110px) */}
         <div className="relative my-4 flex justify-center">
+          {/* 모서리 실 장식 방향 보정 (2026-06-05 QA 2차): 좌상 270°, 우하 90°. */}
           <span
             aria-hidden
             className="absolute -top-3 -left-3 w-[60px] h-[60px] bg-no-repeat bg-contain pointer-events-none opacity-65 z-10"
-            style={{ backgroundImage: "url(/yeonwoo/thread/thread_corner.png)" }}
+            style={{
+              backgroundImage: "url(/yeonwoo/thread/thread_corner.png)",
+              transform: "rotate(270deg)",
+            }}
           />
           <span
             aria-hidden
             className="absolute -bottom-3 -right-3 w-[60px] h-[60px] bg-no-repeat bg-contain pointer-events-none opacity-65 z-10"
             style={{
               backgroundImage: "url(/yeonwoo/thread/thread_corner.png)",
-              transform: "scale(-1,-1)",
+              transform: "rotate(90deg)",
             }}
           />
           <div className="relative w-[240px] h-[240px]">
