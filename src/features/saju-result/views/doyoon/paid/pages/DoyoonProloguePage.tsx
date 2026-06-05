@@ -1,4 +1,5 @@
 import type {
+  OhangJudgment,
   OhangKey,
   OhangStrength,
   PaidChapterP0Doyoon,
@@ -129,6 +130,7 @@ export default function DoyoonProloguePage({ data }: DoyoonProloguePageProps) {
         <DoyoonSTitle>5개 변수의 강도 측정값.</DoyoonSTitle>
         <OhangListDoyoon
           strength={d.ohang_strength}
+          judgments={d.ohang_judgments}
           excess={d.ohang_excess}
           lack={d.ohang_lack}
           ilgan={d.ilgan}
@@ -265,9 +267,10 @@ function PillarBox({
 }
 
 function OhangListDoyoon({
-  strength, excess, lack, ilgan, ilganHanjaProp,
+  strength, judgments, excess, lack, ilgan, ilganHanjaProp,
 }: {
-  strength: OhangStrength; excess: OhangKey; lack: OhangKey;
+  strength: OhangStrength; judgments: Record<OhangKey, OhangJudgment>;
+  excess: OhangKey; lack: OhangKey;
   ilgan: string; ilganHanjaProp?: string;
 }) {
   const Y_TICKS = [100, 75, 50, 25, 0];
@@ -277,8 +280,13 @@ function OhangListDoyoon({
   const Y_LABEL_W = 32;
 
   const ratios = OHANG_ORDER.map((k) => strength[k]);
-  const maxRatio = Math.max(...ratios);
-  const denom = maxRatio > 0 ? maxRatio : 1;
+  // 막대 높이는 절대값(%) 기준 — Y축(0~100%)과 일치 (QA F-002: 상대 정규화 시 "막대 높은데 낮음" 모순).
+  const denom = 100;
+  // 과다·부족 라벨은 단일 대표가 아니라 전체 judgments 기반 (QA F-001: 무료=전체 / 유료=1개 불일치).
+  const excessEls = OHANG_ORDER.filter((k) => judgments[k] === "과다");
+  const lackEls = OHANG_ORDER.filter((k) => judgments[k] === "결핍");
+  const excessShow = excessEls.length > 0 ? excessEls : [excess];
+  const lackShow = lackEls.length > 0 ? lackEls : [lack];
 
   // ilgan = "병화" (한글), ilganHanjaProp = "丙火" (한자, ilgan_card.name_han에서 전달)
   // 백엔드 응답이 한글 + 한자 분리되어 있어 정규식 fallback 불필요. 안전 fallback은 그대로 유지.
@@ -433,26 +441,36 @@ function OhangListDoyoon({
         }}
       >
         <span style={{ fontSize: 16, fontWeight: 400, color: "#7A6B55" }}>
-          <span
-            style={{
-              fontFamily: '"NotoSerifTC", "ChosunNm", serif', fontWeight: 600,
-              fontSize: 18, color: DOYOON_WUXING_HUES[excess],
-            }}
-          >
-            {OHANG_LABELS[excess].hanja}
-          </span>{" "}
+          {excessShow.map((k, i) => (
+            <span key={`ex-${k}`}>
+              {i > 0 && " · "}
+              <span
+                style={{
+                  fontFamily: '"NotoSerifTC", "ChosunNm", serif', fontWeight: 600,
+                  fontSize: 18, color: DOYOON_WUXING_HUES[k],
+                }}
+              >
+                {OHANG_LABELS[k].hanja}
+              </span>
+            </span>
+          ))}{" "}
           과다
         </span>
         <span style={{ fontSize: 16, color: "#7A6B55" }}> · </span>
         <span style={{ fontSize: 16, fontWeight: 400, color: "#7A6B55" }}>
-          <span
-            style={{
-              fontFamily: '"NotoSerifTC", "ChosunNm", serif', fontWeight: 600,
-              fontSize: 18, color: DOYOON_WUXING_HUES[lack],
-            }}
-          >
-            {OHANG_LABELS[lack].hanja}
-          </span>{" "}
+          {lackShow.map((k, i) => (
+            <span key={`lk-${k}`}>
+              {i > 0 && " · "}
+              <span
+                style={{
+                  fontFamily: '"NotoSerifTC", "ChosunNm", serif', fontWeight: 600,
+                  fontSize: 18, color: DOYOON_WUXING_HUES[k],
+                }}
+              >
+                {OHANG_LABELS[k].hanja}
+              </span>
+            </span>
+          ))}{" "}
           부족
         </span>
       </div>
