@@ -7,6 +7,9 @@ export type CheckoutCharacter = "yeonwoo" | "doyoon";
 export interface CheckoutProduct {
   character: CheckoutCharacter;
   productLabel: string;
+  /** 정가 — 표시 전용(취소선). 실제 청구는 priceKrw. */
+  originalPriceKrw: number;
+  /** 실제 결제(판매)가. BE character_price.py 와 반드시 동일하게 유지. */
   priceKrw: number;
 }
 
@@ -14,12 +17,14 @@ export const PRODUCTS: Record<CheckoutCharacter, CheckoutProduct> = {
   yeonwoo: {
     character: "yeonwoo",
     productLabel: "강연우의 정통 연애 사주",
-    priceKrw: 20000,
+    originalPriceKrw: 20000,
+    priceKrw: 4900,
   },
   doyoon: {
     character: "doyoon",
     productLabel: "한도윤의 데이터 기반 연애분석",
-    priceKrw: 20000,
+    originalPriceKrw: 20000,
+    priceKrw: 4900,
   },
 };
 
