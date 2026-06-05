@@ -20,7 +20,7 @@ const MOCK_P3: PaidChapterP3Doyoon = {
     ohang_excess: "수",
     ohang_excess_hanja: "水",
     blockade_pct: "상위 15%",
-    blockade_multiplier: "1.7배",
+    blockade_multiplier: "평소보다 크게",
   },
   ai_blockade:
     "먼저 흐름부터 짚어드릴게요. 홍길동님의 사주를 보면 수(水) 기운이 유독 강하게 자리 잡고 있어요. " +

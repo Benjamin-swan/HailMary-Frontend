@@ -26,7 +26,7 @@ const MOCK_P5: PaidChapterP5Doyoon = {
   ],
   strength_axis_1: "존재감",
   strength_axis_2: "깊이감",
-  strength_multiplier: "1.7배",
+  strength_multiplier: "두드러지게",
   ai_charm_index:
     "상위 8%예요. 이거 그냥 숫자가 아니에요.\n\n" +
     "여섯 가지 매력 중에서 특히 빛나는 게 두 가지예요. 존재감과 깊이감 — 둘 다 또래 분들 사이에서도 유난히 두드러져요. " +
@@ -82,7 +82,7 @@ export default function DoyoonCharmPage({ data }: DoyoonCharmPageProps) {
         <DoyoonSLabel>3-1 당신에게서 가장 먼저 느껴지는 매력</DoyoonSLabel>
         <ChargmPctBadgeDoyoon pct={d.charm_pct} />
         <DoyoonSTitle>
-          여섯 가지 매력 중 {d.strength_axis_1}과 {d.strength_axis_2}이 평균보다 {d.strength_multiplier} 두드러져요.
+          여섯 가지 매력 중 {d.strength_axis_1}과 {d.strength_axis_2}이 평균보다 {d.strength_multiplier} 살아 있어요.
         </DoyoonSTitle>
 
         <RadarChartDoyoon axes={d.radar} />

@@ -26,7 +26,7 @@ const MOCK_P2: PaidChapterP2Doyoon = {
   hurt_type_2: {
     keyword: "의도 미독해",
     risk_pct: "64%",
-    desc: "표현하지 않은 마음을 알아주길 기대하는 경향, 평균 대비 1.4배입니다.",
+    desc: "표현하지 않은 마음을 알아주길 기대하는 경향이 평소보다 두드러집니다.",
   },
   ai_hurt:
     "이별 상황에서 홍길동님이 가장 크게 흔들리기 쉬운 두 가지를 짚어드릴게요. " +
@@ -42,7 +42,7 @@ const MOCK_P2: PaidChapterP2Doyoon = {
     { label: "3개월", pct: 65 },
     { label: "6개월", pct: 90 },
   ],
-  recovery_lag_multiplier: "1.4배",
+  recovery_lag_multiplier: "한결 더디게",
   ai_recovery:
     "이별 후 마음이 어떻게 가라앉는지 정리해 드릴게요. 임수(壬水) 일간을 가진 분들의 평균적인 회복 흐름이에요.\n\n" +
     "헤어진 직후 한 주는 감정이 거의 그대로 남아 있어요. 한 달이 지나야 조금씩 가라앉기 시작하는데, " +
@@ -97,7 +97,7 @@ export default function DoyoonSelfPart2Page({ data }: DoyoonSelfPart2PageProps) 
       {/* ── 1-5 회복 타임라인 분석 ── */}
       <DoyoonSection>
         <DoyoonSLabel>1-5 이별 후 회복 타임라인</DoyoonSLabel>
-        <DoyoonSTitle>이별 후 단계별 회복 흐름 — 평균 곡선보다 {d.recovery_lag_multiplier} 더디게.</DoyoonSTitle>
+        <DoyoonSTitle>이별 후 단계별 회복 흐름 — 평균 곡선과 견주면 {d.recovery_lag_multiplier} 흘러가요.</DoyoonSTitle>
         <DoyoonSBody>헤어진 직후부터 여섯 달까지, 마음이 가라앉는 흐름을 네 단계로 나눠봤어요.</DoyoonSBody>
 
         <div className="my-3 space-y-2">

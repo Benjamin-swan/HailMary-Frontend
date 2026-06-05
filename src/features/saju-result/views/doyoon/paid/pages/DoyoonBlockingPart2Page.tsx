@@ -59,7 +59,7 @@ const MOCK_P4: PaidChapterP4Doyoon = {
   decisive_gradient_label: "3개월차 호감 곡선의 기울기",
   real_growth_pct: "+18%",
   fake_drop_pct: "-38%",
-  accuracy_multiplier: "9배",
+  accuracy_multiplier: "훨씬",
 };
 
 
@@ -138,6 +138,13 @@ export default function DoyoonBlockingPart2Page({ data }: DoyoonBlockingPart2Pag
           value={`"${d.decisive_gradient_label}"`}
           sub={`진짜 인연은 3개월 시점에 호감도 ${d.real_growth_pct} 상승. 착각 인연은 ${d.fake_drop_pct} 하락. 첫 만남 점수보다 이 기울기가 ${d.accuracy_multiplier} 더 정확한 지표예요.`}
         />
+
+        <DoyoonSBody>
+          <strong style={{ color: DOYOON_TOKENS.text, fontWeight: 700 }}>
+            첫 만남의 강한 인상은 잊으세요. 3개월차 호감 곡선의 기울기가 진짜 인연과
+            착각 인연을 가장 또렷하게 갈라줍니다.
+          </strong>
+        </DoyoonSBody>
 
         <DoyoonAiBlock body={d.ai_illusion} />
       </DoyoonSection>
