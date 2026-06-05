@@ -10,15 +10,16 @@ export type PaidReportFetchState =
   | { kind: "expired" }
   | { kind: "error"; message: string };
 
-export function usePaidReport(orderId: string): PaidReportFetchState {
+// order_id / share_code 공용 — endpoint 경로만 다르고 로직 동일.
+function usePaidReportFromPath(path: string | null): PaidReportFetchState {
   const [state, setState] = useState<PaidReportFetchState>({ kind: "loading" });
 
   useEffect(() => {
-    if (!orderId) return;
+    if (!path) return;
     let cancelled = false;
 
     api
-      .getStrict<PaidReport>(`/api/saju/paid/${encodeURIComponent(orderId)}`)
+      .getStrict<PaidReport>(path)
       .then((report) => {
         if (cancelled) return;
         setState({ kind: "ready", report });
@@ -36,7 +37,20 @@ export function usePaidReport(orderId: string): PaidReportFetchState {
     return () => {
       cancelled = true;
     };
-  }, [orderId]);
+  }, [path]);
 
   return state;
+}
+
+export function usePaidReport(orderId: string): PaidReportFetchState {
+  return usePaidReportFromPath(
+    orderId ? `/api/saju/paid/${encodeURIComponent(orderId)}` : null,
+  );
+}
+
+// 이메일 재접속 링크 (share_code) 진입점.
+export function usePaidReportByShareCode(shareCode: string): PaidReportFetchState {
+  return usePaidReportFromPath(
+    shareCode ? `/api/saju/result/${encodeURIComponent(shareCode)}` : null,
+  );
 }

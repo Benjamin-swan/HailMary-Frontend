@@ -34,6 +34,8 @@ interface PaymentStatusResponse {
   orderId: string;
   status: string;     // READY / DONE / CANCELED / ABORTED / WAITING_FOR_DEPOSIT / PARTIAL_CANCELED
   character: string;  // "yeonwoo" | "doyoon"
+  // 2026-06-05: storage 유실 시 이메일 모달 프리필용 — 서버 저장값이 정본
+  customerEmail?: string;
 }
 
 interface PendingCheckout {
@@ -84,13 +86,27 @@ function SuccessBody() {
       const raw = sessionStorage.getItem("checkoutPending");
       if (raw) pending = JSON.parse(raw) as PendingCheckout;
     } catch {}
-
+    // 2026-06-05 prod 실결제 사고 hotfix: 카드사 인증 복귀가 새 브라우저 컨텍스트로
+    // 떨어지면 sessionStorage(탭 단위)가 유실됨. BE /api/payments/return이 PayApp
+    // var1(=주문번호)을 ?order_id= 로 전달하므로 URL 쿼리 우선, 그다음
+    // sessionStorage → localStorage 백업 순으로 복구.
     if (!pending?.orderId) {
+      try {
+        const raw = localStorage.getItem("checkoutPending");
+        if (raw) pending = JSON.parse(raw) as PendingCheckout;
+      } catch {}
+    }
+    let orderId = "";
+    try {
+      orderId = new URLSearchParams(window.location.search).get("order_id") ?? "";
+    } catch {}
+    if (!orderId) orderId = pending?.orderId ?? "";
+
+    if (!orderId) {
       setScreen("error");
       setErrorMsg("결제 세션 정보가 없어요. 처음부터 다시 시도해 주세요.");
       return;
     }
-    const orderId = pending.orderId;
 
     const startedAt = Date.now();
 
@@ -105,11 +121,16 @@ function SuccessBody() {
         if (res.status === "DONE") {
           setPaymentStatus(res);
           // 결제 완료 직후 이메일 재확인 모달 노출 → 확정 후 intro_play 진입
-          let initialEmail = "";
-          try {
-            const raw = sessionStorage.getItem("checkoutPending");
-            if (raw) initialEmail = (JSON.parse(raw) as PendingCheckout)?.email ?? "";
-          } catch {}
+          // 서버 저장 이메일이 정본 (storage 유실 케이스에서도 프리필 보장).
+          let initialEmail = res.customerEmail ?? "";
+          if (!initialEmail) {
+            try {
+              const raw =
+                sessionStorage.getItem("checkoutPending") ??
+                localStorage.getItem("checkoutPending");
+              if (raw) initialEmail = (JSON.parse(raw) as PendingCheckout)?.email ?? "";
+            } catch {}
+          }
           setPendingEmail(initialEmail);
           setEmailModalOpen(true);
           return;
@@ -154,26 +175,30 @@ function SuccessBody() {
       character_id: paymentStatus.character,
     });
     try { sessionStorage.removeItem("checkoutPending"); } catch {}
+    try { localStorage.removeItem("checkoutPending"); } catch {}
     router.replace(`/saju/paid/${encodeURIComponent(paymentStatus.orderId)}/loading`);
   };
 
-  // 이메일 확인 모달 콜백 — 입력 이메일이 기존과 다르면 BE update, 같으면 즉시 인트로 진입
+  // 이메일 확인 모달 콜백 — 2026-06-05 확정-후-발송 설계:
+  // 결과지 메일은 이 "확정" 호출이 트리거 (변경 없어도 항상 호출 — 서버가
+  // email_confirmed_at 기록 + 확정 주소로 1통 발송). 확정 없이 이탈하면
+  // 서버 스위퍼가 grace 후 폴백 발송. 오타 주소 선발송/2통 문제 차단.
   const handleEmailConfirm = async (confirmedEmail: string) => {
     if (!paymentStatus) return;
-    if (confirmedEmail !== pendingEmail) {
-      try {
-        await api.post("/api/payments/update-email", {
-          orderId: paymentStatus.orderId,
-          newEmail: confirmedEmail,
-        });
+    try {
+      await api.post("/api/payments/update-email", {
+        orderId: paymentStatus.orderId,
+        newEmail: confirmedEmail,
+      });
+      if (confirmedEmail !== pendingEmail) {
         trackEvent("paid_email_updated", {
           order_id: paymentStatus.orderId,
           character_id: paymentStatus.character,
         });
-      } catch (err) {
-        // 실패해도 인트로 진입 차단은 X — 사용자 경험 우선. 로깅만.
-        console.error("[update-email] failed", err);
       }
+    } catch (err) {
+      // 실패해도 인트로 진입 차단은 X — 스위퍼가 폴백 발송. 로깅만.
+      console.error("[confirm-email] failed", err);
     }
     setEmailModalOpen(false);
     setScreen("intro_play");
@@ -191,9 +216,11 @@ function SuccessBody() {
     <main className="flex min-h-[100dvh] flex-1 flex-col items-center justify-center gap-6 bg-white px-6 py-10 text-neutral-900">
       {screen === "polling" && (
         <>
+          {/* 2026-06-05: "결제 결과 확인 중"은 결제 실패 불안을 유발 (QA 피드백) →
+              사주 준비 로딩으로 리프레이밍. 실제로는 webhook DONE 폴링 대기 화면. */}
           <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-neutral-900" aria-hidden />
-          <p className="text-[14px] text-neutral-700">결제 결과 확인 중…</p>
-          <p className="text-[12px] text-neutral-500">잠시만 기다려 주세요.</p>
+          <h1 className="text-lg font-semibold">사주 결과지를 준비하고 있어요</h1>
+          <p className="text-[13px] text-neutral-500">잠시만요 — 준비되는 대로 바로 이어져요.</p>
         </>
       )}
 

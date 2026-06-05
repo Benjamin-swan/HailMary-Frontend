@@ -1,4 +1,5 @@
 import type {
+  OhangJudgment,
   OhangKey,
   OhangStrength,
   PaidChapterP0Doyoon,
@@ -31,6 +32,7 @@ const MOCK_P0: PaidChapterP0Doyoon = {
   ohang_strength: { mok: 50, hwa: 38, to: 15, geum: 48, su: 88 },
   ohang_excess: "su",
   ohang_lack: "to",
+  ohang_judgments: { mok: "발달", hwa: "발달", to: "결핍", geum: "발달", su: "과다" },
   ilgan: "임수(壬水)",
   user_name: "홍길동",
   ilgan_card: {
@@ -38,9 +40,9 @@ const MOCK_P0: PaidChapterP0Doyoon = {
     name_han: "壬水",
     subtitle: "큰 물 / 깊은 바다 유형",
     data_traits: [
-      "깊이감 평균 대비 1.7배",
-      "표현 빈도 평균 대비 0.4배",
-      "감정 회복 속도 1.4배 느림",
+      "깊이감 아주 깊은 편",
+      "표현 빈도 적은 편",
+      "감정 회복 느린 편",
     ],
     love_variables: [
       "장기 관계 유지율 ↑",
@@ -50,7 +52,7 @@ const MOCK_P0: PaidChapterP0Doyoon = {
     main_conflict: "표현 따라잡기 못하는 상대와 매칭 시 충돌.",
   },
   ai_intro:
-    "홍길동님, 데이터 정리 다 끝났어요.\n\n일간은 임수(壬水) — 깊이감과 통찰력이 평균 대비 1.7배인 유형이에요. 매력 변수도 동일 일간 평균보다 높게 측정돼요.\n\n다만 오행 분포에서 수(水) 기운이 과다(상위 15%) 상태고, 토(土) 기운이 부족(하위 12%)으로 측정돼요. 이 두 변수가 연애 영역에서 직접적인 영향을 주거든요. 실제로 동일 패턴 표본의 신규 인연 접촉률이 평균보다 36% 낮게 잡혀요.\n\n다음 장부터 이 변수들을 하나씩 분석해드릴게요. 그냥 따라오시면 돼요.",
+    "홍길동님, 데이터 정리 다 끝났어요.\n\n일간은 임수(壬水) — 깊이감과 통찰력이 남다르게 높은 편인 유형이에요. 사람을 끄는 매력도 같은 일간 가운데 은근히 강한 편이에요.\n\n다만 오행 분포에서 수(水) 기운이 과다(상위 15%) 상태고, 토(土) 기운이 부족(하위 12%)으로 측정돼요. 이 두 변수가 연애 영역에서 직접적인 영향을 주거든요. 실제로 동일 패턴 표본의 신규 인연 접촉률이 평균보다 36% 낮게 잡혀요.\n\n다음 장부터 이 변수들을 하나씩 분석해드릴게요. 그냥 따라오시면 돼요.",
 };
 
 const OHANG_LABELS: Record<OhangKey, { hanja: string; hangul: string }> = {
@@ -128,13 +130,14 @@ export default function DoyoonProloguePage({ data }: DoyoonProloguePageProps) {
         <DoyoonSTitle>5개 변수의 강도 측정값.</DoyoonSTitle>
         <OhangListDoyoon
           strength={d.ohang_strength}
+          judgments={d.ohang_judgments}
           excess={d.ohang_excess}
           lack={d.ohang_lack}
           ilgan={d.ilgan}
           ilganHanjaProp={d.ilgan_card.name_han}
         />
         <DoyoonSBody>
-          오행 5개 변수의 강도예요. 평균 대비 +1.7배 이상은 과다, -0.6배 이하는 부족으로 분류해요.{" "}
+          오행 5개 변수의 강도예요. 다른 기운보다 뚜렷이 높으면 과다, 눈에 띄게 낮으면 부족으로 봐요.{" "}
           <DoyoonVarTag>
             {OHANG_LABELS[d.ohang_excess].hangul}({OHANG_LABELS[d.ohang_excess].hanja})
           </DoyoonVarTag>{" "}
@@ -252,9 +255,9 @@ function PillarBox({
       <span
         style={{
           fontFamily: '"JejuMyeongjo", "Pretendard", serif',
-          fontWeight: 400,
-          fontSize: 11,
-          color: "#9C8A6D",
+          fontWeight: 600,
+          fontSize: 13,
+          color: "#7A6B55",
         }}
       >
         {hangul}
@@ -264,9 +267,10 @@ function PillarBox({
 }
 
 function OhangListDoyoon({
-  strength, excess, lack, ilgan, ilganHanjaProp,
+  strength, judgments, excess, lack, ilgan, ilganHanjaProp,
 }: {
-  strength: OhangStrength; excess: OhangKey; lack: OhangKey;
+  strength: OhangStrength; judgments: Record<OhangKey, OhangJudgment>;
+  excess: OhangKey; lack: OhangKey;
   ilgan: string; ilganHanjaProp?: string;
 }) {
   const Y_TICKS = [100, 75, 50, 25, 0];
@@ -276,8 +280,16 @@ function OhangListDoyoon({
   const Y_LABEL_W = 32;
 
   const ratios = OHANG_ORDER.map((k) => strength[k]);
+  // 막대 높이는 무료 WuxingChartSection과 동일한 상대 스케일링 — 최대 오행이 차트 끝까지 차오름.
+  // (구 F-002의 절대 denom=100은 과다여도 막대가 절반에 머물러 어색 → 2026-06-05 무료 기준 통일 결정.
+  //  데이터 자체는 무료와 동일한 vars_["OHANG_*"] ratios라 모양까지 무료와 일치.)
   const maxRatio = Math.max(...ratios);
   const denom = maxRatio > 0 ? maxRatio : 1;
+  // 과다·부족 라벨은 단일 대표가 아니라 전체 judgments 기반 (QA F-001: 무료=전체 / 유료=1개 불일치).
+  const excessEls = OHANG_ORDER.filter((k) => judgments[k] === "과다");
+  const lackEls = OHANG_ORDER.filter((k) => judgments[k] === "결핍");
+  const excessShow = excessEls.length > 0 ? excessEls : [excess];
+  const lackShow = lackEls.length > 0 ? lackEls : [lack];
 
   // ilgan = "병화" (한글), ilganHanjaProp = "丙火" (한자, ilgan_card.name_han에서 전달)
   // 백엔드 응답이 한글 + 한자 분리되어 있어 정규식 fallback 불필요. 안전 fallback은 그대로 유지.
@@ -432,26 +444,36 @@ function OhangListDoyoon({
         }}
       >
         <span style={{ fontSize: 16, fontWeight: 400, color: "#7A6B55" }}>
-          <span
-            style={{
-              fontFamily: '"NotoSerifTC", "ChosunNm", serif', fontWeight: 600,
-              fontSize: 18, color: DOYOON_WUXING_HUES[excess],
-            }}
-          >
-            {OHANG_LABELS[excess].hanja}
-          </span>{" "}
+          {excessShow.map((k, i) => (
+            <span key={`ex-${k}`}>
+              {i > 0 && " · "}
+              <span
+                style={{
+                  fontFamily: '"NotoSerifTC", "ChosunNm", serif', fontWeight: 600,
+                  fontSize: 18, color: DOYOON_WUXING_HUES[k],
+                }}
+              >
+                {OHANG_LABELS[k].hanja}
+              </span>
+            </span>
+          ))}{" "}
           과다
         </span>
         <span style={{ fontSize: 16, color: "#7A6B55" }}> · </span>
         <span style={{ fontSize: 16, fontWeight: 400, color: "#7A6B55" }}>
-          <span
-            style={{
-              fontFamily: '"NotoSerifTC", "ChosunNm", serif', fontWeight: 600,
-              fontSize: 18, color: DOYOON_WUXING_HUES[lack],
-            }}
-          >
-            {OHANG_LABELS[lack].hanja}
-          </span>{" "}
+          {lackShow.map((k, i) => (
+            <span key={`lk-${k}`}>
+              {i > 0 && " · "}
+              <span
+                style={{
+                  fontFamily: '"NotoSerifTC", "ChosunNm", serif', fontWeight: 600,
+                  fontSize: 18, color: DOYOON_WUXING_HUES[k],
+                }}
+              >
+                {OHANG_LABELS[k].hanja}
+              </span>
+            </span>
+          ))}{" "}
           부족
         </span>
       </div>

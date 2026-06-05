@@ -20,53 +20,53 @@ const MOCK_P3: PaidChapterP3Doyoon = {
     ohang_excess: "수",
     ohang_excess_hanja: "水",
     blockade_pct: "상위 15%",
-    blockade_multiplier: "1.7배",
+    blockade_multiplier: "평소보다 크게",
   },
   ai_blockade:
-    "데이터부터 보여드릴게요. 홍길동님의 사주 구조에서 수(水) 기운이 평균 대비 1.7배로 측정돼요. " +
-    "단순한 강조 수준이 아니라 구조적으로 과다인 상태예요.\n\n" +
-    "이게 새 인연 진입을 차단해요. 같은 기운이 이미 가득 차 있으면 비슷한 결의 사람이 들어올 자리가 없어지거든요. " +
-    "동일 일간 표본에서 수(水) 과다 케이스의 신규 인연 접촉률이 평균 대비 36% 낮아요. 우연이 아니에요.\n\n" +
-    "해법은 단순해요. 비우는 거예요. 사람이든 미련이든 답 안 오는 연락이든 — 하나만 정리해도 " +
-    "새 인연 진입률이 24% 회복돼요. 기존 변수를 줄이는 게 신규 변수를 추가하는 것보다 효율적이에요.",
-  blockade_bubble: "분류 끝났어요. 홍길동님 사주는 수(水) 과다 구조예요.",
+    "먼저 흐름부터 짚어드릴게요. 홍길동님의 사주를 보면 수(水) 기운이 유독 강하게 자리 잡고 있어요. " +
+    "잠깐 강한 정도가 아니라, 전체 균형을 흔들 만큼 깊게 쌓여 있는 상태예요.\n\n" +
+    "이게 새로운 인연이 들어올 자리를 좁혀요. 같은 기운이 이미 가득 차 있으면 비슷한 결의 사람이 들어설 틈이 줄어들거든요. " +
+    "같은 일간을 가진 분들 중에서도 수(水)가 강한 경우엔 새 인연이 쉽게 닿지 않는 흐름이 두드러져요. 우연이 아니에요.\n\n" +
+    "방법은 의외로 단순해요. 비우는 거예요. 사람이든 미련이든 답 안 오는 연락이든 — 하나만 정리해도 " +
+    "새 인연이 들어올 자리가 다시 열려요. 새로 더하기보다 묵은 걸 덜어내는 쪽이 훨씬 가벼워지는 길이에요.",
+  blockade_bubble: "정리해보니 보이네요. 홍길동님 사주는 수(水) 기운이 강한 편이에요.",
   patterns: [
     {
-      keyword: "초기 과진입",
+      keyword: "처음부터 너무 깊이",
       pct: "81%",
-      desc: "첫 30일 내 감정 투입량이 평균 대비 1.8배입니다.",
+      desc: "첫 한 달 동안 마음을 한꺼번에 쏟아붓는 편이에요.",
     },
     {
-      keyword: "중반 무표현",
+      keyword: "중간에 표현이 줄어듦",
       pct: "67%",
-      desc: "감정 투입은 유지되는데 표현 빈도가 47% 떨어집니다.",
+      desc: "마음은 그대로인데 말로 드러내는 게 눈에 띄게 줄어들어요.",
     },
     {
-      keyword: "위기 일괄 폭발",
+      keyword: "쌓였다가 한 번에 터짐",
       pct: "54%",
-      desc: "누적된 감정이 한 번에 표출되는 빈도가 평균 대비 2.1배입니다.",
+      desc: "참아둔 감정이 어느 순간 한꺼번에 쏟아져 나오곤 해요.",
     },
   ],
   ai_pattern:
-    "홍길동님의 반복 실수 패턴을 3단계로 나눠봤어요.\n\n" +
-    "1단계 — 초기 과진입 (발생률 81%). 첫 한 달 안에 감정 자원의 70% 이상을 투입하는 패턴이에요. 평균 케이스의 1.9배 속도예요.\n\n" +
-    "2단계 — 중반 무표현 (발생률 67%). 표현 빈도가 초반 대비 60% 이상 떨어지는 구간이에요. " +
-    "3단계 — 위기 일괄 폭발 (발생률 54%). 누적된 감정이 한꺼번에 출력되는 구간이에요.\n\n" +
-    "임수 일간 특유의 패턴이에요. 다음 관계에서 1단계 속도만 평균선까지 늦추셔도 전체 안정성이 41% 올라가요.",
-  pattern_bubble: "사람은 바뀌어도 패턴은 안 바뀌어요. 그래서 데이터가 의미가 있는 거예요.",
+    "홍길동님이 연애에서 되풀이하는 흐름을 3단계로 나눠봤어요.\n\n" +
+    "1단계 — 처음부터 너무 깊이 (자주 나타남 81%). 첫 한 달 안에 마음을 거의 다 쏟아붓는 흐름이에요. 다른 분들보다 속도가 빠른 편이에요.\n\n" +
+    "2단계 — 중간에 표현이 줄어듦 (자주 나타남 67%). 처음만큼 마음을 드러내지 않게 되는 구간이에요. " +
+    "3단계 — 쌓였다가 한 번에 터짐 (자주 나타남 54%). 참아둔 감정이 한꺼번에 쏟아져 나오는 구간이에요.\n\n" +
+    "임수 일간이 흔히 보이는 흐름이에요. 다음 관계에서 1단계 속도만 조금 늦춰도 관계가 한결 안정적으로 흘러가요.",
+  pattern_bubble: "사람은 바뀌어도 패턴은 잘 안 바뀌어요. 그래서 한 번 짚어두는 게 의미가 있어요.",
   strategies: [
     {
-      keyword: "표현 빈도 상한선 설정",
-      desc: "주 단위 표현 횟수에 상한·하한 명시. 데이터상 이 한 가지만 적용해도 폭발 빈도가 47% 감소해요.",
+      keyword: "마음 표현 속도 조절하기",
+      desc: "한 주에 표현하는 정도를 미리 정해두기. 이 한 가지만 지켜도 한꺼번에 터지는 일이 눈에 띄게 줄어요.",
       effect_pct: "47%",
     },
     {
-      keyword: "감정 일지 24시간 룰",
-      desc: "감정 발생 직후가 아니라 24시간 후에 표현. 충동 표현 비율이 평균 38% 감소합니다.",
+      keyword: "감정 하루 묵혔다 말하기",
+      desc: "마음이 일렁인 직후 말고, 하루 지난 뒤에 표현해보기. 충동적으로 쏟아내는 일이 한결 줄어들어요.",
       effect_pct: "38%",
     },
   ],
-  strategy_bubble: "지금 이걸 읽고 계신다는 것 자체가 이미 다음 연애가 달라진다는 신호예요.",
+  strategy_bubble: "지금 이 글을 읽고 계신다는 것 자체가 이미 다음 연애가 달라진다는 신호예요.",
   sd_avatar_asset: "dy_10",
 };
 
@@ -83,13 +83,13 @@ export default function DoyoonBlockingPart1Page({ data }: DoyoonBlockingPart1Pag
         ch="2"
         hanja="二"
         title="연애를 막는 것 (1/2)"
-        sub="구조적 원인 · 반복 패턴 · 비호환 유형"
+        sub="막히는 이유 · 되풀이되는 흐름 · 바꿀 수 있는 습관"
       />
 
       {/* ── 2-1 구조적 원인 분석 ── */}
       <DoyoonSection>
-        <DoyoonSLabel>2-1 구조적 원인 분석</DoyoonSLabel>
-        <DoyoonSTitle>방해 강도 측정 — {d.blockade.blockade_pct}.</DoyoonSTitle>
+        <DoyoonSLabel>2-1 막히는 이유 들여다보기</DoyoonSLabel>
+        <DoyoonSTitle>지금 어디가 막혀 있는지 짚어드릴게요.</DoyoonSTitle>
 
         <BlockadeBigCardDoyoon
           blockade={d.blockade}
@@ -102,8 +102,8 @@ export default function DoyoonBlockingPart1Page({ data }: DoyoonBlockingPart1Pag
 
       {/* ── 2-2 반복 실수 패턴 분석 ── */}
       <DoyoonSection>
-        <DoyoonSLabel>2-2 반복 실수 패턴 분석</DoyoonSLabel>
-        <DoyoonSTitle>발생 빈도 상위 3개 패턴.</DoyoonSTitle>
+        <DoyoonSLabel>2-2 되풀이되는 실수 살펴보기</DoyoonSLabel>
+        <DoyoonSTitle>자주 나타나는 연애 패턴 탑3.</DoyoonSTitle>
 
         <CardsGridDoyoon>
           {d.patterns.map((p, i) => (
@@ -124,8 +124,8 @@ export default function DoyoonBlockingPart1Page({ data }: DoyoonBlockingPart1Pag
 
       {/* ── 2-2-1 변수 통제 가능합니다 ── */}
       <DoyoonSection>
-        <DoyoonSLabel>2-2-1 변수 통제 가능합니다</DoyoonSLabel>
-        <DoyoonSTitle>실행 가능한 통제 전략 2개.</DoyoonSTitle>
+        <DoyoonSLabel>2-2-1 충분히 바꿀 수 있어요</DoyoonSLabel>
+        <DoyoonSTitle>바로 해볼 수 있는 방법 2가지.</DoyoonSTitle>
 
         <SdSpotlightDoyoon asset={d.sd_avatar_asset} />
 
@@ -181,19 +181,19 @@ function BlockadeBigCardDoyoon({
         className="text-[12px] font-semibold mb-2 uppercase"
         style={{ color: DOYOON_TOKENS.pink, letterSpacing: "0.05em" }}
       >
-        변수 진단 · 방해 강도 {blockade.blockade_pct}
+        기운 진단 · 막힌 정도
       </div>
       <div
         className="text-[16px] font-bold leading-[1.4] mb-2"
         style={{ color: "#7a2f4f", wordBreak: "keep-all" }}
       >
-        {blockade.ohang_excess}({blockade.ohang_excess_hanja}) 과다 구조
+        {blockade.ohang_excess}({blockade.ohang_excess_hanja}) 기운이 너무 강해요
       </div>
       <div
         className="text-[13px] leading-[1.65]"
         style={{ color: "rgba(122,47,79,0.85)", wordBreak: "keep-all" }}
       >
-        동일 일간 표본 대비 이 변수의 누적 강도가 평균 대비 {blockade.blockade_multiplier}로 측정됩니다.
+        같은 일간을 가진 분들과 비교해도 이 기운이 유독 강하게 쌓여 있어요.
       </div>
     </div>
   );
@@ -218,7 +218,7 @@ function PatternCardDoyoon({
         className="text-[12px] font-semibold mb-2 uppercase"
         style={{ color: DOYOON_TOKENS.pink, letterSpacing: "0.05em" }}
       >
-        패턴 {index} · 빈도 {pct}
+        패턴 {index} · 자주 나타남 {pct}
       </div>
       <div
         className="text-[14px] font-bold leading-[1.4] mb-1.5"
@@ -254,7 +254,7 @@ function ControlStrategyCardDoyoon({
         className="text-[12px] font-semibold mb-2 uppercase"
         style={{ color: "#3a8068", letterSpacing: "0.05em" }}
       >
-        통제 전략 {index}
+        해볼 만한 방법 {index}
       </div>
       <div
         className="text-[14px] font-bold leading-[1.4] mb-1.5"

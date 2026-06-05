@@ -52,7 +52,7 @@ export function PaidStoryCut({
     >
       <div
         className="relative w-full"
-        style={{ aspectRatio: `${IMG_W} / ${IMG_H + extra}` }}
+        style={{ aspectRatio: `${IMG_W} / ${IMG_H + extra}`, containerType: "inline-size" }}
       >
         <div className="absolute inset-0 overflow-hidden rounded-[60px] bg-[#0a0a09]">
           <div
@@ -103,6 +103,7 @@ export function PaidStoryCut({
             paddingX={paddingX ?? 28}
             radius={radius}
             tailPosition="bottom"
+            fluidBaseWidth={430}
             {...(textSize !== undefined && { textSize })}
             {...(lineHeight !== undefined && { lineHeight })}
           >

@@ -7,12 +7,14 @@ import { trackEvent } from "@/shared/utils/analytics";
 type Props = {
   step: SurveyTextStep;
   onNext: (text: string) => void;
+  onBack?: () => void;
+  initialText?: string;
   buttonLabel?: string;
   characterId?: string;
 };
 
-export default function SurveyFreeText({ step, onNext, buttonLabel = "도윤에게 알려주기 →", characterId }: Props) {
-  const [text, setText] = useState("");
+export default function SurveyFreeText({ step, onNext, onBack, initialText, buttonLabel = "도윤에게 알려주기 →", characterId }: Props) {
+  const [text, setText] = useState(initialText ?? "");
 
   useEffect(() => {
     const SENT_KEY = `hm_survey_step_view_sent_${characterId ?? "unknown"}_3`;
@@ -47,6 +49,16 @@ export default function SurveyFreeText({ step, onNext, buttonLabel = "도윤에�
       />
 
       <div className="relative flex flex-1 flex-col px-6 pb-8 pt-14">
+        {onBack && (
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onBack(); }}
+            className="absolute left-5 top-5 z-10 flex items-center gap-1 text-[14px] tracking-[0.05em]"
+            style={{ color: "#998f82" }}
+          >
+            ← 이전
+          </button>
+        )}
         <div>
           <p className="mt-2 text-[14px] tracking-[0.1em]" style={{ color: "#998f82" }}>
             {step.pageLabel}

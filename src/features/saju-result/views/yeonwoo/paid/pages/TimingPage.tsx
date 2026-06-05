@@ -84,14 +84,17 @@ export default function TimingPage({ data }: { data?: TimingData }) {
           <span
             aria-hidden
             className="absolute -top-2 -left-2 w-10 h-10 bg-no-repeat bg-contain pointer-events-none opacity-60"
-            style={{ backgroundImage: "url(/yeonwoo/thread/thread_corner.png)" }}
+            style={{
+              backgroundImage: "url(/yeonwoo/thread/thread_corner.png)",
+              transform: "rotate(-90deg)",
+            }}
           />
           <span
             aria-hidden
             className="absolute -bottom-2 -right-2 w-10 h-10 bg-no-repeat bg-contain pointer-events-none opacity-60"
             style={{
               backgroundImage: "url(/yeonwoo/thread/thread_corner.png)",
-              transform: "scale(-1,-1)",
+              transform: "scale(-1,-1) rotate(-90deg)",
             }}
           />
           <div className="relative w-full max-w-[260px] aspect-square">
@@ -109,7 +112,9 @@ export default function TimingPage({ data }: { data?: TimingData }) {
 
         {/* 두루마리 + 12 row 타임라인 */}
         <Scroll>
-          <div className="flex flex-col">
+          {/* 두루마리 본문 글자=폭 비례(cqw). PC(>=~400) 14px 상한, 모바일 비례 축소.
+              내부 치수(아이콘/간격/패딩)는 모두 em이라 글자와 함께 스케일. */}
+          <div className="flex flex-col" style={{ fontSize: "min(14px, 4.9cqw)" }}>
             {p.months.map((m, i) => (
               <TimelineRow
                 key={m.label}
@@ -176,6 +181,7 @@ function Scroll({ children }: { children: React.ReactNode }) {
           color: "#3a2a14",
           minHeight: "100px",
           zIndex: 1,
+          containerType: "inline-size",
         }}
       >
         {/* 좌측 세로 thread_straight 라인 (opacity 0.5) */}
@@ -245,10 +251,10 @@ function TimelineRow({ row, isLast }: { row: MonthRow; isLast: boolean }) {
       className="relative"
       style={{
         borderBottom: isLast ? "none" : "0.5px solid rgba(60,40,20,0.10)",
-        padding: isPeak ? "8px 6px" : "8px 0",
+        padding: isPeak ? "0.571em 0.429em" : "0.571em 0",
         background: isPeak ? "rgba(212,83,126,0.10)" : "transparent",
-        borderRadius: isPeak ? "8px" : 0,
-        margin: isPeak ? "4px -4px" : 0,
+        borderRadius: isPeak ? "0.571em" : 0,
+        margin: isPeak ? "0.286em 0" : 0,
         boxShadow: isPeak ? "inset 0 0 24px rgba(212,83,126,0.10)" : "none",
       }}
     >
@@ -259,9 +265,9 @@ function TimelineRow({ row, isLast }: { row: MonthRow; isLast: boolean }) {
           className="absolute pointer-events-none"
           style={{
             top: "50%",
-            right: "-2px",
-            width: "36px",
-            height: "36px",
+            right: "0",
+            width: "2.571em",
+            height: "2.571em",
             transform: "translateY(-50%)",
             backgroundImage: "url(/yeonwoo/decoration/decoration_petals.svg)",
             backgroundSize: "contain",
@@ -274,7 +280,7 @@ function TimelineRow({ row, isLast }: { row: MonthRow; isLast: boolean }) {
 
       <div
         className="flex items-center"
-        style={{ gap: "8px", flexWrap: "nowrap" }}
+        style={{ gap: "0.571em", flexWrap: "nowrap" }}
       >
         {/* 피크 좌측 candle_peak (36×62) */}
         {isPeak && (
@@ -282,8 +288,8 @@ function TimelineRow({ row, isLast }: { row: MonthRow; isLast: boolean }) {
             aria-hidden
             className="inline-block flex-shrink-0"
             style={{
-              width: "36px",
-              height: "62px",
+              width: "2.571em",
+              height: "4.429em",
               backgroundImage: "url(/yeonwoo/candle/candle_peak.svg)",
               backgroundSize: "contain",
               backgroundPosition: "center bottom",
@@ -297,7 +303,7 @@ function TimelineRow({ row, isLast }: { row: MonthRow; isLast: boolean }) {
         <span
           className="flex-shrink-0"
           style={{
-            fontSize: "14px",
+            fontSize: "1em",
             color: labelColor,
             fontWeight: labelWeight,
             whiteSpace: "nowrap",
@@ -309,7 +315,7 @@ function TimelineRow({ row, isLast }: { row: MonthRow; isLast: boolean }) {
         {/* hearts ♥ × 5 */}
         <span
           className="flex-shrink-0"
-          style={{ fontSize: "14px", whiteSpace: "nowrap" }}
+          style={{ fontSize: "1em", whiteSpace: "nowrap" }}
         >
           {Array.from({ length: 5 }).map((_, i) => (
             <span
@@ -328,8 +334,8 @@ function TimelineRow({ row, isLast }: { row: MonthRow; isLast: boolean }) {
           aria-hidden
           className="inline-block flex-shrink-0"
           style={{
-            width: `${knotSize}px`,
-            height: `${knotSize}px`,
+            width: `${(knotSize / 14).toFixed(3)}em`,
+            height: `${(knotSize / 14).toFixed(3)}em`,
             marginLeft: "auto",
             backgroundImage: `url(/yeonwoo/thread/thread_knot_${row.knot}.svg)`,
             backgroundSize: "contain",
@@ -346,7 +352,7 @@ function TimelineRow({ row, isLast }: { row: MonthRow; isLast: boolean }) {
         <span
           className="flex-shrink-0"
           style={{
-            fontSize: "13px",
+            fontSize: "0.929em",
             color: stateColor,
             fontWeight: isPeak ? 600 : 400,
           }}
@@ -359,11 +365,11 @@ function TimelineRow({ row, isLast }: { row: MonthRow; isLast: boolean }) {
       <p
         className="mt-1"
         style={{
-          fontSize: "12px",
+          fontSize: "0.857em",
           color: descColor,
           lineHeight: 1.7,
-          marginTop: "3px",
-          padding: "2px 0",
+          marginTop: "0.214em",
+          padding: "0.143em 0",
           wordBreak: "keep-all",
         }}
       >

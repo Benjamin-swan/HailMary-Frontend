@@ -2,7 +2,6 @@
 
 import {
   Children,
-  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -75,10 +74,14 @@ export default function PaidShell({
     return () => ro.disconnect();
   }, [nav.currentIdx]);
 
-  // 페이지 전환 시 상단으로 스크롤
-  useEffect(() => {
+  // 페이지 전환 시 상단으로 스크롤 — 인스턴트(2-인자) 고정.
+  // behavior:"smooth"는 iOS Safari 15.4 미만에서 옵션 객체가 무시되고,
+  // 지원 기종에서도 wrap 높이 transition(.35s)과 겹치면 스크롤이 취소돼
+  // "다음 페이지가 맨 아래에서 시작"하는 버그가 있었음 (QA F-009, 2026-06-05).
+  // useLayoutEffect: paint 전에 적용돼 하단 잔상 깜빡임 없음.
+  useLayoutEffect(() => {
     if (typeof window === "undefined") return;
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo(0, 0);
   }, [nav.currentIdx]);
 
   const nextLabel = nav.isLast ? config.lastNavLabel : config.nextNavLabel;

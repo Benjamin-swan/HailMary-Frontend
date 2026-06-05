@@ -26,14 +26,14 @@ const MOCK_P5: PaidChapterP5Doyoon = {
   ],
   strength_axis_1: "존재감",
   strength_axis_2: "깊이감",
-  strength_multiplier: "1.7배",
+  strength_multiplier: "두드러지게",
   ai_charm_index:
     "상위 8%예요. 이거 그냥 숫자가 아니에요.\n\n" +
-    "6개 축 중에서 강점이 두 개예요. 존재감과 깊이감 — 둘 다 평균의 1.7배예요. " +
-    "동일 일간 표본에서도 이 두 축에서 이만큼 나오는 분이 흔하지 않아요. " +
-    "나머지 4개 축(매력살·목소리·분위기·눈빛)은 평균~약상위 구간이에요. 약점이 있는 게 아니라, 강점이 두드러지는 구조예요.\n\n" +
-    "다만 사실 홍길동님은 이걸 아직 제대로 안 쓰고 있어요. " +
-    "무의식적으로 발현될 때랑 의식적으로 쓸 때 차이가 2.4배예요. 잠재력이 이 정도면, 조금만 의식해도 주변 반응이 꽤 달라질 거예요.",
+    "여섯 가지 매력 중에서 특히 빛나는 게 두 가지예요. 존재감과 깊이감 — 둘 다 또래 분들 사이에서도 유난히 두드러져요. " +
+    "같은 일간을 가진 분들 중에서도 이 두 가지가 이만큼 살아 있는 분은 흔하지 않아요. " +
+    "나머지 매력들(매력살·목소리·분위기·눈빛)도 평균은 충분히 넘고요. 약한 데가 있는 게 아니라, 강한 데가 또렷한 분이에요.\n\n" +
+    "다만 홍길동님은 이걸 아직 제대로 안 쓰고 있어요. " +
+    "평소 무심코 새어 나올 때보다 마음먹고 보여줄 때 훨씬 더 환하게 살아나거든요. 이 정도 매력이면, 조금만 의식해도 주변 반응이 꽤 달라질 거예요.",
   sd_avatar_asset: "dy_06",
   charm_bubble: "이거 그냥 놔두기엔 좀 아깝지 않아요?",
   conversion_steps: [
@@ -43,11 +43,11 @@ const MOCK_P5: PaidChapterP5Doyoon = {
     { label: "끌림", pct: 88 },
   ],
   ai_conversion:
-    "첫 인상 30%에서 시작해서 끌림 88%까지 올라가는 구조예요. 4단계 전환율(다음 단계로 넘어가는 비율)이에요.\n\n" +
-    "근데 재미있는 건, 홍길동님은 두 번째 만남에서 전환율이 평균의 1.4배로 뛰어요. " +
+    "첫인상 30%에서 시작해서 끌림 88%까지 이어지는 흐름이에요. 처음 만난 순간부터 마음이 가까워지기까지 네 단계로 천천히 올라가요.\n\n" +
+    "근데 재미있는 건, 홍길동님은 두 번째 만남에서 호감이 부쩍 깊어진다는 거예요. " +
     "즉 한 번 만나고 끝내면 진짜 매력의 절반도 못 보여주는 거예요. " +
-    "첫 만남에서 끝내는 분과 두 번째까지 가는 분의 최종 호감도 차이가 38%p 벌어져요.\n\n" +
-    "첫 만남에서 두 번째 약속을 자연스럽게 만들어두세요. 그게 홍길동님한테 가장 효율적인 전략이에요.",
+    "첫 만남에서 멈춘 사람과 두 번째까지 이어간 사람의 호감 차이가 눈에 띄게 벌어지거든요.\n\n" +
+    "첫 만남에서 두 번째 약속을 자연스럽게 만들어두세요. 홍길동님한테는 그게 가장 잘 맞는 방법이에요.",
   appeal_meters: [
     { name: "존재감", value: 92 },
     { name: "깊이감", value: 85 },
@@ -55,10 +55,10 @@ const MOCK_P5: PaidChapterP5Doyoon = {
     { name: "반응 속도", value: 71 },
   ],
   ai_appeal:
-    "4개 변수 점수 정리해드릴게요.\n\n" +
-    "존재감 92, 깊이감 85, 표현 일관성 64, 반응 속도 71. 강점 두 개와 약점 두 개가 명확해요.\n\n" +
-    "표현 일관성과 반응 속도가 약점이에요. 이게 홍길동님이 통제하기 가장 쉬운 영역이기도 해요. " +
-    "두 변수만 끌어올리면 전체 호감 유발 효율이 26% 상승해요. 강점 보완보다 약점 보완이 효율이 높아요.",
+    "당신의 매력을 이루는 네 가지 모습을 짚어드릴게요.\n\n" +
+    "존재감 92, 깊이감 85, 표현 일관성 64, 반응 속도 71. 특히 빛나는 두 가지와 아직 덜 드러난 두 가지가 또렷해요.\n\n" +
+    "표현 일관성과 반응 속도가 아직 덜 드러난 쪽이에요. 그런데 이건 홍길동님이 마음만 먹으면 가장 쉽게 챙길 수 있는 부분이기도 해요. " +
+    "이 두 가지를 조금만 살리면 호감이 한결 또렷하게 전해져요. 이미 강한 데를 더 키우기보다, 덜 드러난 데를 살피는 쪽이 훨씬 빠르게 와닿아요.",
 };
 
 
@@ -73,16 +73,16 @@ export default function DoyoonCharmPage({ data }: DoyoonCharmPageProps) {
       <DoyoonPageHead
         ch="3"
         hanja="三"
-        title="나의 매력 분석"
-        sub="매력 지수 · 호감 패턴"
+        title="나의 매력 이야기"
+        sub="끌리는 매력 · 호감이 피어나는 흐름"
       />
 
       {/* ── 3-1 매력 지수 ── */}
       <DoyoonSection>
-        <DoyoonSLabel>3-1 나의 매력 지수</DoyoonSLabel>
+        <DoyoonSLabel>3-1 당신에게서 가장 먼저 느껴지는 매력</DoyoonSLabel>
         <ChargmPctBadgeDoyoon pct={d.charm_pct} />
         <DoyoonSTitle>
-          6개 축 측정 — {d.strength_axis_1}과 {d.strength_axis_2}이 평균 대비 {d.strength_multiplier}.
+          여섯 가지 매력 중 {d.strength_axis_1}과 {d.strength_axis_2}이 평균보다 {d.strength_multiplier} 살아 있어요.
         </DoyoonSTitle>
 
         <RadarChartDoyoon axes={d.radar} />
@@ -98,8 +98,8 @@ export default function DoyoonCharmPage({ data }: DoyoonCharmPageProps) {
 
       {/* ── 3-2 끌림 메커니즘 ── */}
       <DoyoonSection>
-        <DoyoonSLabel>3-2 이성이 끌리는 심리적 메커니즘</DoyoonSLabel>
-        <DoyoonSTitle>전환율 — 첫 인상에서 끌림까지 4단계.</DoyoonSTitle>
+        <DoyoonSLabel>3-2 상대가 당신에게 끌리게 되는 마음의 흐름</DoyoonSLabel>
+        <DoyoonSTitle>첫인상에서 끌림까지, 마음이 가까워지는 네 단계예요.</DoyoonSTitle>
 
         <FlowStepsDoyoon steps={d.conversion_steps} />
 
@@ -108,8 +108,8 @@ export default function DoyoonCharmPage({ data }: DoyoonCharmPageProps) {
 
       {/* ── 3-3 호감 유발 패턴 ── */}
       <DoyoonSection>
-        <DoyoonSLabel>3-3 호감 유발 패턴 분석</DoyoonSLabel>
-        <DoyoonSTitle>핵심 4개 변수 점수 측정.</DoyoonSTitle>
+        <DoyoonSLabel>3-3 상대에게 호감을 불러일으키는 모습</DoyoonSLabel>
+        <DoyoonSTitle>당신의 매력을 이루는 네 가지 모습이에요.</DoyoonSTitle>
 
         <div className="my-3 space-y-2">
           {d.appeal_meters.map((m) => (
@@ -139,7 +139,7 @@ function ChargmPctBadgeDoyoon({ pct }: { pct: string }) {
           letterSpacing: "0.03em",
         }}
       >
-        전체 매력 지수 {pct}
+        매력이 빛나는 정도 {pct}
       </span>
     </div>
   );
@@ -214,7 +214,7 @@ function RadarChartDoyoon({ axes }: { axes: ReadonlyArray<{ name: string; value:
         })}
       </svg>
       <p className="text-[12px] text-center mt-2" style={{ color: DOYOON_TOKENS.textMeta }}>
-        {axes[0].name}·{axes[3].name} 평균 대비 강점
+        {axes[0].name}·{axes[3].name}이 특히 돋보여요
       </p>
     </div>
   );

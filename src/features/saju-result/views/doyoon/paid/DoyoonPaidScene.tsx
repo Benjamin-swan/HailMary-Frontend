@@ -46,7 +46,12 @@ export default function DoyoonPaidScene({ report }: DoyoonPaidSceneProps) {
         <DoyoonOptimizationPage data={report.chapters.p9_doyoon} />
         <DoyoonLetterPage
           data={report.chapters.p10}
-          userName={report.user?.user_nickname ?? report.user?.user_name_initial}
+          // 편지 헤더/부제는 마스킹 아닌 실제 호명명 사용 (QA F-062). 챕터에 없으면 마스킹 fallback.
+          userName={
+            report.chapters.p10?.user_name ||
+            report.user?.user_nickname ||
+            report.user?.user_name_initial
+          }
         />
         <DoyoonEpiloguePage
           data={report.chapters.p11_doyoon}

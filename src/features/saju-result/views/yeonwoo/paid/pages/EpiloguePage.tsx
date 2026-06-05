@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { trackEvent } from "@/shared/utils/analytics";
 import PageHead from "../components/PageHead";
 import { Sec } from "../components/Section";
 
@@ -33,6 +34,10 @@ export default function EpiloguePage() {
   const handleClosingCta = () => {
     // dev/full 등 orderId가 없는 환경에서는 placeholder로 fallback
     const orderId = extractOrderIdFromUrl() || "test-order-id";
+    trackEvent("paidclosing_enter_click", {
+      character_id: "yeonwoo",
+      order_id: orderId,
+    });
     router.push(`/saju/paid/${encodeURIComponent(orderId)}/closing`);
   };
   return (
@@ -53,17 +58,21 @@ export default function EpiloguePage() {
       <Sec>
         {/* SD yw_cg_c (sz-240) + thread_corner 외곽 wrapper (size-frame 110px) */}
         <div className="relative my-4 flex justify-center">
+          {/* 모서리 실 장식 방향 보정 (2026-06-05 QA 2차): 좌상 270°, 우하 90°. */}
           <span
             aria-hidden
             className="absolute -top-3 -left-3 w-[60px] h-[60px] bg-no-repeat bg-contain pointer-events-none opacity-65 z-10"
-            style={{ backgroundImage: "url(/yeonwoo/thread/thread_corner.png)" }}
+            style={{
+              backgroundImage: "url(/yeonwoo/thread/thread_corner.png)",
+              transform: "rotate(270deg)",
+            }}
           />
           <span
             aria-hidden
             className="absolute -bottom-3 -right-3 w-[60px] h-[60px] bg-no-repeat bg-contain pointer-events-none opacity-65 z-10"
             style={{
               backgroundImage: "url(/yeonwoo/thread/thread_corner.png)",
-              transform: "scale(-1,-1)",
+              transform: "rotate(90deg)",
             }}
           />
           <div className="relative w-[240px] h-[240px]">

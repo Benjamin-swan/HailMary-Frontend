@@ -5,7 +5,6 @@ import {
   Sec,
   SectionLabel,
   SectionTitle,
-  SectionBody,
   VarTag,
   YeonwooBubble,
 } from "../components/Section";
@@ -142,7 +141,8 @@ export default function PracticePage({ data }: { data?: PracticeData }) {
           ))}
         </CardsGrid>
 
-        <SectionBody>{p.charm_practice_body}</SectionBody>
+        {/* charm_practice_body는 ai_charm 단락2와 동일 텍스트라 미표기 (중복 출력 버그, 2026-06-05).
+            백엔드 필드는 유지 — 렌더만 생략. */}
 
         <AiBlock text={p.ai_charm} />
 

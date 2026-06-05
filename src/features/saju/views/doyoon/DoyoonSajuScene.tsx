@@ -36,7 +36,7 @@ function getBg(c: Cut): string | null {
 export default function DoyoonSajuScene() {
   const router = useRouter();
   const [pendingNav, setPendingNav] = useState<PendingNav>(null);
-  const { surveyAnswers, setSurveyAnswers, submitInfo, finalizeSurvey } =
+  const { savedInfo, surveyAnswers, setSurveyAnswers, submitInfo, finalizeSurvey } =
     useCharacterSajuFlow({ storageKeyPrefix: "doyoon" });
 
   const {
@@ -196,6 +196,7 @@ export default function DoyoonSajuScene() {
           onSubmit={(info) => { submitInfo(info); goToCut(cutIndex + 1); }}
           buttonLabel="도윤에게 알려주기 →"
           characterId="doyoon"
+          initialValues={savedInfo ?? undefined}
         />
       )}
 
@@ -205,6 +206,8 @@ export default function DoyoonSajuScene() {
           step={1}
           config={SURVEY_STEPS[1]}
           characterId="doyoon"
+          initialSelected={surveyAnswers.step1}
+          onBack={() => goToCut(cutIndex - 1)}
           onAnswer={(answers) => {
             setSurveyAnswers((prev) => ({ ...prev, step1: answers }));
             goToCut(cutIndex + 1);
@@ -218,6 +221,8 @@ export default function DoyoonSajuScene() {
           step={2}
           config={SURVEY_STEPS[2]}
           characterId="doyoon"
+          initialSelected={surveyAnswers.step2}
+          onBack={() => goToCut(cutIndex - 1)}
           onAnswer={(answers) => {
             setSurveyAnswers((prev) => ({ ...prev, step2: answers }));
             goToCut(cutIndex + 1);
@@ -231,6 +236,8 @@ export default function DoyoonSajuScene() {
           step={3}
           config={SURVEY_STEPS[3]}
           characterId="doyoon"
+          initialText={surveyAnswers.step3}
+          onBack={() => goToCut(cutIndex - 1)}
           onAnswer={(text) => {
             finalizeSurvey({ ...surveyAnswers, step3: text });
             goToCut(cutIndex + 1);

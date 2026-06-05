@@ -31,6 +31,9 @@ export type PaidChapterKey =
 
 export type OhangKey = "mok" | "hwa" | "to" | "geum" | "su";
 
+// P-0 "0-2 오행의 흐름" 막대 라벨. 무료 결과와 동일 4단계 판정(백엔드 산출).
+export type OhangJudgment = "결핍" | "적정" | "발달" | "과다";
+
 export interface SajuPillarsP0 {
   si_g: string;
   si_j: string;
@@ -58,6 +61,7 @@ export interface PaidChapterP0 {
   ohang_strength: OhangStrength;
   ohang_excess: OhangKey;
   ohang_lack: OhangKey;
+  ohang_judgments: Record<OhangKey, OhangJudgment>; // 오행별 강약(막대 라벨)
   ilgan: string;
   ilgan_card: IlganCard;
   ai_intro: string;
@@ -81,6 +85,7 @@ export interface PaidChapterP0Doyoon {
   ohang_strength: OhangStrength;      // 연우와 공유
   ohang_excess: OhangKey;
   ohang_lack: OhangKey;
+  ohang_judgments: Record<OhangKey, OhangJudgment>; // 연우와 공유 (막대 라벨)
   ilgan: string;
   user_name: string;
   ilgan_card: DoyoonIlganCard;
@@ -587,6 +592,7 @@ export interface PaidChapterP9 {
 // 박스 1·2·3 통합. 박스 3 답장은 AI 호출 1회 (fill-in-the-middle).
 
 export interface PaidChapterP10 {
+  user_name?: string;          // 호명용(편지 헤더/부제). 마스킹 X — 본문과 동일 호명명 (QA F-062)
   ilju_with_hanja: string;     // "병인(丙寅)"
   box1_body: string;            // 박스 1 (도입 멘트 + step1 부분집합 본문)
   box2_body: string;            // 박스 2 (4단락 합성)

@@ -22,12 +22,23 @@ interface DevBypassResponse {
   orderId: string;
 }
 
-/** staging/local 환경 감지 — prod 도메인이 아니면 결제 패스 버튼 노출. */
+interface ValidateCouponResponse {
+  valid: boolean;
+  message: string;
+}
+
+interface RedeemCouponResponse {
+  orderId: string;
+}
+
+/** 결제 패스 버튼 노출 여부 — localhost 한정 allowlist.
+ *  prod 전환(2026-06-05): 기존 블록리스트(운영 도메인만 차단)는 staging·새 도메인에서
+ *  fail-open이라 폐기. 배포된 모든 도메인에서 숨기고 로컬 개발에서만 노출.
+ *  (BE /api/payments/dev/bypass 는 별도로 APP_ENV != "prod" 게이트 — prod에선 404.) */
 export function isDevBypassEnabled(): boolean {
   if (typeof window === "undefined") return false;
-  const host = window.location.host;
-  if (host === "dohwaseonsaju.com" || host === "www.dohwaseonsaju.com") return false;
-  return true;
+  const host = window.location.hostname;
+  return host === "localhost" || host === "127.0.0.1";
 }
 
 export interface UseCheckoutReturn {
@@ -39,6 +50,11 @@ export interface UseCheckoutReturn {
   coupon: string;
   setCoupon: (v: string) => void;
   handleCouponBlur: () => void;
+  /** 쿠폰 검증 통과 여부 — true면 0원 무료 발급 플로로 전환. */
+  couponApplied: boolean;
+  /** "적용" 결과 안내 문구 (유효/무효). */
+  couponMessage: string | null;
+  couponChecking: boolean;
   agreeDataUsage: boolean;
   handleAgreeDataUsage: (v: boolean) => void;
   agreePayment: boolean;
@@ -47,7 +63,7 @@ export interface UseCheckoutReturn {
   setOpenConsent: (v: ConsentDoc | null) => void;
   handleConsentDetail: (doc: ConsentDoc) => void;
   isProcessing: boolean;
-  applyCoupon: () => void;
+  applyCoupon: () => Promise<void>;
   handleBack: () => void;
   /** 검증 → BE /request → payurl 리다이렉트 (모달 없음, 마찰 최소화). */
   handleSubmit: () => Promise<void>;
@@ -63,13 +79,30 @@ function scrollToField(id: string): void {
   if (el instanceof HTMLElement) el.focus({ preventScroll: true });
 }
 
+// 2026-06-05 prod 실결제 사고: 카드사 인증 복귀가 새 브라우저 컨텍스트로 떨어지면
+// sessionStorage(탭 단위)가 유실돼 success 페이지가 "결제 세션 정보 없음"을 띄웠음.
+// → localStorage에도 백업 (1차 복구는 BE /api/payments/return의 ?order_id= 쿼리).
+function savePendingCheckout(payload: {
+  character: string;
+  orderId: string;
+  amount: number;
+  email: string;
+}): void {
+  const raw = JSON.stringify(payload);
+  try { sessionStorage.setItem("checkoutPending", raw); } catch {}
+  try { localStorage.setItem("checkoutPending", raw); } catch {}
+}
+
 export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
   const router = useRouter();
   const product = PRODUCTS[character];
 
   const [email, setEmailState] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
-  const [coupon, setCoupon] = useState("");
+  const [coupon, setCouponState] = useState("");
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [couponMessage, setCouponMessage] = useState<string | null>(null);
+  const [couponChecking, setCouponChecking] = useState(false);
   const [agreeDataUsage, setAgreeDataUsage] = useState(true);
   const [agreePayment, setAgreePayment] = useState(true);
   const [openConsent, setOpenConsent] = useState<ConsentDoc | null>(null);
@@ -90,6 +123,13 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
     setEmailState(v);
     if (emailError) setEmailError(null);
   }, [emailError]);
+
+  // 코드를 수정하면 적용 상태 해제 — 바뀐 코드로 무료 발급되는 일 방지.
+  const setCoupon = useCallback((v: string) => {
+    setCouponState(v);
+    setCouponApplied(false);
+    setCouponMessage(null);
+  }, []);
 
   const handleEmailBlur = useCallback(() => {
     const trimmed = email.trim();
@@ -150,18 +190,36 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
     router.push(`/saju/result?character=${character}`);
   }, [router, character]);
 
-  const applyCoupon = useCallback(() => {
+  const applyCoupon = useCallback(async () => {
     const code = coupon.trim();
     trackEvent("checkout_coupon_apply_click", {
       character_id: character,
       has_value: code.length > 0,
     });
     if (!code) {
-      alert("쿠폰 코드를 입력해 주세요.");
+      setCouponApplied(false);
+      setCouponMessage("쿠폰 코드를 입력해 주세요.");
       return;
     }
-    alert("쿠폰 적용은 정식 오픈 후 안내드릴게요.");
-  }, [coupon, character]);
+    if (couponChecking) return;
+    setCouponChecking(true);
+    try {
+      const res = await api.post<ValidateCouponResponse>("/api/coupons/validate", {
+        code,
+      });
+      setCouponApplied(res.valid);
+      setCouponMessage(res.message);
+      trackEvent("checkout_coupon_validated", {
+        character_id: character,
+        valid: res.valid,
+      });
+    } catch (err) {
+      setCouponApplied(false);
+      setCouponMessage(err instanceof Error ? err.message : "쿠폰 확인에 실패했어요.");
+    } finally {
+      setCouponChecking(false);
+    }
+  }, [coupon, character, couponChecking]);
 
   /** 결제 버튼 클릭 — 검증 → BE /request → payurl 리다이렉트 (모달 없음). */
   const handleSubmit = useCallback(async () => {
@@ -199,6 +257,38 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
         : null;
     const sessionToken = sajuRequestId;
 
+    // 쿠폰 적용 시: PayApp 대신 무료 발급(redeem) → 결제완료와 동일한 success 폴링 진입.
+    if (couponApplied) {
+      try {
+        const res = await api.post<RedeemCouponResponse>("/api/coupons/redeem", {
+          sessionToken,
+          character,
+          customerEmail: email.trim(),
+          code: coupon.trim(),
+        });
+        savePendingCheckout({
+          character,
+          orderId: res.orderId,
+          amount: 0,
+          email: email.trim(),
+        });
+        trackEvent("coupon_redeemed", {
+          character_id: character,
+          order_id: res.orderId,
+        });
+        router.replace("/checkout/success");
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "쿠폰 사용에 실패했어요.";
+        trackEvent("coupon_redeem_failed", {
+          character_id: character,
+          error_message: message,
+        });
+        alert(`쿠폰 사용에 실패했어요: ${message}`);
+        setIsProcessing(false);
+      }
+      return;
+    }
+
     trackEvent("payment_initiated", {
       character_id: character,
       saju_request_id: sajuRequestId,
@@ -215,17 +305,12 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
         },
       );
 
-      try {
-        sessionStorage.setItem(
-          "checkoutPending",
-          JSON.stringify({
-            character,
-            orderId: res.orderId,
-            amount: product.priceKrw,
-            email: email.trim(),
-          }),
-        );
-      } catch {}
+      savePendingCheckout({
+        character,
+        orderId: res.orderId,
+        amount: product.priceKrw,
+        email: email.trim(),
+      });
 
       window.location.href = res.payurl;
     } catch (err) {
@@ -237,7 +322,17 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
       alert(`결제를 시작하지 못했어요: ${message}`);
       setIsProcessing(false);
     }
-  }, [email, agreeDataUsage, agreePayment, character, product, isProcessing]);
+  }, [
+    email,
+    agreeDataUsage,
+    agreePayment,
+    character,
+    product,
+    isProcessing,
+    couponApplied,
+    coupon,
+    router,
+  ]);
 
   /** 결제 패스 (staging/local 전용) — BE bypass endpoint 호출 → success polling. */
   const devBypassPay = useCallback(async () => {
@@ -261,17 +356,12 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
           customerEmail: email.trim(),
         },
       );
-      try {
-        sessionStorage.setItem(
-          "checkoutPending",
-          JSON.stringify({
-            character,
-            orderId: res.orderId,
-            amount: product.priceKrw,
-            email: email.trim(),
-          }),
-        );
-      } catch {}
+      savePendingCheckout({
+        character,
+        orderId: res.orderId,
+        amount: product.priceKrw,
+        email: email.trim(),
+      });
       trackEvent("payment_dev_bypass", { character_id: character, order_id: res.orderId });
       router.replace("/checkout/success");
     } catch (err) {
@@ -290,6 +380,9 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
     coupon,
     setCoupon,
     handleCouponBlur,
+    couponApplied,
+    couponMessage,
+    couponChecking,
     agreeDataUsage,
     handleAgreeDataUsage,
     agreePayment,

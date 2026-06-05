@@ -16,6 +16,7 @@ export function useCharacterSajuFlow(config: CharacterSajuFlowConfig) {
   const requestIdKey = `${storageKeyPrefix}SajuRequestId`;
   const surveyKey = `${storageKeyPrefix}Survey`;
 
+  const [savedInfo, setSavedInfo] = useState<SajuInfo | null>(null);
   const [userName, setUserName] = useState<string>("");
   const [userGender, setUserGender] = useState<string>("");
   const [userBirthYear, setUserBirthYear] = useState<string>("");
@@ -34,6 +35,9 @@ export function useCharacterSajuFlow(config: CharacterSajuFlowConfig) {
       const raw = localStorage.getItem(infoKey);
       if (!raw) return;
       const info = JSON.parse(raw) as { name?: string; gender?: string; birth?: string; calendar?: string };
+      // 주의: savedInfo는 localStorage에서 복원하지 않는다. (교차 세션 자동 채움 시
+      // 예전 '시간 모름' 선택이 새 진입에도 되살아나 input이 비활성처럼 보이는 혼란 방지)
+      // savedInfo는 이번 세션에서 submitInfo로 제출했을 때만 채워 → '뒤로가기' 복원 전용.
       if (info?.name) setUserName(info.name);
       if (info?.gender) setUserGender(info.gender);
       if (info?.birth) setUserBirthYear(info.birth.slice(0, 4));
@@ -65,6 +69,7 @@ export function useCharacterSajuFlow(config: CharacterSajuFlowConfig) {
       try {
         localStorage.setItem(infoKey, JSON.stringify(info));
       } catch {}
+      setSavedInfo(info);
       setUserGender(info.gender);
       setUserBirthYear(info.birth.slice(0, 4));
       setUserBirthMonth(info.birth.slice(5, 7));
@@ -101,5 +106,5 @@ export function useCharacterSajuFlow(config: CharacterSajuFlowConfig) {
     [surveyKey],
   );
 
-  return { userName, userGender, userBirthYear, userBirthMonth, userCalendar, hasSubmittedInfo, surveyAnswers, setSurveyAnswers, submitInfo, finalizeSurvey, sajuStatus: saju.status };
+  return { savedInfo, userName, userGender, userBirthYear, userBirthMonth, userCalendar, hasSubmittedInfo, surveyAnswers, setSurveyAnswers, submitInfo, finalizeSurvey, sajuStatus: saju.status };
 }

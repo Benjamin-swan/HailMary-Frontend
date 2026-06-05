@@ -36,7 +36,7 @@ function getBg(c: Cut): string | null {
 export default function YeonwooSajuScene() {
   const router = useRouter();
   const [pendingNav, setPendingNav] = useState<PendingNav>(null);
-  const { surveyAnswers, setSurveyAnswers, submitInfo, finalizeSurvey } =
+  const { savedInfo, surveyAnswers, setSurveyAnswers, submitInfo, finalizeSurvey } =
     useCharacterSajuFlow({ storageKeyPrefix: "yeonwoo" });
 
   const {
@@ -187,6 +187,7 @@ export default function YeonwooSajuScene() {
           onSubmit={(info) => { submitInfo(info); goToCut(cutIndex + 1); }}
           buttonLabel="연우에게 알려주기 →"
           characterId="yeonwoo"
+          initialValues={savedInfo ?? undefined}
         />
       )}
 
@@ -196,6 +197,8 @@ export default function YeonwooSajuScene() {
           step={1}
           config={SURVEY_STEPS[1]}
           characterId="yeonwoo"
+          initialSelected={surveyAnswers.step1}
+          onBack={() => goToCut(cutIndex - 1)}
           onAnswer={(answers) => {
             setSurveyAnswers((prev) => ({ ...prev, step1: answers }));
             goToCut(cutIndex + 1);
@@ -209,6 +212,8 @@ export default function YeonwooSajuScene() {
           step={2}
           config={SURVEY_STEPS[2]}
           characterId="yeonwoo"
+          initialSelected={surveyAnswers.step2}
+          onBack={() => goToCut(cutIndex - 1)}
           onAnswer={(answers) => {
             setSurveyAnswers((prev) => ({ ...prev, step2: answers }));
             goToCut(cutIndex + 1);
@@ -223,6 +228,8 @@ export default function YeonwooSajuScene() {
           config={SURVEY_STEPS[3]}
           buttonLabel="연우에게 알려주기 →"
           characterId="yeonwoo"
+          initialText={surveyAnswers.step3}
+          onBack={() => goToCut(cutIndex - 1)}
           onAnswer={(text) => {
             finalizeSurvey({ ...surveyAnswers, step3: text });
             goToCut(cutIndex + 1);

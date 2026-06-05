@@ -20,7 +20,7 @@ export function DoyoonTriggerFlow({ triggers, flowPcts }: DoyoonTriggerFlowProps
       <Arrow />
       <FlowStep label={triggers[2]} pct={flowPcts[2]} />
       <Arrow />
-      <FlowStep label="전부 투입" pct={100} highlight />
+      <FlowStep label="마음이 기욺" pct={100} highlight />
     </div>
   );
 }

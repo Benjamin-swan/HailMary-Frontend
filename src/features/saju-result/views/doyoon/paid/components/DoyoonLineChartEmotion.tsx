@@ -11,7 +11,7 @@ interface EmotionPoint {
 
 interface DoyoonLineChartEmotionProps {
   points: ReadonlyArray<EmotionPoint>;  // 4개
-  caption: string;                       // "위기 구간 감정 강도 평균 대비 1.8배"
+  caption: string;                       // "힘든 시기 감정 출렁임 — 평소보다 훨씬 크게"
 }
 
 // SVG 좌표: 30, 110, 190, 270 (4 step) — viewBox 300x120

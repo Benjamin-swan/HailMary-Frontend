@@ -120,11 +120,11 @@ export default function BlockingPart1Page({ data }: { data?: BlockingPart1Data }
         <SectionLabel qaSectionId="2-2-1">2-2-1 근데 이거 역이용 가능해</SectionLabel>
         <SectionTitle>독을 약으로 바꾸는 법.</SectionTitle>
 
-        {/* SD 슬롯 yw_cg_b (240×240 손바닥 펼침 — 반전·안내) */}
+        {/* SD 슬롯 yw_cg_b (240×240 앉은 포즈 — 반전·안내) */}
         <div className="flex justify-center my-3">
           <div className="relative w-full max-w-[240px] aspect-square">
             <Image
-              src="/yeonwoo/sd_yw/yw_cg_b.png"
+              src="/yeonwoo/sd_yw/yw_cg_b2.png"
               alt="강연우 — 반전 안내"
               fill
               sizes="(max-width: 480px) 70vw, 240px"
@@ -174,7 +174,7 @@ function OpeningCut({
     <div className="relative w-full -mx-1 pt-[20px] pb-[60px] bg-[#0a0a09]">
       <div
         className="relative w-full overflow-hidden rounded-[60px] bg-[#0a0a09]"
-        style={{ aspectRatio: `${IMG_W} / ${IMG_H + extra}` }}
+        style={{ aspectRatio: `${IMG_W} / ${IMG_H + extra}`, containerType: "inline-size" }}
       >
         {/* 사진은 하단 정렬 + 원본 비율 유지 */}
         <div
@@ -200,6 +200,7 @@ function OpeningCut({
             paddingX={28}
             radius={40}
             tailPosition="bottom"
+            fluidBaseWidth={430}
           >
             {text}
           </SpeechBubble>

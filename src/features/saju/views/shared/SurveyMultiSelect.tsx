@@ -7,11 +7,13 @@ import { trackEvent } from "@/shared/utils/analytics";
 type Props = {
   step: SurveyMultiStep;
   onNext: (selected: string[]) => void;
+  onBack?: () => void;
+  initialSelected?: string[];
   characterId?: string;
 };
 
-export default function SurveyMultiSelect({ step, onNext, characterId }: Props) {
-  const [selected, setSelected] = useState<string[]>([]);
+export default function SurveyMultiSelect({ step, onNext, onBack, initialSelected, characterId }: Props) {
+  const [selected, setSelected] = useState<string[]>(initialSelected ?? []);
 
   useEffect(() => {
     const SENT_KEY = `hm_survey_step_view_sent_${characterId ?? "unknown"}_${step.step}`;
@@ -54,6 +56,16 @@ export default function SurveyMultiSelect({ step, onNext, characterId }: Props) 
       />
 
       <div className="relative flex flex-1 flex-col px-6 pb-8 pt-14">
+        {onBack && (
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onBack(); }}
+            className="absolute left-5 top-5 z-10 flex items-center gap-1 text-[14px] tracking-[0.05em]"
+            style={{ color: "#998f82" }}
+          >
+            ← 이전
+          </button>
+        )}
         <div className="text-center">
           <p className="mt-2 text-[14px] tracking-[0.1em]" style={{ color: "#998f82" }}>
             {step.pageLabel}

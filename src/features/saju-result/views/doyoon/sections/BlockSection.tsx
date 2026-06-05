@@ -9,7 +9,10 @@ export default function BlockSection() {
       className="w-full flex items-center justify-center"
       style={{
         background: "#FDF5EA",
-        height: "500px",
+        // 위 CharmCards 루트 paddingBottom(68px, 투명→씬 베이지)을 상쇄해
+        // 텍스트가 합쳐진 베이지 영역 중앙에 오도록 상단을 그만큼 줄임.
+        padding: "24px 0 92px",
+        containerType: "inline-size",
       }}
     >
       <p
@@ -17,27 +20,31 @@ export default function BlockSection() {
           color: TEXT_BLACK,
           textAlign: "center",
           fontFamily: '"Nanum Myeongjo", serif',
-          fontSize: "20px",
+          fontSize: "min(20px, 5cqw)",
           fontWeight: 800,
           lineHeight: 1.66,
           wordBreak: "keep-all",
           whiteSpace: "nowrap",
           padding: "0 8px",
-          transform: "translateY(-30px)",
         }}
       >
-        타고난 구성은 확인했어.
-        <br />
-        그럼 이제 데이터 너머의 이야기를 해보자.
-        <br />
-        <br />
-        <span style={{ color: TEXT_RED }}>네가 가진 가장 강력한 무기</span>는 무엇인지,
-        <br />
-        그리고 네 연애를 가로막는 걸림돌은 무엇인지
-        <br />
-        명확하게 정리해 줄게.
-        <br />
-        자, 집중해 봐.
+        <span style={{ display: "block" }}>
+          기본 사주 데이터는 다 확인했습니다.
+        </span>
+        <span style={{ display: "block", marginTop: "0.9em" }}>
+          이제 그 너머에 어떤 패턴이
+          <br />
+          움직이고 있는지 같이 들여다볼 차례예요.
+        </span>
+        <span style={{ display: "block", marginTop: "1.1em" }}>
+          <span style={{ color: TEXT_RED }}>연애에서 가장 큰 강점으로 작동하는</span>
+          <br />
+          변수가 뭔지, 그리고
+          <br />
+          자주 발목을 잡는 리스크 변수는 뭔지,
+          <br />
+          두 가지를 또렷하게 정리해 드릴게요.
+        </span>
       </p>
     </div>
   );

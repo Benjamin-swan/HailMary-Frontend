@@ -15,12 +15,17 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
-  // ngrok 등 임시 외부 URL로 dev 서버 노출 시 host 헤더 검증 우회.
+  // ngrok 등 임시 외부 URL + LAN IP로 dev 서버 노출 시 host 헤더 검증 우회.
+  // (dev 전용 옵션 — prod static export 빌드에는 영향 없음. 모바일 실기기 테스트용.)
   allowedDevOrigins: [
     "*.ngrok-free.app",
     "*.ngrok.io",
     "*.ngrok.app",
     "*.ngrok.dev",
+    "115.23.185.217",   // 현재 유선 LAN IP (모바일 테스트)
+    "192.168.0.*",      // 와이파이 전환 시 흔한 사설 대역
+    "192.168.1.*",
+    "10.0.0.*",
   ],
 };
 

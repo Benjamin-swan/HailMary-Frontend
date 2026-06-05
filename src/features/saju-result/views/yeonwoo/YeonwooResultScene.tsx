@@ -152,7 +152,7 @@ export default function YeonwooResultScene() {
         <RomanceTimingSection flow={data.monthlyRomanceFlow} />
         <RealReviewsSection />
       </div>
-      {/* HM-FE-112: prod 배포 위해 CTA 재봉인(유료 결제 미완성). staging 테스트 시 disabled={false} 토글 */}
+      {/* 2026-06-05 세션 유실 hotfix(?order_id= 3중 복구) prod 검증 후 CTA 재개방 */}
       <StickyCheckoutCta visible={showCta} disabled={false} />
     </>
   );

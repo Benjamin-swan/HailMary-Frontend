@@ -15,9 +15,10 @@ type Props = {
   onSubmit: (info: SajuInfo) => void;
   buttonLabel?: string;
   characterId?: string;
+  initialValues?: Partial<SajuInfo>;
 };
 
-export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려주기 →", characterId }: Props) {
+export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려주기 →", characterId, initialValues }: Props) {
   useEffect(() => {
     const SENT_KEY = `hm_info_form_view_sent_${characterId ?? "unknown"}`;
     if (sessionStorage.getItem(SENT_KEY)) return;
@@ -25,12 +26,13 @@ export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려�
     trackEvent("info_form_view", { character_id: characterId });
   }, [characterId]);
 
-  const [name, setName] = useState("");
-  const [birth, setBirth] = useState("");
-  const [calendar, setCalendar] = useState<"solar" | "lunar">("solar");
-  const [time, setTime] = useState("");
-  const [unknownTime, setUnknownTime] = useState(false);
-  const [gender, setGender] = useState<"female" | "male" | null>(null);
+  const initTime = initialValues?.time;
+  const [name, setName] = useState(initialValues?.name ?? "");
+  const [birth, setBirth] = useState(initialValues?.birth ?? "");
+  const [calendar, setCalendar] = useState<"solar" | "lunar">(initialValues?.calendar ?? "solar");
+  const [time, setTime] = useState(initTime && initTime !== "unknown" ? initTime : "");
+  const [unknownTime, setUnknownTime] = useState(initTime === "unknown");
+  const [gender, setGender] = useState<"female" | "male" | null>(initialValues?.gender ?? null);
 
   const birthError = useMemo(() => validateBirth(birth), [birth]);
   const timeError = useMemo(() => validateTime(time), [time]);
@@ -97,10 +99,12 @@ export default function InfoForm({ onSubmit, buttonLabel = "도윤에게 알려�
               className="flex items-center gap-3 py-2"
               style={{ borderBottom: "1px solid rgba(245,237,224,0.15)" }}
             >
-              <input type="text" value={time} onChange={(e) => setTime(formatTime(e.target.value))}
-                placeholder="HH:MM" maxLength={5} inputMode="numeric" disabled={unknownTime}
-                className="flex-1 bg-transparent text-[16px] outline-none placeholder:text-[#998f82] disabled:opacity-40"
-                style={{ color: "#F5EDE0" }} />
+              <input type="text" value={time}
+                onFocus={() => { if (unknownTime) setUnknownTime(false); }}
+                onChange={(e) => { if (unknownTime) setUnknownTime(false); setTime(formatTime(e.target.value)); }}
+                placeholder="HH:MM" maxLength={5} inputMode="numeric"
+                className="min-w-0 flex-1 bg-transparent text-[16px] outline-none placeholder:text-[#998f82]"
+                style={{ color: "#F5EDE0", opacity: unknownTime ? 0.4 : 1 }} />
               <Chip
                 selected={unknownTime}
                 onClick={() => { setUnknownTime(!unknownTime); if (!unknownTime) setTime(""); }}

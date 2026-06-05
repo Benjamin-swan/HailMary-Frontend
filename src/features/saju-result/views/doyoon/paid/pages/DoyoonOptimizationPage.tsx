@@ -18,39 +18,39 @@ const MOCK_P9: PaidChapterP9Doyoon = {
   user_name: "홍길동",
   ohang_lack: "수(水)",
   ohang_methods: [
-    { label: "보완 방법 1 · 효과 +9%", keyword: "색채 노출 — 검정·짙은 청색",
-      desc: "수 기운을 시각 변수로 보완. 옷차림 비율 늘리기." },
-    { label: "보완 방법 2 · 효과 +7%", keyword: "공간 변수 — 북쪽 배치",
-      desc: "북쪽이 수의 위치 변수. 수공간 가시화 효과적." },
-    { label: "보완 방법 3 · 효과 +7%", keyword: "행동 변수 — 수영·반신욕",
-      desc: "물 접촉 변수 보완. 주 2회 이상이 효과 가속화 임계점." },
+    { label: "보완 방법 1 · 효과 +9%", keyword: "검정·짙은 청색 포인트",
+      desc: "수 기운을 색으로 채워주는 방법. 옷차림에서 비율을 조금 늘려보세요." },
+    { label: "보완 방법 2 · 효과 +7%", keyword: "북쪽을 가까이",
+      desc: "북쪽이 수와 잘 어울리는 방향이에요. 물이 보이는 공간을 살리면 좋아요." },
+    { label: "보완 방법 3 · 효과 +7%", keyword: "수영·반신욕",
+      desc: "물과 가까이 지내며 채워주는 방법. 주 2회 이상이면 흐름이 한결 잘 잡혀요." },
   ],
   ohang_boost_pct: "23%",
   ai_ohang:
-    "임수(壬水) 일간은 수(水) 보완에 유독 민감하게 반응해요. 동일 일간 표본에서 보완 적용 전후 인연 접촉률이 평균 23% 차이가 나요. " +
-    "일반 케이스보다 1.6배 높은 반응성이에요.\n\n" +
-    "세 가지를 30일간 유지하시면 효과가 누적돼요. 단순 합산이 아니라 상호작용 효과까지 포함하면 최대 28%까지 올라가요. " +
-    "그냥 생활 패턴 조금 바꾸는 것뿐인데 꽤 큰 변화예요.\n\n" +
-    "뭐부터 할지 모르겠으면 제일 가벼운 것부터 시작하세요. 홍길동님께 가장 진입 장벽이 낮은 색채 노출부터 권장드려요.",
+    "임수(壬水) 일간 홍길동님께 수(水)를 채워주는 방법을 카드로 정리해드렸어요. " +
+    "세 가지를 함께 챙기시면 인연이 들어올 가능성이 평균 23%만큼 높아져요.\n\n" +
+    "보완 방법 1(+9%) 색을 더하는 건 가장 가볍게 시작할 수 있어요. 옷차림 비율을 조금 늘리시는 정도면 돼요. " +
+    "방법 2(+7%) 방향을 가까이 두기와 방법 3(+7%) 몸으로 채우기는 시간을 두고 천천히 쌓이는 방법이에요.\n\n" +
+    "세 가지를 30일쯤 이어가시면 23%의 변화가 차분히 자리 잡아요. 홍길동님은 효과 +9%인 색 더하기부터 먼저 해보시길 권해드려요.",
   risk_cards: [
-    { label: "즉시 · 위험도 81%", tone: "warn", keyword: "미정리 관계 변수",
-      desc: "새 인연 진입 차단의 가장 큰 변수. 24시간 내 정리 권장." },
-    { label: "단기 · 위험도 64%", tone: "warn", keyword: "충동 표현 빈도",
-      desc: "감정 폭발 빈도가 평균 대비 2.1배. 24시간 룰 적용 권장." },
-    { label: "중기 · 위험도 47%", tone: "amber", keyword: "동선 단조로움",
-      desc: "접촉 노출 변수가 좁음. 월 1회 새 환경 진입이 효율적." },
+    { label: "즉시 · 위험도 81%", tone: "warn", keyword: "정리되지 않은 관계",
+      desc: "새 인연이 들어오는 길을 가장 크게 막아요. 하루 안에 한 번 정리해 보세요." },
+    { label: "단기 · 위험도 64%", tone: "warn", keyword: "감정적인 순간의 결정",
+      desc: "욱하는 순간에 말이 앞서기 쉬워요. 하루 두고 보는 습관이 도움돼요." },
+    { label: "중기 · 위험도 47%", tone: "amber", keyword: "반복되는 일상",
+      desc: "새로운 사람을 만날 자리가 좁아요. 한 달에 한 번은 낯선 환경에 가보세요." },
   ],
   ai_risk:
-    "세 개 중에 즉시 변수가 임팩트가 가장 커요. 이것 하나만 정리해도 새 인연 진입률이 36% 올라가거든요. " +
-    "단기랑 중기는 차차 하셔도 되는데, 즉시는 말 그대로 지금 바로예요.\n\n" +
-    "홍길동님께서 동시에 셋 다 진행하시면 좋긴 한데, 효과가 단순 합산이 아니라 1.4배 수준으로 수렴해요. " +
-    "즉 81+64+47 = 192가 아니라 약 130 수준이에요. 그래도 충분히 의미 있는 수치예요. 다만 우선순위는 분명히 잡고 가시는 게 효율적이에요.",
+    "주의하면 좋을 카드 세 장을 정리해드렸어요. 즉시 81%가 가장 신경 쓰이는 부분이고, 단기 64%, 중기 47% 순서예요. " +
+    "위험도 숫자가 그대로 챙기는 순서를 알려줘요.\n\n" +
+    "홍길동님, 세 가지를 한꺼번에 다 신경 쓰실 필요는 없어요. " +
+    "즉시(81%)부터 하나씩 차근차근 정리하시는 게 가장 좋아요. 숫자 큰 것부터 위에서 아래로 차례대로 보시면 돼요.",
   current_score: 85,
   target_score: 92,
   ai_optimize:
-    "85에서 92까지 딱 7점 남았어요. 이 격차는 세 가지 변수에서 발생해요 — 침묵 활용, 시선 안정, 표현 빈도.\n\n" +
-    "임수(壬水) 일간은 침묵 활용 하나만 올려도 매력 발현 효율이 1.3%씩 오르거든요. " +
-    "30일 의식적으로 해보시면 6~8점은 올라요. 92점을 넘기면 전체 호감 유발 효율이 21% 상승해요.\n\n" +
+    "85에서 92까지 딱 7점 남았어요. 이 차이는 세 가지에서 생겨요 — 잠깐 멈추기, 시선 안정, 표현 빈도.\n\n" +
+    "임수(壬水) 일간은 잠깐 멈추기 하나만 챙겨도 매력이 1.3%씩 살아나요. " +
+    "30일 의식해서 해보시면 6~8점은 올라요. 92점을 넘기면 호감을 사는 흐름이 21%만큼 좋아져요.\n\n" +
     "별거 없어요. 그냥 시작하시면 돼요. 분석은 다 끝났어요. 이제 공은 홍길동님한테 있어요.",
   sd_avatar_asset: "dy_06",
   optimize_bubble: "분석은 다 끝났어요. 이제 공은 홍길동님한테 있어요.",
@@ -68,16 +68,16 @@ export default function DoyoonOptimizationPage({ data }: DoyoonOptimizationPageP
       <DoyoonPageHead
         ch="6"
         hanja="六"
-        title="연애 변수 최적화 가이드"
-        sub="변수 보완 · 리스크 제거"
+        title="연애운 끌어올리기 가이드"
+        sub="기운 보완 · 리스크 정리"
       />
 
       {/* ── 6-1 오행 보완 ── */}
       <DoyoonSection>
-        <DoyoonSLabel>6-1 오행 변수 보완</DoyoonSLabel>
+        <DoyoonSLabel>6-1 오행 보완</DoyoonSLabel>
         <DoyoonSTitle>
           <span style={{ color: DOYOON_TOKENS.pink, fontWeight: 700 }}>{d.ohang_lack}</span>
-          {" "}변수 보완 시 인연 접촉 확률 평균 {d.ohang_boost_pct} 상승.
+          {" "}기운을 채우면 인연이 들어올 가능성이 평균 {d.ohang_boost_pct} 높아져요.
         </DoyoonSTitle>
 
         <div
@@ -94,8 +94,8 @@ export default function DoyoonOptimizationPage({ data }: DoyoonOptimizationPageP
 
       {/* ── 6-2 리스크 제거 ── */}
       <DoyoonSection>
-        <DoyoonSLabel>6-2 리스크 변수 제거</DoyoonSLabel>
-        <DoyoonSTitle>즉시·단기·중기 — 우선순위별 제거 전략.</DoyoonSTitle>
+        <DoyoonSLabel>6-2 리스크 정리</DoyoonSLabel>
+        <DoyoonSTitle>즉시·단기·중기 — 무엇부터 정리하면 좋은지 순서대로.</DoyoonSTitle>
 
         <div
           className="my-3 grid gap-1.5"
@@ -111,13 +111,13 @@ export default function DoyoonOptimizationPage({ data }: DoyoonOptimizationPageP
 
       {/* ── 6-3 매력 최적화 ── */}
       <DoyoonSection>
-        <DoyoonSLabel>6-3 매력 변수 최적화</DoyoonSLabel>
+        <DoyoonSLabel>6-3 매력 끌어올리기</DoyoonSLabel>
         <DoyoonSTitle>
-          현재 활성화 → 목표치까지 {d.target_score - d.current_score}%p 상승 가능.
+          지금 → 목표까지 {d.target_score - d.current_score}점 더 끌어올릴 수 있어요.
         </DoyoonSTitle>
 
         <div className="my-3 space-y-2">
-          <ScoreMeterDoyoon name="현재 활성화" value={d.current_score} />
+          <ScoreMeterDoyoon name="지금" value={d.current_score} />
           <ScoreMeterDoyoon name="목표" value={d.target_score} />
         </div>
 
@@ -137,7 +137,7 @@ export default function DoyoonOptimizationPage({ data }: DoyoonOptimizationPageP
         text={
           <>
             분석은 여기까지예요.<br />
-            변수 보완, 리스크 제거, 매력 최적화…<br />
+            기운 보완, 리스크 정리, 매력 끌어올리기…<br />
             다 정리해 드렸어요.
           </>
         }
