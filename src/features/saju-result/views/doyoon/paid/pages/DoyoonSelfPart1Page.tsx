@@ -100,7 +100,7 @@ export default function DoyoonSelfPart1Page({ data }: DoyoonSelfPart1PageProps) 
             className="text-[13px] mt-1 leading-[1.6]"
             style={{ color: DOYOON_TOKENS.textMeta }}
           >
-            같은 사주를 본 분들 중 {d.ilgan} 일간이 {d.distribution_pct}% 정도이고, 그중에서도 같은 연애 결을 가진 분은 위에서 {d.pct_value}%에 듭니다.
+            같은 {d.ilgan} 일간을 본 분들 중에서도, 같은 연애 결을 가진 분은 위에서 {d.pct_value}%에 듭니다.
           </div>
         </div>
 

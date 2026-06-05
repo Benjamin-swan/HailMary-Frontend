@@ -89,7 +89,7 @@ export default function DoyoonBlockingPart1Page({ data }: DoyoonBlockingPart1Pag
       {/* ── 2-1 구조적 원인 분석 ── */}
       <DoyoonSection>
         <DoyoonSLabel>2-1 막히는 이유 들여다보기</DoyoonSLabel>
-        <DoyoonSTitle>지금 막혀 있는 정도 — {d.blockade.blockade_pct}.</DoyoonSTitle>
+        <DoyoonSTitle>지금 어디가 막혀 있는지 짚어드릴게요.</DoyoonSTitle>
 
         <BlockadeBigCardDoyoon
           blockade={d.blockade}
@@ -181,7 +181,7 @@ function BlockadeBigCardDoyoon({
         className="text-[12px] font-semibold mb-2 uppercase"
         style={{ color: DOYOON_TOKENS.pink, letterSpacing: "0.05em" }}
       >
-        기운 진단 · 막힌 정도 {blockade.blockade_pct}
+        기운 진단 · 막힌 정도
       </div>
       <div
         className="text-[16px] font-bold leading-[1.4] mb-2"

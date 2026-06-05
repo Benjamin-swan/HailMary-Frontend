@@ -9,7 +9,9 @@ export default function BlockSection() {
       className="w-full flex items-center justify-center"
       style={{
         background: "#FDF5EA",
-        height: "500px",
+        // 위 CharmCards 루트 paddingBottom(68px, 투명→씬 베이지)을 상쇄해
+        // 텍스트가 합쳐진 베이지 영역 중앙에 오도록 상단을 그만큼 줄임.
+        padding: "24px 0 92px",
         containerType: "inline-size",
       }}
     >
