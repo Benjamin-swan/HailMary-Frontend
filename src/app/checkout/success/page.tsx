@@ -213,9 +213,11 @@ function SuccessBody() {
     <main className="flex min-h-[100dvh] flex-1 flex-col items-center justify-center gap-6 bg-white px-6 py-10 text-neutral-900">
       {screen === "polling" && (
         <>
+          {/* 2026-06-05: "결제 결과 확인 중"은 결제 실패 불안을 유발 (QA 피드백) →
+              사주 준비 로딩으로 리프레이밍. 실제로는 webhook DONE 폴링 대기 화면. */}
           <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-neutral-900" aria-hidden />
-          <p className="text-[14px] text-neutral-700">결제 결과 확인 중…</p>
-          <p className="text-[12px] text-neutral-500">잠시만 기다려 주세요.</p>
+          <h1 className="text-lg font-semibold">사주 결과지를 준비하고 있어요</h1>
+          <p className="text-[13px] text-neutral-500">잠시만요 — 준비되는 대로 바로 이어져요.</p>
         </>
       )}
 
