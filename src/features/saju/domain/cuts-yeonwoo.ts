@@ -12,7 +12,7 @@ const ASSET = (n: string) => `/saju/yeonwoo/cut-${n}.png`;
 export const YEONWOO_CUTS: Cut[] = [
   {
     type: "dialogue",
-    bg: ASSET("1"),
+    bg: "/saju/yeonwoo/cut-1-v2.png",
     speaker: "강연우",
     lines: [
       "하...눈빛만 봐도 알겠군",

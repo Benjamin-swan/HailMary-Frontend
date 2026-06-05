@@ -124,7 +124,7 @@ export default function BlockingPart1Page({ data }: { data?: BlockingPart1Data }
         <div className="flex justify-center my-3">
           <div className="relative w-full max-w-[240px] aspect-square">
             <Image
-              src="/yeonwoo/sd_yw/yw_cg_b.png"
+              src="/yeonwoo/sd_yw/yw_cg_b2.png"
               alt="강연우 — 반전 안내"
               fill
               sizes="(max-width: 480px) 70vw, 240px"

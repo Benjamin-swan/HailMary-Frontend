@@ -12,7 +12,7 @@ const ASSET = (n: string) => `/saju/doyoon/cut-${n}.png`;
 export const DOYOON_CUTS: Cut[] = [
   {
     type: "dialogue",
-    bg: ASSET("1"),
+    bg: "/saju/doyoon/cut-1-v2.png",
     speaker: "도윤",
     lines: [
       "까칠한 조언에 지친 분들께는 제 방식이 가장 완벽한 대안이 되곤 하죠. 잘 오셨습니다.",
