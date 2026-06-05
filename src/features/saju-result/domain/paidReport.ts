@@ -592,6 +592,7 @@ export interface PaidChapterP9 {
 // 박스 1·2·3 통합. 박스 3 답장은 AI 호출 1회 (fill-in-the-middle).
 
 export interface PaidChapterP10 {
+  user_name?: string;          // 호명용(편지 헤더/부제). 마스킹 X — 본문과 동일 호명명 (QA F-062)
   ilju_with_hanja: string;     // "병인(丙寅)"
   box1_body: string;            // 박스 1 (도입 멘트 + step1 부분집합 본문)
   box2_body: string;            // 박스 2 (4단락 합성)
