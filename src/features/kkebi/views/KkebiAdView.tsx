@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useKkebiAdGate } from "../hooks/useKkebiAdGate";
 import Card from "./components/shared/Card";
 import PageContainer from "./components/shared/PageContainer";
@@ -10,6 +11,17 @@ const AD_DIALOGUE = "나 츄르 사먹게 광고 한 번 봐줘";
 
 export function KkebiAdView() {
   const { handleAdClick } = useKkebiAdGate();
+  // 모바일에선 깨비를 올려 앞발이 버튼 글자를 안 가리게 유지,
+  // 데스크톱(≥768px)에서만 10px 내림 (QA 피드백)
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   return (
     <PageContainer>
@@ -44,6 +56,7 @@ export function KkebiAdView() {
               marginBottom: -65,
               pointerEvents: "none",
               position: "relative",
+              transform: isDesktop ? "translateY(20px)" : undefined,
               zIndex: 2,
             }}
           >
