@@ -13,7 +13,7 @@ const jsonLd = {
       "@type": "WebSite",
       name: "도화선",
       url: "https://dohwaseonsaju.com/",
-      description: "서사 기반의 사주 해석 서비스",
+      description: "스토리 기반의 사주 해석 서비스",
       inLanguage: "ko",
     },
     {

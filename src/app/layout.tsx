@@ -9,19 +9,19 @@ const SITE_URL = "https://dohwaseonsaju.com";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "도화선 — 서사 기반 사주 해석",
+    default: "도화선 — 스토리 기반 사주 해석",
     template: "%s | 도화선",
   },
   description:
-    "운명을 태우고 너에게 닿을, 붉은 실. 강연우·한도윤 두 캐릭터가 각자의 시선으로 풀어주는 서사 기반 연애 사주 해석, 도화선.",
+    "운명을 태우고 너에게 닿을, 붉은 실. 강연우·한도윤 두 캐릭터가 각자의 시선으로 풀어주는 스토리 기반 연애 사주 해석, 도화선.",
   keywords: ["사주", "연애 사주", "도화살", "오늘의 운세", "무료 사주", "도화선"],
   openGraph: {
     type: "website",
     locale: "ko_KR",
     url: SITE_URL,
     siteName: "도화선",
-    title: "도화선 — 서사 기반 사주 해석",
-    description: "운명을 태우고 너에게 닿을, 붉은 실. 서사 기반 연애 사주 해석.",
+    title: "도화선 — 스토리 기반 사주 해석",
+    description: "운명을 태우고 너에게 닿을, 붉은 실. 스토리 기반 연애 사주 해석.",
     images: [
       {
         url: "/og-image.png",
@@ -33,8 +33,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "도화선 — 서사 기반 사주 해석",
-    description: "운명을 태우고 너에게 닿을, 붉은 실. 서사 기반 연애 사주 해석.",
+    title: "도화선 — 스토리 기반 사주 해석",
+    description: "운명을 태우고 너에게 닿을, 붉은 실. 스토리 기반 연애 사주 해석.",
     images: ["/og-image.png"],
   },
   // naver-site-verification 메타는 서치어드바이저 등록 시 사용자가 받은 코드로 추가 (SEO_SSOT.md Phase 4)
