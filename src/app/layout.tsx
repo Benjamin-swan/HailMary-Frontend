@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "@/styles/globals.css";
 import AmplitudeProvider from "./AmplitudeProvider";
 import QaAuthGuard from "@/shared/components/QaAuthGuard";
+import { BottomNav } from "@/shared/components/BottomNav";
 
 const SITE_URL = "https://dohwaseonsaju.com";
 
@@ -56,6 +57,8 @@ export default function RootLayout({
       <body className="mx-auto flex min-h-full max-w-md flex-col">
         <AmplitudeProvider />
         <QaAuthGuard>{children}</QaAuthGuard>
+        {/* 홈·보관함에서만 노출되는 하단 네비 (컴포넌트 내부에서 경로 판별·자동 숨김) */}
+        <BottomNav />
       </body>
     </html>
   );
