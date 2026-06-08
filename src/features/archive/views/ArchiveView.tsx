@@ -31,8 +31,13 @@ export function ArchiveView() {
   const { isAuthenticated, refreshMe } = useAuth();
   const { data, status } = useArchive();
   const [loginOpen, setLoginOpen] = useState(false);
+  // 하이드레이션 게이트 — 풀 로드 첫 페인트에 getServerSnapshot=null로 isAuthenticated가 잠깐
+  // false라 UnauthedState가 깜빡이는 레이스 방지. 마운트 전엔 스피너 (HM-FE-135).
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
     void refreshMe();
   }, [refreshMe]);
 
@@ -49,7 +54,11 @@ export function ArchiveView() {
         받은 사주 결과지와 오늘의 운세를 모아둬요.
       </p>
 
-      {!isAuthenticated ? (
+      {!mounted ? (
+        <div className="mt-16 flex flex-1 justify-center">
+          <div className="h-9 w-9 animate-spin rounded-full border-4 border-white/15 border-t-white/70" aria-hidden />
+        </div>
+      ) : !isAuthenticated ? (
         <UnauthedState onLogin={() => setLoginOpen(true)} />
       ) : status === "loading" ? (
         <div className="mt-16 flex flex-1 justify-center">

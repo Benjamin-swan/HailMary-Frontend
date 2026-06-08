@@ -2,7 +2,8 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { LoginPromptModal, useAuth } from "@/features/auth";
+import { LoginPromptModal } from "@/features/auth";
+import { authStore } from "@/lib/authStore";
 import { trackEvent } from "@/shared/utils/analytics";
 
 // 하단 네비 바 — 홈/보관함 화면에서만 노출(반투명·하단 고정).
@@ -25,7 +26,6 @@ const IDLE = "#9b94ad";
 export function BottomNav() {
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
   const [loginOpen, setLoginOpen] = useState(false);
 
   if (!shouldShow(pathname)) return null;
@@ -35,11 +35,13 @@ export function BottomNav() {
   const onArchive = norm === ARCHIVE_PATH;
 
   const goArchive = () => {
-    if (isAuthenticated) {
-      trackEvent("bottomnav_archive_click", { authed: true });
+    // 인증 판정은 localStorage 토큰을 직접 읽는다 — 풀 페이지 로드 직후 하이드레이션 첫 페인트에
+    // useSyncExternalStore가 잠깐 false(getServerSnapshot=null)로 그리는 레이스를 피함 (HM-FE-135).
+    const authed = Boolean(authStore.get());
+    trackEvent("bottomnav_archive_click", { authed });
+    if (authed) {
       router.push(ARCHIVE_PATH);
     } else {
-      trackEvent("bottomnav_archive_click", { authed: false });
       setLoginOpen(true);
     }
   };

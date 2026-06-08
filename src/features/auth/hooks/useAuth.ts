@@ -35,7 +35,11 @@ function subscribeProfile(listener: () => void): () => void {
   return () => profileListeners.delete(listener);
 }
 
-// /api/auth/me 재조회 → 리치 프로필(닉네임/이메일/last_used) 갱신. 401이면 토큰 정리.
+// 일시 1회 401(BE 재시작/배포 순간, 토큰 막 만료 경합 등)에 토큰을 통째 날리지 않도록
+// 연속 401 카운트 — 성공 시 리셋, 연속 2회 이상이어야 진짜 만료로 보고 정리 (HM-FE-135).
+let _consecutiveUnauthorized = 0;
+
+// /api/auth/me 재조회 → 리치 프로필(닉네임/이메일/last_used) 갱신.
 async function loadProfile(): Promise<void> {
   if (!authStore.get()) return;
   try {
@@ -43,11 +47,18 @@ async function loadProfile(): Promise<void> {
       "/api/auth/me",
       { auth: "account" },
     );
+    _consecutiveUnauthorized = 0;
     setProfile(normalizeProfile(raw));
   } catch (err) {
     if (err instanceof ApiError && err.status === 401) {
-      authStore.clear();
-      setProfile(null);
+      // 단 1회 401로 하드 로그아웃하지 않는다 — 연속 2회면 진짜 만료로 보고 정리.
+      _consecutiveUnauthorized += 1;
+      if (_consecutiveUnauthorized >= 2) {
+        authStore.clear();
+        setProfile(null);
+        _consecutiveUnauthorized = 0;
+      }
+      return;
     }
     // 그 외 일시 오류는 무시 — 다음 호출에서 재시도
   }
