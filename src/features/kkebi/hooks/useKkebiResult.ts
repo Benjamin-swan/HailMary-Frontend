@@ -22,6 +22,33 @@ export function useKkebiResult() {
   const [data, setData] = useState<SajuResult>(mockSajuResult);
 
   useEffect(() => {
+    // 보관함 '다시보기' — 쿠키/사이클 가드 우회, 저장본 직접 로드.
+    const fromArchive =
+      typeof window !== "undefined" &&
+      new URLSearchParams(window.location.search).get("from") === "archive";
+    if (fromArchive) {
+      let cancelledA = false;
+      void (async () => {
+        try {
+          const saved = await api.get<SajuResult>("/api/kkebi/result/today", {
+            auth: "account",
+          });
+          if (!cancelledA) {
+            setData(saved);
+            setUserName(saved.user.name);
+          }
+        } catch {
+          // 저장본 없음/만료 → 입력으로
+          router.replace("/fortune/daily/input/");
+        } finally {
+          if (!cancelledA) setIsReady(true);
+        }
+      })();
+      return () => {
+        cancelledA = true;
+      };
+    }
+
     const uid       = getCookie(COOKIE_KEYS.UID);
     const name      = getCookie(COOKIE_KEYS.NAME);
     const birth     = getCookie(COOKIE_KEYS.BIRTH_SOLAR);
