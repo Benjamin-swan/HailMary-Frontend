@@ -35,6 +35,38 @@ function subscribeProfile(listener: () => void): () => void {
   return () => profileListeners.delete(listener);
 }
 
+// /api/auth/me 재조회 → 리치 프로필(닉네임/이메일/last_used) 갱신. 401이면 토큰 정리.
+async function loadProfile(): Promise<void> {
+  if (!authStore.get()) return;
+  try {
+    const raw = await api.get<SocialLoginRawResponse["profile"]>(
+      "/api/auth/me",
+      { auth: "account" },
+    );
+    setProfile(normalizeProfile(raw));
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 401) {
+      authStore.clear();
+      setProfile(null);
+    }
+    // 그 외 일시 오류는 무시 — 다음 호출에서 재시도
+  }
+}
+
+// bfcache(뒤로가기 캐시) 복원 시 토큰은 localStorage에 살아있지만 profileSnapshot은
+// 프로즌(null)이라 "회원님"으로 폴백된다 → 토큰 있는데 프로필 비었으면 /me 재조회로 복원.
+if (typeof window !== "undefined") {
+  window.addEventListener("pageshow", (e) => {
+    if (
+      (e as PageTransitionEvent).persisted &&
+      authStore.get() &&
+      profileSnapshot === null
+    ) {
+      void loadProfile();
+    }
+  });
+}
+
 const CLIENT_IDS: Record<AuthProvider, string> = {
   kakao: env.KAKAO_CLIENT_ID,
   google: env.GOOGLE_CLIENT_ID,
@@ -116,22 +148,7 @@ export function useAuth(): UseAuthResult {
     [],
   );
 
-  const refreshMe = useCallback(async (): Promise<void> => {
-    if (!authStore.get()) return;
-    try {
-      const raw = await api.get<SocialLoginRawResponse["profile"]>(
-        "/api/auth/me",
-        { auth: "account" },
-      );
-      setProfile(normalizeProfile(raw));
-    } catch (err) {
-      if (err instanceof ApiError && err.status === 401) {
-        authStore.clear();
-        setProfile(null);
-      }
-      // 그 외 일시 오류는 무시 — 다음 호출에서 재시도
-    }
-  }, []);
+  const refreshMe = useCallback((): Promise<void> => loadProfile(), []);
 
   const logout = useCallback(() => {
     authStore.clear();
