@@ -1,6 +1,11 @@
+"use client";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { trackEvent } from "@/shared/utils/analytics";
 
 export function TopNav() {
+  const router = useRouter();
   return (
     <nav
       className="sticky top-0 z-50 flex items-center justify-between border-b border-white/[0.06] px-5 py-3 backdrop-blur-xl"
@@ -14,15 +19,19 @@ export function TopNav() {
         priority
         className="h-[35px] w-auto"
       />
+      {/* 마이페이지 (계정 정보·보관함·약관·로그아웃·회원탈퇴) */}
       <button
         type="button"
-        aria-label="메뉴"
+        aria-label="마이페이지"
+        onClick={() => {
+          trackEvent("topnav_mypage_click", {});
+          router.push("/mypage/");
+        }}
         className="flex h-9 w-9 items-center justify-center rounded-lg text-white/80 transition-colors hover:bg-white/10"
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <line x1="3" y1="6" x2="21" y2="6" />
-          <line x1="3" y1="12" x2="21" y2="12" />
-          <line x1="3" y1="18" x2="21" y2="18" />
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" />
         </svg>
       </button>
     </nav>

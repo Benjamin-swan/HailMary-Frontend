@@ -141,4 +141,6 @@ export const api = {
       opts?.timeoutMs,
       opts?.auth,
     ),
+  del: <T>(path: string, opts?: ApiRequestOptions) =>
+    request<T>(path, { method: "DELETE" }, opts?.timeoutMs, opts?.auth),
 };

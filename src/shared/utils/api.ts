@@ -48,6 +48,12 @@ export const api = {
     throw toApiError(result.error, result.status, result.detail);
   },
 
+  del: async <T>(path: string, opts?: ApiRequestOptions): Promise<T> => {
+    const result = await libApi.del<T>(path, opts);
+    if (result.ok) return result.data;
+    throw toApiError(result.error, result.status, result.detail);
+  },
+
   // 동일 동작 (호환성 유지). 신규 코드는 api.get 사용 권장.
   getStrict: async <T>(path: string): Promise<T> => {
     const result = await libApi.get<T>(path);

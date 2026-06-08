@@ -53,6 +53,8 @@ export interface UseAuthResult {
   /** /api/auth/me 재조회 (토큰만 있고 프로필 없을 때). 401이면 토큰 정리. */
   refreshMe: () => Promise<void>;
   logout: () => void;
+  /** 회원탈퇴 — 계정 삭제 후 토큰/프로필 정리. */
+  deleteAccount: () => Promise<void>;
 }
 
 export function useAuth(): UseAuthResult {
@@ -137,6 +139,17 @@ export function useAuth(): UseAuthResult {
     trackEvent("logout", {});
   }, []);
 
+  const deleteAccount = useCallback(async (): Promise<void> => {
+    try {
+      await api.del("/api/auth/me", { auth: "account" });
+      trackEvent("account_delete", {});
+    } finally {
+      // 성공/실패 무관 — 토큰은 정리해 로그아웃 상태로 (탈퇴 의도 반영)
+      authStore.clear();
+      setProfile(null);
+    }
+  }, []);
+
   return {
     isAuthenticated: Boolean(token),
     profile,
@@ -144,5 +157,6 @@ export function useAuth(): UseAuthResult {
     completeLogin,
     refreshMe,
     logout,
+    deleteAccount,
   };
 }
