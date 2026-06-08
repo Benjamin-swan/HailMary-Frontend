@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLoginGate } from "@/features/auth";
 import { KKEBI_MOODS, VALIDATION_MESSAGES } from "../domain/constants";
 import {
   COOKIE_KEYS,
@@ -28,6 +29,8 @@ export const GENDER_OPTIONS: Array<{ label: string; value: Gender }> = [
 
 export function useKkebiInputForm() {
   const router = useRouter();
+  // 확인하기 시 로그인 유도 — 쿠키 저장(데이터 보존) 후 게이트. 로그인 시 ad 페이지로 복귀(쿠키로 이어짐).
+  const loginGate = useLoginGate("kkebi", "/fortune/daily/ad/");
 
   // SSR/hydration 안전: 첫 mount 후에만 폼 렌더. 그 전엔 null.
   // (Math.random 기반 mood가 SSR과 client에서 달라 hydration mismatch 나는 걸 방지)
@@ -123,7 +126,8 @@ export function useKkebiInputForm() {
       has_birth_time: hour !== "unknown",
     });
 
-    router.push("/fortune/daily/ad/");
+    // 비로그인이면 로그인 유도 팝업(쿠키는 위에서 이미 저장됨 → 어느 선택이든 데이터 보존).
+    loginGate.run(() => router.push("/fortune/daily/ad/"));
   }
 
   const currentYear = new Date().getFullYear();
@@ -148,5 +152,6 @@ export function useKkebiInputForm() {
     focusedField, setFocusedField,
     yearOptions, monthOptions, dayOptions,
     handleSubmit,
+    loginModal: loginGate.modal,
   };
 }

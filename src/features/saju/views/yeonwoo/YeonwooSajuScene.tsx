@@ -18,6 +18,7 @@ import { FadeOverlay } from "@/components/FadeOverlay";
 import { SceneProgressBar } from "@/components/SceneProgressBar";
 import { NavIconButton } from "@/shared/components/NavIconButton";
 import { ConfirmModal } from "@/shared/components/ConfirmModal";
+import { LoginPromptModal, useLoginGate } from "@/features/auth";
 import { HomeIcon, UsersIcon } from "@/features/saju/views/shared/StoryNavIcons";
 
 type PendingNav = "home" | "consultant" | null;
@@ -38,6 +39,8 @@ export default function YeonwooSajuScene() {
   const [pendingNav, setPendingNav] = useState<PendingNav>(null);
   const { savedInfo, surveyAnswers, setSurveyAnswers, submitInfo, finalizeSurvey } =
     useCharacterSajuFlow({ storageKeyPrefix: "yeonwoo" });
+  // 정보 입력 확인 시 로그인 유도(비로그인 1회). 나중에 하기/로그인 모두 코어 플로 불변.
+  const loginGate = useLoginGate("yeonwoo", "/saju/yeonwoo/");
 
   const {
     cut, cutIndex, lineIndex, displayedCount, fullText,
@@ -184,7 +187,9 @@ export default function YeonwooSajuScene() {
       {/* 정보 입력 폼 */}
       {!fading && cut.type === "info-form" && (
         <InfoForm
-          onSubmit={(info) => { submitInfo(info); goToCut(cutIndex + 1); }}
+          onSubmit={(info) =>
+            loginGate.run(() => { submitInfo(info); goToCut(cutIndex + 1); })
+          }
           buttonLabel="연우에게 알려주기 →"
           characterId="yeonwoo"
           initialValues={savedInfo ?? undefined}
@@ -279,6 +284,8 @@ export default function YeonwooSajuScene() {
           setPendingNav(null);
         }}
       />
+
+      <LoginPromptModal {...loginGate.modal} />
     </div>
   );
 }
