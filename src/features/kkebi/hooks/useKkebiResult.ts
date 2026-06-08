@@ -62,7 +62,8 @@ export function useKkebiResult() {
         const result = await api.post<SajuResult>(
           "/api/kkebi/fortune",
           { name, birth, hour, gender },
-          { timeoutMs: 12000 },
+          // 로그인 시 계정 JWT 첨부 → BE가 결과 저장(다시보기). 비로그인은 토큰 없어 익명 동작.
+          { timeoutMs: 12000, auth: "account" },
         );
         if (!cancelled) setData(result);
       } catch {
