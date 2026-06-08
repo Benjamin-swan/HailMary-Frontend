@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useLoginGate } from "@/features/auth";
+import { saveLastUsed, useAuth, useLoginGate } from "@/features/auth";
 import { KKEBI_MOODS, VALIDATION_MESSAGES } from "../domain/constants";
 import {
   COOKIE_KEYS,
@@ -31,6 +31,8 @@ export function useKkebiInputForm() {
   const router = useRouter();
   // 확인하기 시 로그인 유도 — 쿠키 저장(데이터 보존) 후 게이트. 로그인 시 ad 페이지로 복귀(쿠키로 이어짐).
   const loginGate = useLoginGate("kkebi", "/fortune/daily/ad/");
+  // 계정 마지막 사용값 prefill — 로그인 시 /me 재조회 후 폼 채움.
+  const { profile, refreshMe } = useAuth();
 
   // SSR/hydration 안전: 첫 mount 후에만 폼 렌더. 그 전엔 null.
   // (Math.random 기반 mood가 SSR과 client에서 달라 hydration mismatch 나는 걸 방지)
@@ -92,6 +94,26 @@ export function useKkebiInputForm() {
     };
   }, []);
 
+  // 로그인 상태면 /me 재조회 → 계정 마지막 사용값 확보
+  useEffect(() => {
+    void refreshMe();
+  }, [refreshMe]);
+
+  // 마지막 사용값으로 1회 prefill (프로필 도착 시). 이미 채워졌으면 다시 안 건드림.
+  const prefilledRef = useRef(false);
+  useEffect(() => {
+    const lu = profile?.lastUsed;
+    if (!lu || prefilledRef.current) return;
+    prefilledRef.current = true;
+    const [y, m, d] = lu.birth.split("-");
+    setName(lu.name);
+    setYearRaw(y);
+    setMonthRaw(String(Number(m)));
+    setDay(String(Number(d)));
+    setIsLunar(lu.calendar === "lunar");
+    setGender(lu.gender === "male" ? "M" : "F");
+  }, [profile]);
+
   function showValidationBubble(key: keyof typeof VALIDATION_MESSAGES) {
     if (bubbleTimerRef.current) clearTimeout(bubbleTimerRef.current);
     setBubbleText(VALIDATION_MESSAGES[key]);
@@ -124,6 +146,15 @@ export function useKkebiInputForm() {
       calendar: isLunar ? "lunar" : "solar",
       gender,
       has_birth_time: hour !== "unknown",
+    });
+
+    // 로그인 상태면 계정 마지막 사용값 갱신 (깨비 시각은 별도 표현이라 time=null → 기존 시각 보존).
+    saveLastUsed({
+      name: name.trim(),
+      birth: solarDate,
+      calendar: isLunar ? "lunar" : "solar",
+      gender: gender === "M" ? "male" : "female",
+      time: null,
     });
 
     // 비로그인이면 로그인 유도 팝업(쿠키는 위에서 이미 저장됨 → 어느 선택이든 데이터 보존).

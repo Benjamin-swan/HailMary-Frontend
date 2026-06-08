@@ -11,14 +11,14 @@ import { usePreloadImages } from "@/shared/hooks/usePreloadImages";
 import { trackEvent } from "@/shared/utils/analytics";
 import { DialogueBox } from "@/components/DialogueBox";
 import AsideComment from "@/features/saju/views/shared/AsideComment";
-import InfoForm from "@/features/saju/views/shared/InfoForm";
+import InfoForm, { type SajuInfo } from "@/features/saju/views/shared/InfoForm";
 import SurveyCut from "@/features/saju/views/shared/SurveyCut";
 import CtaOverlay from "@/features/saju/views/shared/CtaOverlay";
 import { FadeOverlay } from "@/components/FadeOverlay";
 import { SceneProgressBar } from "@/components/SceneProgressBar";
 import { NavIconButton } from "@/shared/components/NavIconButton";
 import { ConfirmModal } from "@/shared/components/ConfirmModal";
-import { LoginPromptModal, useLoginGate } from "@/features/auth";
+import { LoginPromptModal, useAuth, useLoginGate } from "@/features/auth";
 import { HomeIcon, UsersIcon } from "@/features/saju/views/shared/StoryNavIcons";
 
 type PendingNav = "home" | "consultant" | null;
@@ -41,6 +41,20 @@ export default function YeonwooSajuScene() {
     useCharacterSajuFlow({ storageKeyPrefix: "yeonwoo" });
   // 정보 입력 확인 시 로그인 유도(비로그인 1회). 나중에 하기/로그인 모두 코어 플로 불변.
   const loginGate = useLoginGate("yeonwoo", "/saju/yeonwoo/");
+  // 로그인 시 계정 마지막 사용값으로 입력폼 prefill (HM-FE-129).
+  const { profile, refreshMe } = useAuth();
+  useEffect(() => { void refreshMe(); }, [refreshMe]);
+  const accountInitial = useMemo<Partial<SajuInfo> | undefined>(() => {
+    const lu = profile?.lastUsed;
+    if (!lu) return undefined;
+    return {
+      name: lu.name,
+      birth: lu.birth.replace(/-/g, "."),
+      calendar: lu.calendar === "lunar" ? "lunar" : "solar",
+      time: lu.time ?? "unknown",
+      gender: lu.gender === "male" ? "male" : "female",
+    };
+  }, [profile]);
 
   const {
     cut, cutIndex, lineIndex, displayedCount, fullText,
@@ -187,12 +201,13 @@ export default function YeonwooSajuScene() {
       {/* 정보 입력 폼 */}
       {!fading && cut.type === "info-form" && (
         <InfoForm
+          key={accountInitial ? "acct" : "local"}
           onSubmit={(info) =>
             loginGate.run(() => { submitInfo(info); goToCut(cutIndex + 1); })
           }
           buttonLabel="연우에게 알려주기 →"
           characterId="yeonwoo"
-          initialValues={savedInfo ?? undefined}
+          initialValues={accountInitial ?? savedInfo ?? undefined}
         />
       )}
 

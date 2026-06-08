@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { saveLastUsed } from "@/features/auth";
 import { postSajuSurvey, useSajuCalculate } from "@/features/saju";
 import type { SajuInfo } from "../views/shared/InfoForm";
 import type { SurveyAnswers } from "../domain/types";
@@ -38,11 +39,13 @@ export function useCharacterSajuFlow(config: CharacterSajuFlowConfig) {
       // 주의: savedInfo는 localStorage에서 복원하지 않는다. (교차 세션 자동 채움 시
       // 예전 '시간 모름' 선택이 새 진입에도 되살아나 input이 비활성처럼 보이는 혼란 방지)
       // savedInfo는 이번 세션에서 submitInfo로 제출했을 때만 채워 → '뒤로가기' 복원 전용.
+      /* eslint-disable react-hooks/set-state-in-effect */
       if (info?.name) setUserName(info.name);
       if (info?.gender) setUserGender(info.gender);
       if (info?.birth) setUserBirthYear(info.birth.slice(0, 4));
       if (info?.birth) setUserBirthMonth(info.birth.slice(5, 7));
       if (info?.calendar) setUserCalendar(info.calendar);
+      /* eslint-enable react-hooks/set-state-in-effect */
     } catch {}
   }, [infoKey]);
 
@@ -84,6 +87,14 @@ export function useCharacterSajuFlow(config: CharacterSajuFlowConfig) {
         character_id: storageKeyPrefix === "yeonwoo" || storageKeyPrefix === "doyoon"
           ? storageKeyPrefix
           : undefined,
+      });
+      // 로그인 상태면 계정 마지막 사용값 갱신 (비로그인 no-op, fire-and-forget)
+      saveLastUsed({
+        name: info.name,
+        birth: info.birth.replace(/\./g, "-"),
+        calendar: info.calendar,
+        gender: info.gender,
+        time: info.time, // "HH:MM" | "unknown"
       });
     },
     [infoKey, saju, storageKeyPrefix],
