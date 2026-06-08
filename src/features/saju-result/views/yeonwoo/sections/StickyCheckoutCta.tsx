@@ -1,20 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/shared/utils/analytics";
-
-const TWELVE_HOURS_MS = 12 * 60 * 60 * 1000;
-
-function formatHMS(totalMs: number): string {
-  const ms = Math.max(0, totalMs);
-  const totalSec = Math.floor(ms / 1000);
-  const h = Math.floor(totalSec / 3600);
-  const m = Math.floor((totalSec % 3600) / 60);
-  const s = totalSec % 60;
-  const pad = (n: number) => n.toString().padStart(2, "0");
-  return `${pad(h)}:${pad(m)}:${pad(s)}`;
-}
 
 type Props = {
   visible?: boolean;
@@ -25,21 +12,6 @@ type Props = {
 
 export function StickyCheckoutCta({ visible = true, disabled = false }: Props = {}) {
   const router = useRouter();
-  const [endAt, setEndAt] = useState<number>(() => Date.now() + TWELVE_HOURS_MS);
-  const [now, setNow] = useState<number>(() => Date.now());
-
-  useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  useEffect(() => {
-    if (now >= endAt) {
-      setEndAt(now + TWELVE_HOURS_MS);
-    }
-  }, [now, endAt]);
-
-  const remainingMs = Math.max(0, endAt - now);
 
   return (
     <div
@@ -65,7 +37,7 @@ export function StickyCheckoutCta({ visible = true, disabled = false }: Props = 
           letterSpacing: "-0.64px",
         }}
       >
-        {disabled ? "정밀 리포트는 곧 만나요" : `마지막 오픈 할인까지 ${formatHMS(remainingMs)}`}
+        {disabled ? "정밀 리포트는 곧 만나요" : "6월 오픈 기념 할인 이벤트 진행중"}
       </p>
       <button
         type="button"
