@@ -9,7 +9,7 @@ import { productName, type PaidArchiveItem } from "../domain/types";
 
 // 보관함 — 톤: 홈과 동일 다크 그라데이션 (하단 네비 바 공통, 시각 연속성).
 const PAGE_BG = "linear-gradient(180deg, #1a1530 0%, #0f0a22 100%)";
-const BOTTOM_PAD = "calc(56px + env(safe-area-inset-bottom) + 16px)";
+const BOTTOM_PAD = "calc(67px + env(safe-area-inset-bottom) + 16px)";
 
 function formatDate(iso: string): string {
   // BE는 UTC naive(Z 없음)로 직렬화 → UTC로 간주하고 KST(Asia/Seoul) 날짜로 표시.
@@ -28,7 +28,7 @@ function formatDate(iso: string): string {
 }
 
 export function ArchiveView() {
-  const { isAuthenticated, profile, refreshMe } = useAuth();
+  const { isAuthenticated, refreshMe } = useAuth();
   const { data, status } = useArchive();
   const [loginOpen, setLoginOpen] = useState(false);
 
@@ -63,7 +63,7 @@ export function ArchiveView() {
           ))}
         </div>
       ) : (
-        <EmptyState nickname={profile?.nickname ?? null} />
+        <EmptyState />
       )}
 
       <LoginPromptModal
@@ -135,14 +135,13 @@ function KkebiCard({ summary }: { summary: string | null }) {
   );
 }
 
-function EmptyState({ nickname }: { nickname: string | null }) {
+function EmptyState() {
   return (
     <div className="mt-10 flex flex-1 flex-col items-center justify-center gap-4 text-center">
-      <img src="/kkebi/images/corner-m2.png" alt="깨비" className="h-24 w-24 select-none opacity-90" draggable={false} />
+      <img src="/kkebi/images/corner-m2.png" alt="깨비" className="h-32 w-32 select-none opacity-90" draggable={false} />
       <p className="text-[14px] font-medium text-white/80">아직 보관된 결과가 없어요</p>
-      <p className="max-w-[15rem] text-[12.5px] leading-relaxed text-white/45">
-        사주를 보고 나면 여기에 차곡차곡 쌓여요.
-        {nickname ? ` ${nickname}님의 결과를 기다릴게.` : ""}
+      <p className="max-w-[15rem] whitespace-pre-line text-[12.5px] leading-relaxed text-white/45">
+        {"“사주를 보고 나면 여기에 차곡차곡 쌓여.\n너의 결과 기다릴게.”"}
       </p>
     </div>
   );

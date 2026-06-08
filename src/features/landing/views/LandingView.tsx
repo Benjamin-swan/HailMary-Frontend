@@ -14,8 +14,8 @@ export function LandingView() {
     <>
       <section className="relative flex min-h-[100dvh] items-end justify-center" style={{ fontFamily: "var(--font-pretendard)" }}>
         <Image
-          src="/landing-poster.png"
-          alt="도화선 — 운명을 태우고 너에게 닿을, 붉은 실"
+          src="/poster-love-saju-main.png"
+          alt="연애 사주 — 두 남자가 보는 당신의 연애운"
           fill
           priority
           className="object-cover object-top"
@@ -25,7 +25,7 @@ export function LandingView() {
           className="absolute left-5 top-5 z-30"
         />
         <CtaButton
-          label="1화 연애운편 시작하기"
+          label="연애운 보러가기"
           gradient="bg-[#D73F59]"
           onClick={handleStart}
         />

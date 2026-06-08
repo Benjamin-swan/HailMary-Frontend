@@ -34,8 +34,8 @@ export const SECONDARY_CARDS: ContentCard[] = [
 export const HERO_CARD: ContentCard = {
   id: "dohwaseon-hero",
   variant: "dohwaseon",
-  title: "도화선",
+  title: "연애 사주",
   tag: "대표 콘텐츠",
-  poster: "/dohwaseon-hero-poster.png",
+  poster: "/poster-love-saju-main.png",
   route: "/landing",
 };

@@ -83,25 +83,35 @@ export function MyPageView() {
             </div>
           </div>
 
-          {/* 추천 사주 (도화선 브랜드) */}
+          {/* 추천 사주 — 포스터 위 소개문구 오버레이 (TIGHT 스타일) */}
           <button
             type="button"
             onClick={() => {
               trackEvent("mypage_recommend_click", {});
-              router.push("/select/");
+              router.push("/landing/");
             }}
-            className="mt-7 cursor-pointer overflow-hidden rounded-2xl border border-white/10 p-5 text-left transition-opacity hover:opacity-95"
-            style={{ background: "linear-gradient(135deg, rgba(232,83,110,0.22), rgba(120,40,90,0.12))" }}
+            className="relative mt-7 block cursor-pointer overflow-hidden rounded-2xl border border-white/10 text-left transition-opacity hover:opacity-95"
           >
-            <p className="text-[11px] font-semibold tracking-[0.15em] text-[#f5b3c4]">도화선 추천 사주</p>
-            <p className="mt-2 text-[16px] font-bold leading-snug text-white">
-              운명을 태우고 너에게 닿을,<br />붉은 실.
-            </p>
-            <p className="mt-1.5 text-[12.5px] text-white/55">
-              아직 안 본 인연이 있다면, 강연우·한도윤이 풀어줄게.
-            </p>
-            <span className="mt-3 inline-block text-[13px] font-semibold text-[#f5b3c4]">
-              연애 사주 보러 가기 →
+            <img
+              src="/poster-love-saju-card.png"
+              alt="연애 사주 — 두 남자가 보는 당신의 연애운"
+              className="block h-auto w-full select-none"
+              draggable={false}
+            />
+            {/* 하단 스크림 + CTA */}
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-2 bg-gradient-to-t from-black/85 via-black/35 to-transparent px-4 pb-3.5 pt-12">
+              <p className="text-[12.5px] font-medium text-white/85">
+                아직 안 본 인연이 있다면?
+              </p>
+              <span className="shrink-0 text-[12.5px] font-semibold text-[#f5b3c4]">
+                보러 가기 →
+              </span>
+            </div>
+            <span
+              className="absolute left-4 top-4 z-10 inline-block rounded-lg px-2.5 py-1 text-[10px] font-semibold tracking-[0.12em] text-[#f5b3c4]"
+              style={{ background: "rgba(15,8,30,0.6)", backdropFilter: "blur(8px)" }}
+            >
+              도화선 추천 사주
             </span>
           </button>
 

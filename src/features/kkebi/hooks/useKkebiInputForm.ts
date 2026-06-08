@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { saveLastUsed, useAuth, useLoginGate } from "@/features/auth";
+import { hhmmToZodiacIndex, zodiacIndexToHHMM } from "../domain/birthTime";
 import { KKEBI_MOODS, VALIDATION_MESSAGES } from "../domain/constants";
 import {
   COOKIE_KEYS,
@@ -29,8 +30,8 @@ export const GENDER_OPTIONS: Array<{ label: string; value: Gender }> = [
 
 export function useKkebiInputForm() {
   const router = useRouter();
-  // 확인하기 시 로그인 유도 — 쿠키 저장(데이터 보존) 후 게이트. 로그인 시 ad 페이지로 복귀(쿠키로 이어짐).
-  const loginGate = useLoginGate("kkebi", "/fortune/daily/ad/");
+  // 입력폼(설문) 진입 시 로그인 유도. 로그인 후 입력폼으로 복귀해 prefill된 채 확인하도록 returnTo=/input/.
+  const loginGate = useLoginGate("kkebi", "/fortune/daily/input/");
   // 계정 마지막 사용값 prefill — 로그인 시 /me 재조회 후 폼 채움.
   const { profile, refreshMe } = useAuth();
 
@@ -39,6 +40,15 @@ export function useKkebiInputForm() {
   const [isReady, setIsReady] = useState(false);
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setIsReady(true); }, []);
+
+  // 입력폼(설문) 진입 시 1회 로그인 유도. 비로그인만(게이트 내부 판정), 코어 플로 불변(no-op).
+  const gatePromptedRef = useRef(false);
+  useEffect(() => {
+    if (!isReady || gatePromptedRef.current) return;
+    gatePromptedRef.current = true;
+    loginGate.run(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isReady]);
 
   // 입력 폼 노출 — 사이클당 1회 가드
   useEffect(() => {
@@ -112,6 +122,9 @@ export function useKkebiInputForm() {
     setDay(String(Number(d)));
     setIsLunar(lu.calendar === "lunar");
     setGender(lu.gender === "male" ? "M" : "F");
+    // 생시: 도윤/연우가 넣은 HH:MM을 깨비 12지시로 자동 매치 (예: 12:12 → 午時). 없으면 모름.
+    const zi = hhmmToZodiacIndex(lu.time);
+    setHour(zi !== null ? String(zi) : "unknown");
   }, [profile]);
 
   function showValidationBubble(key: keyof typeof VALIDATION_MESSAGES) {
@@ -148,17 +161,28 @@ export function useKkebiInputForm() {
       has_birth_time: hour !== "unknown",
     });
 
-    // 로그인 상태면 계정 마지막 사용값 갱신 (깨비 시각은 별도 표현이라 time=null → 기존 시각 보존).
+    // 로그인 상태면 계정 마지막 사용값 갱신. 깨비 12지시 select ↔ canonical HH:MM 정합:
+    //  - 모름이면 time:null → 도윤/연우가 넣은 기존 HH:MM 보존(덮어쓰지 않음)
+    //  - 기존값이 같은 지지면 time:null → 원본 HH:MM(분까지) 보존
+    //  - 지지를 바꿨을 때만 새 HH:MM(지지 시작시각) 기록
+    const prevTime = profile?.lastUsed?.time ?? null;
+    let timeToSave: string | null;
+    if (hour === "unknown") {
+      timeToSave = null;
+    } else {
+      const idx = Number(hour);
+      timeToSave = hhmmToZodiacIndex(prevTime) === idx ? null : zodiacIndexToHHMM(idx);
+    }
     saveLastUsed({
       name: name.trim(),
       birth: solarDate,
       calendar: isLunar ? "lunar" : "solar",
       gender: gender === "M" ? "male" : "female",
-      time: null,
+      time: timeToSave,
     });
 
-    // 비로그인이면 로그인 유도 팝업(쿠키는 위에서 이미 저장됨 → 어느 선택이든 데이터 보존).
-    loginGate.run(() => router.push("/fortune/daily/ad/"));
+    // 로그인 유도는 입력폼 진입 시 이미 노출됨(위 마운트 게이트) → 제출은 바로 다음 단계로.
+    router.push("/fortune/daily/ad/");
   }
 
   const currentYear = new Date().getFullYear();

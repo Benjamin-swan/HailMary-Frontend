@@ -21,8 +21,9 @@ interface LoginPromptModalProps {
 const KKEBI_IMG = "/kkebi/images/corner-m2.png";
 
 // 깨비 말투 — 사주정보 저장 가치 제안 (부담 줄이는 가벼운 톤). 헤딩 없이 멘트만.
+// 줄바꿈은 max-xs 폭(280px)에서 단어가 안 잘리도록 의도적으로 끊음.
 const DEFAULT_DESC =
-  "로그인해두면 깨비가 네 이름이랑 태어난 날을 기억해뒀다가\n다음엔 알아서 꺼내줄게. 받은 결과지도 보관함에 모아두고.";
+  "로그인해두면 깨비가 네 이름이랑\n태어난 날을 기억해뒀다가,\n다음엔 알아서 꺼내줄게.\n받은 결과지도 보관함에 모아둘게.";
 
 export function LoginPromptModal({
   open,
@@ -64,14 +65,14 @@ export function LoginPromptModal({
       }}
     >
       <div
-        className="relative w-full max-w-xs rounded-2xl bg-white px-5 pb-5 pt-14 shadow-xl"
+        className="relative w-full max-w-xs rounded-2xl bg-white px-5 pb-6 pt-[76px] shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* 깨비 — 카드 상단에 살짝 걸치게 */}
+        {/* 깨비 — 카드 상단에 살짝 걸치게 (크기 키우되 넘침 비율 유지) */}
         <img
           src={KKEBI_IMG}
           alt="깨비"
-          className="pointer-events-none absolute -top-12 left-1/2 h-24 w-24 -translate-x-1/2 select-none drop-shadow-md"
+          className="pointer-events-none absolute -top-[72px] left-1/2 h-36 w-36 -translate-x-1/2 select-none drop-shadow-md"
           draggable={false}
         />
 

@@ -47,10 +47,10 @@ export function BottomNav() {
   return (
     <>
       <nav
-        className="fixed bottom-0 left-1/2 z-50 w-full max-w-md -translate-x-1/2 border-t border-white/10 bg-[#0f0a22]/85 backdrop-blur-md"
+        className="fixed bottom-0 left-1/2 z-50 w-full max-w-md -translate-x-1/2 rounded-t-[40px] border-t border-white/15 bg-black/58 shadow-[0_-8px_32px_rgba(0,0,0,0.3)]"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <div className="flex h-14 items-stretch justify-around">
+        <div className="flex h-[67px] items-stretch justify-around">
           <NavButton
             label="홈"
             active={onHome}
@@ -101,12 +101,12 @@ function NavButton({
     <button
       type="button"
       onClick={onClick}
-      className="flex flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 transition-opacity active:opacity-70"
+      className="flex flex-1 cursor-pointer flex-col items-center justify-center gap-1 transition-opacity active:opacity-70"
       style={{ color }}
       aria-label={label}
     >
       {icon}
-      <span className="text-[10px] font-medium" style={{ color }}>
+      <span className="text-[11px] font-medium" style={{ color }}>
         {label}
       </span>
     </button>
@@ -116,7 +116,7 @@ function NavButton({
 // ── 아이콘 (stroke 기반, currentColor 상속) ──
 function HomeIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M3 10.5 12 3l9 7.5" />
       <path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5" />
     </svg>
@@ -125,7 +125,7 @@ function HomeIcon() {
 
 function SparkleIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M12 3l1.8 4.9L18.7 9.7l-4.9 1.8L12 16.4l-1.8-4.9L5.3 9.7l4.9-1.8L12 3Z" />
       <path d="M19 14l.7 1.9 1.9.7-1.9.7L19 19.2l-.7-1.9-1.9-.7 1.9-.7L19 14Z" />
     </svg>
@@ -134,7 +134,7 @@ function SparkleIcon() {
 
 function ArchiveIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <rect x="3" y="4" width="18" height="4" rx="1" />
       <path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8" />
       <path d="M10 12h4" />

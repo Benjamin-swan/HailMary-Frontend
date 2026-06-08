@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useIsomorphicLayoutEffect } from "@/shared/hooks/useIsomorphicLayoutEffect";
 import { DOYOON_CUTS, type Cut } from "@/features/saju/domain/cuts-doyoon";
 import { SURVEY_STEPS } from "@/features/saju/domain/surveyOptions";
 import { useCutProgression } from "@/features/saju/hooks/useCutProgression";
@@ -39,8 +40,8 @@ export default function DoyoonSajuScene() {
   const [pendingNav, setPendingNav] = useState<PendingNav>(null);
   const { savedInfo, surveyAnswers, setSurveyAnswers, submitInfo, finalizeSurvey } =
     useCharacterSajuFlow({ storageKeyPrefix: "doyoon" });
-  // 정보 입력 확인 시 로그인 유도(비로그인 1회). 나중에 하기/로그인 모두 코어 플로 불변.
-  const loginGate = useLoginGate("doyoon", "/saju/doyoon/");
+  // 설문(정보 입력) 시작 시 로그인 유도(비로그인 1회). 로그인 후 ?step=info로 설문 컷에 복귀.
+  const loginGate = useLoginGate("doyoon", "/saju/doyoon/?step=info");
   // 로그인 시 계정 마지막 사용값으로 입력폼 prefill (HM-FE-129).
   const { profile, refreshMe } = useAuth();
   useEffect(() => { void refreshMe(); }, [refreshMe]);
@@ -59,7 +60,7 @@ export default function DoyoonSajuScene() {
   const {
     cut, cutIndex, lineIndex, displayedCount, fullText,
     isComplete, fading, crossFading, leanInZoomed, ctaVisible,
-    handleTap, goToCut,
+    handleTap, goToCut, resumeTo,
   } = useCutProgression<Cut>(DOYOON_CUTS, { crossfadeOnEnter: CROSSFADE_ENTER });
 
   // 컷 전환 flicker 방지: 모든 cut 이미지(bg + bgZoomed)를 마운트 시 일괄 프리로드
@@ -85,6 +86,24 @@ export default function DoyoonSajuScene() {
       scene_label: `${cutIndex + 1}/${DOYOON_CUTS.length}`,
     });
   }, [cutIndex]);
+
+  // 로그인 복귀(?step=info): 스토리 스킵하고 설문(info-form) 컷에서 시작. 마운트 1회.
+  useIsomorphicLayoutEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("step") !== "info") return;
+    const idx = DOYOON_CUTS.findIndex((c) => c.type === "info-form");
+    if (idx >= 0) resumeTo(idx);
+    window.history.replaceState(null, "", window.location.pathname); // 마커 제거 → 재점프 방지
+  }, []);
+
+  // 설문(정보 입력 폼) 진입 시 1회 로그인 유도. 비로그인만(게이트 내부 판정), 코어 플로 불변.
+  const gatePromptedRef = useRef(false);
+  useEffect(() => {
+    if (cut.type !== "info-form" || gatePromptedRef.current) return;
+    gatePromptedRef.current = true;
+    loginGate.run(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cut.type]);
 
   const handleCta = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -211,9 +230,7 @@ export default function DoyoonSajuScene() {
       {!fading && cut.type === "info-form" && (
         <InfoForm
           key={accountInitial ? "acct" : "local"}
-          onSubmit={(info) =>
-            loginGate.run(() => { submitInfo(info); goToCut(cutIndex + 1); })
-          }
+          onSubmit={(info) => { submitInfo(info); goToCut(cutIndex + 1); }}
           buttonLabel="도윤에게 알려주기 →"
           characterId="doyoon"
           initialValues={accountInitial ?? savedInfo ?? undefined}
