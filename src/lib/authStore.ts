@@ -26,6 +26,15 @@ function emit(): void {
   listeners.forEach((l) => l());
 }
 
+// bfcache(뒤로가기 캐시) 복원 시 메모리 snapshot이 프로즌된 채 복원돼 localStorage와 어긋난다.
+// (OAuth: 비로그인 페이지에서 카카오로 이탈 → 로그인 후 뒤로가기 시 그 프로즌 상태가 살아나
+//  토큰이 있는데도 비로그인으로 보이는 무한루프). pageshow(persisted)에서 재동기화한다.
+if (typeof window !== "undefined") {
+  window.addEventListener("pageshow", (e) => {
+    if ((e as PageTransitionEvent).persisted) emit();
+  });
+}
+
 export const authStore = {
   get(): string | null {
     return read();

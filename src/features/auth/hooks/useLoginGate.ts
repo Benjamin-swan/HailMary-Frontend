@@ -3,35 +3,18 @@
 import { useCallback, useRef, useState } from "react";
 import { useAuth } from "./useAuth";
 
-// 사주 정보 입력(확인하기) 시점의 "한 번만 끼어드는" 로그인 유도 게이트.
+// 설문(정보 입력/입력폼) 진입 시점의 "한 번만 끼어드는" 로그인 유도 게이트.
 //
 // run(proceed):
-//   - 이미 로그인했거나 이번 세션에 '나중에 하기'를 한 적 있으면 → 즉시 proceed() (코어 플로 불변)
-//   - 그 외(비로그인 + 미dismiss) → 팝업을 띄우고 원래 동작(proceed)을 보류
+//   - 이미 로그인했으면 → 즉시 proceed() (코어 플로 불변)
+//   - 비로그인 → 팝업을 띄우고 원래 동작(proceed)을 보류
 // onClose (나중에 하기 / 배경 / Esc):
-//   - 세션 억제 플래그 set + 보류된 proceed() 실행 → 사용자는 원래 흐름 그대로 진행
+//   - 보류된 proceed() 실행 → 사용자는 원래 흐름 그대로 진행
 // 로그인 하러가기는 LoginPromptModal 내부 startLogin이 returnTo로 처리 (페이지 이탈).
 //
-// 억제는 세션 단위 1회 — 한 번 '나중에 하기'면 그 세션 동안 입력 nudge를 다시 띄우지 않는다.
-// (하단바 보관함처럼 사용자가 직접 연 팝업은 이 게이트를 쓰지 않으므로 영향 없음)
-
-const DISMISS_KEY = "login_nudge_dismissed";
-
-function isDismissed(): boolean {
-  try {
-    return sessionStorage.getItem(DISMISS_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
-function markDismissed(): void {
-  try {
-    sessionStorage.setItem(DISMISS_KEY, "1");
-  } catch {
-    // 무시
-  }
-}
+// 같은 설문 진입(마운트)당 1회 노출은 호출부의 ref 가드로 처리한다.
+// (이전엔 sessionStorage 전역 dismiss로 억제했으나, 깨비에서 '나중에 하기'를 누르면
+//  같은 세션의 도윤/연우 팝업까지 전부 막히는 버그가 있어 제거 — 비로그인이면 각 설문 시작마다 노출)
 
 export interface LoginGateModalProps {
   open: boolean;
@@ -52,7 +35,7 @@ export function useLoginGate(source: string, returnTo?: string): LoginGate {
 
   const run = useCallback(
     (proceed: () => void) => {
-      if (isAuthenticated || isDismissed()) {
+      if (isAuthenticated) {
         proceed();
         return;
       }
@@ -63,7 +46,6 @@ export function useLoginGate(source: string, returnTo?: string): LoginGate {
   );
 
   const onClose = useCallback(() => {
-    markDismissed();
     setOpen(false);
     const p = proceedRef.current;
     proceedRef.current = null;

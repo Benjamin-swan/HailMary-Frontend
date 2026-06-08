@@ -33,7 +33,7 @@ export function LoginPromptModal({
   title,
   description,
 }: LoginPromptModalProps) {
-  const { startLogin } = useAuth();
+  const { startLogin, isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (!open) return;
@@ -45,7 +45,8 @@ export function LoginPromptModal({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose, source]);
 
-  if (!open) return null;
+  // 로그인된 상태면 노출 안 함 — bfcache 복원으로 stale-open 되는 경우 자동 숨김(OAuth 뒤로가기 루프 차단).
+  if (!open || isAuthenticated) return null;
 
   const handleLogin = (provider: AuthProvider) => {
     startLogin(provider, returnTo);
