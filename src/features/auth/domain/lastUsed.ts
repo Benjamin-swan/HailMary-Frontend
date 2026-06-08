@@ -16,7 +16,7 @@ export interface LastUsedPayload {
 export function saveLastUsed(payload: LastUsedPayload): void {
   if (!authStore.get()) return;
   void api
-    .post("/api/account/last-used", payload, { auth: "account" })
+    .post("/api/auth/last-used", payload, { auth: "account" })
     .catch(() => {
       // 마지막값 저장 실패는 무시 — 다음 제출에서 다시 시도됨
     });

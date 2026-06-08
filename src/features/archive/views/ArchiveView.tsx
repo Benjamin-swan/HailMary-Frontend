@@ -12,8 +12,19 @@ const PAGE_BG = "linear-gradient(180deg, #1a1530 0%, #0f0a22 100%)";
 const BOTTOM_PAD = "calc(56px + env(safe-area-inset-bottom) + 16px)";
 
 function formatDate(iso: string): string {
-  // "2026-06-08T..." → "2026.06.08"
-  return iso.slice(0, 10).replace(/-/g, ".");
+  // BE는 UTC naive(Z 없음)로 직렬화 → UTC로 간주하고 KST(Asia/Seoul) 날짜로 표시.
+  // (단순 slice는 늦은밤 KST 결제 시 만료일이 하루 어긋남)
+  const d = new Date(iso.endsWith("Z") ? iso : `${iso}Z`);
+  if (Number.isNaN(d.getTime())) return iso.slice(0, 10).replace(/-/g, ".");
+  // en-CA 로케일 = YYYY-MM-DD 포맷
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  })
+    .format(d)
+    .replace(/-/g, ".");
 }
 
 export function ArchiveView() {
