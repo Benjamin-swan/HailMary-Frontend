@@ -60,10 +60,9 @@ export function LoginPromptModal({
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 px-6"
-      onClick={(e) => {
-        e.stopPropagation();
-        handleDismiss();
-      }}
+      // 배경(딤) 클릭으로는 닫지 않는다 — 권유 팝업이 실수 탭으로 사라지면(닫힘=통과 처리)
+      // 로그인 유도 취지가 무력화됨. 닫기는 '나중에 하기' 버튼으로만(명시적 의사).
+      onClick={(e) => e.stopPropagation()}
     >
       <div
         className="relative w-full max-w-xs rounded-2xl bg-white px-5 pb-6 pt-[76px] shadow-xl"
