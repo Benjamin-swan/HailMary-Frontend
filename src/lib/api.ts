@@ -1,5 +1,11 @@
+import { authStore } from "./authStore";
 import { env } from "./env";
 import { tokenStore } from "./tokenStore";
+
+// 어떤 토큰을 Authorization으로 보낼지 선택.
+// "session"(기본) = 무료사주 세션 토큰(tokenStore) — 기존 동작 그대로.
+// "account" = 소셜 로그인 계정 JWT(authStore) — /api/auth/me·보관함 등.
+export type AuthMode = "session" | "account";
 
 export type ApiErrorCode =
   | "BAD_REQUEST"
@@ -59,14 +65,15 @@ export const qaToken = {
   },
 };
 
-function buildHeaders(extra?: HeadersInit): HeadersInit {
+function buildHeaders(extra?: HeadersInit, auth: AuthMode = "session"): HeadersInit {
   const headers: Record<string, string> = {};
   if (extra) {
     new Headers(extra).forEach((v, k) => {
       headers[k] = v;
     });
   }
-  const token = tokenStore.get();
+  // auth 모드별로 첨부할 토큰 선택 — 한 요청에 두 토큰을 동시에 싣지 않는다.
+  const token = auth === "account" ? authStore.get() : tokenStore.get();
   if (token && !("Authorization" in headers) && !("authorization" in headers)) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -82,6 +89,7 @@ async function request<T>(
   // HM-FE-107: 호출별 타임아웃 오버라이드(기본 90s). 깨비 fortune 등 AI 미사용
   // 호출은 짧게 줘서 무응답 시 빠르게 폴백되게 한다.
   timeoutMs: number = TIMEOUT_MS,
+  auth: AuthMode = "session",
 ): Promise<ApiResult<T>> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -89,7 +97,7 @@ async function request<T>(
   try {
     const res = await fetch(`${env.API_URL}${path}`, {
       ...init,
-      headers: buildHeaders(init?.headers),
+      headers: buildHeaders(init?.headers, auth),
       signal: ctrl.signal,
     });
 
@@ -117,11 +125,11 @@ async function request<T>(
   }
 }
 
-export type ApiRequestOptions = { timeoutMs?: number };
+export type ApiRequestOptions = { timeoutMs?: number; auth?: AuthMode };
 
 export const api = {
   get: <T>(path: string, opts?: ApiRequestOptions) =>
-    request<T>(path, undefined, opts?.timeoutMs),
+    request<T>(path, undefined, opts?.timeoutMs, opts?.auth),
   post: <T>(path: string, body: unknown, opts?: ApiRequestOptions) =>
     request<T>(
       path,
@@ -131,5 +139,8 @@ export const api = {
         body: JSON.stringify(body),
       },
       opts?.timeoutMs,
+      opts?.auth,
     ),
+  del: <T>(path: string, opts?: ApiRequestOptions) =>
+    request<T>(path, { method: "DELETE" }, opts?.timeoutMs, opts?.auth),
 };

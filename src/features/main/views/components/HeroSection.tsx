@@ -15,15 +15,16 @@ export function HeroSection({ card, onClick }: HeroSectionProps) {
       <button
         type="button"
         onClick={() => onClick(card)}
-        className="group relative block w-full cursor-pointer overflow-hidden rounded-2xl border border-white/[0.08] bg-black text-left"
+        className="group relative block aspect-[904/1620] w-full cursor-pointer overflow-hidden rounded-2xl border border-white/[0.08] bg-black text-left"
       >
+        {/* 포스터 하단 검은 여백을 crop(object-top) → 히어로가 짧아져 아래 섹션이 살짝 보임(스크롤 유도) */}
         <Image
           src={card.poster}
           alt={`${card.title} 포스터`}
-          width={760}
-          height={1351}
+          fill
           priority
-          className="block h-auto w-full mt-[30px] -mb-[40px] transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+          sizes="448px"
+          className="object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03]"
         />
         {/* 상단 페이드 — 캐릭터 정수리에 검은 여백 자연스럽게 연결 */}
         <div

@@ -63,6 +63,10 @@ export function SiteFooter({ variant = "dark" }: SiteFooterProps) {
           376-35-01679
         </p>
         <p>
+          <span className={`font-medium ${t.label}`}>통신판매업 신고번호</span>{" "}
+          제 2026-용인기흥-00967 호
+        </p>
+        <p>
           <span className={`font-medium ${t.label}`}>고객센터</span>{" "}
           <a
             href="http://pf.kakao.com/_axcGxbX/chat"

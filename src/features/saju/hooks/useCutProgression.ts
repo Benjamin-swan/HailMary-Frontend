@@ -176,9 +176,25 @@ export function useCutProgression<C extends CutShape>(
     [cuts.length, cutIndex, clearTyping, resetLineState],
   );
 
+  // 특정 컷으로 즉시 이동(애니메이션 없음). 로그인 복귀 시 설문(info-form) 컷으로 점프 등에 사용.
+  const resumeTo = useCallback(
+    (index: number) => {
+      const next = Math.max(0, Math.min(cuts.length - 1, index));
+      clearTyping();
+      transitioning.current = false;
+      setCutIndex(next);
+      resetLineState();
+      setFading(false);
+      setCrossFading(false);
+      setLeanInZoomed(false);
+      setCtaVisible(false);
+    },
+    [cuts.length, clearTyping, resetLineState],
+  );
+
   return {
     cut, cutIndex, lineIndex, displayedCount, fullText,
     isComplete, fading, crossFading, leanInZoomed, ctaVisible,
-    handleTap, goToCut, jumpTo,
+    handleTap, goToCut, jumpTo, resumeTo,
   };
 }

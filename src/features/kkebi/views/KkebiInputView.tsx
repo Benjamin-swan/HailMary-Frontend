@@ -5,6 +5,7 @@ import {
   GENDER_OPTIONS,
   useKkebiInputForm,
 } from "../hooks/useKkebiInputForm";
+import { LoginPromptModal } from "@/features/auth";
 import Card from "./components/shared/Card";
 import PageContainer from "./components/shared/PageContainer";
 import KkebiSlot from "./components/kkebi/KkebiSlot";
@@ -248,6 +249,8 @@ export function KkebiInputView() {
           </form>
         </div>
       </Card>
+
+      <LoginPromptModal {...f.loginModal} />
     </PageContainer>
   );
 }

@@ -15,6 +15,8 @@ export function MainView() {
       style={{
         background: "linear-gradient(180deg, #1a1530 0%, #0f0a22 100%)",
         fontFamily: "var(--font-pretendard)",
+        // 하단 네비 바(h-[67px])에 콘텐츠가 가리지 않도록 여유 패딩
+        paddingBottom: "calc(67px + env(safe-area-inset-bottom))",
       }}
     >
       <TopNav />

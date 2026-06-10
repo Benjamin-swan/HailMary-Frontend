@@ -9,11 +9,13 @@ type ShareCardProps = {
   dateStr: string;
 };
 
-// 메인 ScoreRadar와 동일한 펜타곤 좌표 (SVG로 교체, viewBox 365×360 기준)
+// 메인 ScoreRadar와 동일한 펜타곤 좌표 (viewBox 365 기준)
+// R은 ScoreRadar와 동일하게 110으로 보정 — 기존 123은 점수 면적이 펜타곤 외곽선을
+// 넘어 공유 이미지에서도 동일하게 삐져나왔다. 100점이 꼭짓점 안쪽에 맞닿는다.
 const IMG = 365;
 const CX = 227;
 const CY = 221;
-const R = 123;
+const R = 110;
 const SCORE_MIN = 30;
 const SCORE_MAX = 100;
 // HM-FE-105: 공유 카드 캡처 전용은 PNG. html2canvas가 iOS Safari에서 외부 SVG의

@@ -260,12 +260,17 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
     // 쿠폰 적용 시: PayApp 대신 무료 발급(redeem) → 결제완료와 동일한 success 폴링 진입.
     if (couponApplied) {
       try {
-        const res = await api.post<RedeemCouponResponse>("/api/coupons/redeem", {
-          sessionToken,
-          character,
-          customerEmail: email.trim(),
-          code: coupon.trim(),
-        });
+        const res = await api.post<RedeemCouponResponse>(
+          "/api/coupons/redeem",
+          {
+            sessionToken,
+            character,
+            customerEmail: email.trim(),
+            code: coupon.trim(),
+          },
+          // 로그인 시 계정 JWT 첨부 → 결제 보관함 귀속 (비로그인은 무영향)
+          { auth: "account" },
+        );
         savePendingCheckout({
           character,
           orderId: res.orderId,
@@ -303,6 +308,8 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
           character,
           customerEmail: email.trim(),
         },
+        // 로그인 시 계정 JWT 첨부 → 결제 보관함 귀속 (비로그인은 무영향)
+        { auth: "account" },
       );
 
       savePendingCheckout({
@@ -355,6 +362,8 @@ export function useCheckout(character: CheckoutCharacter): UseCheckoutReturn {
           character,
           customerEmail: email.trim(),
         },
+        // 로그인 시 계정 JWT 첨부 → 결제 보관함 귀속 (비로그인은 무영향)
+        { auth: "account" },
       );
       savePendingCheckout({
         character,

@@ -221,8 +221,10 @@ export default function C5Card({ data, userName }: C5CardProps) {
                 text="더 자세히 알고 싶어? 연애운 제대로 풀어줄 수도 있는데."
                 position="top"
               />
+              {/* 현재 환경의 도화선 랜딩(포스터 페이지)으로 이동 — 상대경로라
+                  로컬/staging/prod 각자 자기 도메인의 /landing/ 으로 간다(하드코딩 X). */}
               <a
-                href="https://www.dohwaseonsaju.com"
+                href="/landing/"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackDaily("daily_crosssell_click")}
@@ -279,6 +281,28 @@ export default function C5Card({ data, userName }: C5CardProps) {
               )}
               {isCapturing ? "준비 중..." : "오늘 운세 공유하기"}
             </button>
+
+            {/* 메인으로 가기 — 로그인 팝업 '나중에 하기'처럼 배경·보더 없는 ghost 텍스트 버튼.
+                상대경로 '/'라 각 환경(로컬/staging/prod) 자기 메인으로 이동. */}
+            <a
+              href="/"
+              onClick={() => trackDaily("daily_home_click")}
+              style={{
+                color: "var(--v2-text-secondary)",
+                cursor: "pointer",
+                fontFamily: "var(--font-body)",
+                fontSize: "var(--text-sm)",
+                fontWeight: 500,
+                marginTop: "-8px",
+                opacity: 0.7,
+                padding: "4px 8px",
+                textAlign: "center",
+                textDecoration: "none",
+                transition: "opacity 0.15s",
+              }}
+            >
+              메인으로 가기
+            </a>
           </div>
         </div>
       </Card>
